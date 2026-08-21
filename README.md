@@ -19,8 +19,7 @@
 - Authentication: Firebase Authentication
 - DB: Firebase Realtime Database, PostgreSQL
 - Hosting: Cloudflare
-- Infrastructure: AWS SAM
-- Local Development: Docker, LocalStack
+- Infrastructure: SST
 - Others: OpenStreetMap, Mapbox, Mapillary
 
 ## Contribution

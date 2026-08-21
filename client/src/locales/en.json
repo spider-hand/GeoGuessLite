@@ -1,0 +1,197 @@
+{
+  "components": {
+    "pages": {
+      "Game": {
+        "AvailableMovesCard": {
+          "title": "Available Moves",
+          "select": "Select",
+          "selecting": "Selecting...",
+          "aiWaiting": "AI is choosing..",
+          "opponentWaiting": "Opponent is choosing.."
+        },
+        "PathHistoryCard": {
+          "title": "Path History",
+          "legendLabel": "Path history legend",
+          "you": "You",
+          "ai": "AI",
+          "opponent": "Opponent"
+        },
+        "PathResultCard": {
+          "start": "Start",
+          "turn": "Turn {turn}",
+          "countries": {
+            "us": "United States",
+            "jp": "Japan",
+            "fr": "France",
+            "br": "Brazil",
+            "de": "Germany",
+            "ca": "Canada"
+          }
+        },
+        "GameMapModal": {
+          "showMap": "Show map",
+          "close": "Close map"
+        },
+        "RoomKeyStrip": {
+          "label": "Room Key"
+        },
+        "GameVsAiPage": {
+          "playAgain": "Play Again",
+          "exit": "Exit"
+        },
+        "GameWithFriendsPage": {
+          "createRoom": "Create Room",
+          "exit": "Exit",
+          "starting": "The game is ready and will start shortly.",
+          "waitingForOpponent": "Waiting for opponent..."
+        },
+        "TurnStatusStrip": {
+          "yourTurn": "Your Turn",
+          "aiTurn": "AI Turn",
+          "opponentTurn": "Opponent Turn",
+          "turn": "Turn {turn}"
+        },
+        "ResultBadge": {
+          "youWin": "You Win",
+          "youLose": "You Lose"
+        },
+        "PlayerMatchupCard": {
+          "versus": "vs",
+          "ai": "AI",
+          "easy": "Easy",
+          "medium": "Medium",
+          "hard": "Hard"
+        }
+      },
+      "Home": {
+        "PlayVsAiCard": {
+          "title": "Play vs AI",
+          "easy": "Easy",
+          "medium": "Medium",
+          "hard": "Hard",
+          "startGame": "Start Game"
+        },
+        "PlayWithFriendsCard": {
+          "title": "Play with Friends",
+          "createRoom": "Create Room",
+          "or": "or",
+          "roomKey": "6-Digit Key",
+          "roomKeyError": "Enter a 6-digit key",
+          "enterRoom": "Enter Room"
+        },
+        "RandomMatchCard": {
+          "title": "Random Match",
+          "joinLobby": "Join Lobby",
+          "comingSoon": "Coming Soon",
+          "onlinePlayersOne": "{count} player online",
+          "onlinePlayersOther": "{count} players online"
+        }
+      },
+      "User": {
+        "profile": "Profile",
+        "aiGames": "AI Games",
+        "friendsGames": "Friends Games",
+        "name": "Name",
+        "editProfile": "Edit Profile",
+        "cancel": "Cancel",
+        "saveChanges": "Save Changes",
+        "deleteAccount": "Delete Account",
+        "saveError": "Unable to save your profile. Please try again.",
+        "nameRequiredError": "Name is required.",
+        "DeleteAccountModal": {
+          "title": "Delete Account",
+          "description": "This permanently deletes your account.",
+          "confirmationPlaceholder": "Type Delete to continue",
+          "confirmationError": "Type Delete to continue",
+          "close": "Close delete account dialog",
+          "cancel": "Cancel",
+          "delete": "Delete",
+          "deleteError": "Unable to delete your account. Please try again."
+        },
+        "CountrySelect": {
+          "country": "Country",
+          "search": "Search countries",
+          "noCountry": "No country"
+        },
+        "AiGamesSection": {
+          "loading": "Loading AI games…",
+          "loadError": "Unable to load AI games.",
+          "wins": "Wins: {count}",
+          "losses": "Losses: {count}",
+          "winsLabel": "Wins",
+          "lossesLabel": "Losses",
+          "win": "Win",
+          "lose": "Lose",
+          "easy": "Easy",
+          "medium": "Medium",
+          "hard": "Hard",
+          "recentGames": "Recent Games",
+          "noRecentGames": "No completed AI games yet.",
+          "viewGame": "View game"
+        },
+        "FriendsGamesSection": {
+          "loading": "Loading friends games…",
+          "loadError": "Unable to load friends games.",
+          "winsLabel": "Wins",
+          "lossesLabel": "Losses",
+          "win": "Win",
+          "lose": "Lose",
+          "topFriends": "Top Friends",
+          "recentGames": "Recent Games",
+          "noRecentGames": "No completed friends games yet.",
+          "viewGame": "View game",
+          "archived": "Archived"
+        }
+      }
+    },
+    "shared": {
+      "HowToPlayButton": {
+        "triggerLabel": "How to play",
+        "descriptionLine1": "Explore the world with Street View.",
+        "descriptionLine2": "Find clues and guess where you are.",
+        "descriptionLine3": "The closer you are, the more points you earn."
+      },
+      "LanguageSelector": {
+        "triggerLabel": "Language",
+        "supportedLanguagesLabel": "Supported languages. Current selection: {language}"
+      },
+      "NavigationHeader": {
+        "primaryNavigationLabel": "Primary navigation",
+        "signUp": "Sign Up",
+        "signOut": "Sign Out",
+        "profile": "Profile",
+        "openMenu": "Open navigation menu",
+        "closeMenu": "Close navigation menu",
+        "howToPlayTriggerLabel": "How to play",
+        "howToPlayDescriptionLine1": "Explore the world with Street View.",
+        "howToPlayDescriptionLine2": "Find clues and guess where you are.",
+        "howToPlayDescriptionLine3": "The closer you are, the more points you earn.",
+        "githubLabel": "GitHub",
+        "discordLabel": "Discord",
+        "languageLabel": "Language",
+        "githubRepositoryLink": "GitHub repository link",
+        "discordServerLink": "Discord server link"
+      },
+      "SignUpPromptModal": {
+        "title": "Welcome to GeoGuess Lite",
+        "description": "Sign up to play with friends and join online matches.",
+        "signUp": "Sign Up",
+        "close": "Close sign up prompt"
+      },
+      "UserAvatarMenu": {
+        "triggerLabel": "Account menu",
+        "menuLabel": "Account menu",
+        "nameLabel": "Name",
+        "profile": "Profile",
+        "signOut": "Sign Out"
+      },
+      "NavigationFooter": {
+        "navigationLabel": "Footer navigation",
+        "credit": "© {year} GeoGuess Lite All rights reserved.",
+        "privacy": "Privacy",
+        "terms": "Terms",
+        "contact": "Contact"
+      }
+    }
+  }
+}

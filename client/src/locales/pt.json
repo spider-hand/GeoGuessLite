@@ -1,0 +1,195 @@
+{
+  "components": {
+    "pages": {
+      "Game": {
+        "AvailableMovesCard": {
+          "title": "Movimentos disponíveis",
+          "select": "Selecionar",
+          "selecting": "Selecionando...",
+          "aiWaiting": "A IA está escolhendo..",
+          "opponentWaiting": "O oponente está escolhendo.."
+        },
+        "PathHistoryCard": {
+          "title": "Histórico do caminho",
+          "legendLabel": "Legenda do histórico do caminho",
+          "you": "Você",
+          "ai": "IA",
+          "opponent": "Oponente"
+        },
+        "PathResultCard": {
+          "start": "Início",
+          "turn": "Turno {turn}",
+          "countries": {
+            "us": "Estados Unidos",
+            "jp": "Japão",
+            "fr": "França",
+            "br": "Brasil",
+            "de": "Alemanha",
+            "ca": "Canadá"
+          }
+        },
+        "GameMapModal": {
+          "showMap": "Mostrar mapa",
+          "close": "Fechar mapa"
+        },
+        "RoomKeyStrip": {
+          "label": "Chave da sala"
+        },
+        "GameVsAiPage": {
+          "playAgain": "Jogar novamente",
+          "exit": "Sair"
+        },
+        "GameWithFriendsPage": {
+          "createRoom": "Criar sala",
+          "exit": "Sair",
+          "starting": "A partida está pronta e vai começar em instantes.",
+          "waitingForOpponent": "Aguardando oponente..."
+        },
+        "TurnStatusStrip": {
+          "yourTurn": "Sua vez",
+          "aiTurn": "Vez da IA",
+          "opponentTurn": "Vez do oponente",
+          "turn": "Turno {turn}"
+        },
+        "ResultBadge": {
+          "youWin": "Você venceu",
+          "youLose": "Você perdeu"
+        },
+        "PlayerMatchupCard": {
+          "versus": "vs",
+          "ai": "IA",
+          "easy": "Fácil",
+          "medium": "Médio",
+          "hard": "Difícil"
+        }
+      },
+      "Home": {
+        "PlayVsAiCard": {
+          "title": "Jogar contra a IA",
+          "easy": "Fácil",
+          "medium": "Médio",
+          "hard": "Difícil",
+          "startGame": "Iniciar jogo"
+        },
+        "PlayWithFriendsCard": {
+          "title": "Jogar com amigos",
+          "createRoom": "Criar sala",
+          "or": "ou",
+          "roomKey": "Chave de 6 dígitos",
+          "roomKeyError": "Digite uma chave de 6 dígitos",
+          "enterRoom": "Entrar na sala"
+        },
+        "RandomMatchCard": {
+          "title": "Partida aleatória",
+          "joinLobby": "Entrar no lobby",
+          "comingSoon": "Em breve",
+          "onlinePlayersOne": "{count} jogador online",
+          "onlinePlayersOther": "{count} jogadores online"
+        }
+      },
+      "User": {
+        "profile": "Perfil",
+        "aiGames": "Partidas contra IA",
+        "friendsGames": "Partidas entre amigos",
+        "name": "Nome",
+        "editProfile": "Editar perfil",
+        "cancel": "Cancelar",
+        "saveChanges": "Salvar alterações",
+        "deleteAccount": "Excluir conta",
+        "saveError": "Não foi possível salvar seu perfil.",
+        "CountrySelect": {
+          "country": "País",
+          "search": "Pesquisar países",
+          "noCountry": "Nenhum país"
+        },
+        "AiGamesSection": {
+          "loading": "Carregando partidas contra IA…",
+          "loadError": "Não foi possível carregar as partidas contra IA.",
+          "wins": "Vitórias: {count}",
+          "losses": "Derrotas: {count}",
+          "winsLabel": "Vitórias",
+          "lossesLabel": "Derrotas",
+          "win": "Vitória",
+          "lose": "Derrota",
+          "easy": "Fácil",
+          "medium": "Médio",
+          "hard": "Difícil",
+          "recentGames": "Partidas recentes",
+          "noRecentGames": "Ainda não há partidas contra IA concluídas.",
+          "viewGame": "Ver partida"
+        },
+        "FriendsGamesSection": {
+          "loading": "Carregando jogos entre amigos…",
+          "loadError": "Não foi possível carregar os jogos entre amigos.",
+          "winsLabel": "Vitórias",
+          "lossesLabel": "Derrotas",
+          "win": "Vitória",
+          "lose": "Derrota",
+          "topFriends": "Melhores amigos",
+          "recentGames": "Jogos recentes",
+          "noRecentGames": "Ainda não há jogos entre amigos concluídos.",
+          "viewGame": "Ver partida",
+          "archived": "Arquivado"
+        },
+        "DeleteAccountModal": {
+          "title": "Excluir conta",
+          "description": "Sua conta será excluída permanentemente.",
+          "confirmationPlaceholder": "Digite Delete para continuar",
+          "close": "Fechar diálogo de exclusão da conta",
+          "cancel": "Cancelar",
+          "delete": "Excluir",
+          "deleteError": "Não foi possível excluir sua conta."
+        }
+      }
+    },
+    "shared": {
+      "HowToPlayButton": {
+        "triggerLabel": "Como jogar",
+        "descriptionLine1": "Explore o mundo com o Street View.",
+        "descriptionLine2": "Encontre pistas e adivinhe onde você está.",
+        "descriptionLine3": "Quanto mais perto você estiver, mais pontos ganhará."
+      },
+      "LanguageSelector": {
+        "triggerLabel": "Idioma",
+        "supportedLanguagesLabel": "Idiomas compatíveis. Seleção atual: {language}"
+      },
+      "NavigationHeader": {
+        "primaryNavigationLabel": "Navegação principal",
+        "signUp": "Cadastre-se",
+        "signOut": "Sair",
+        "profile": "Perfil",
+        "openMenu": "Abrir menu de navegação",
+        "closeMenu": "Fechar menu de navegação",
+        "howToPlayTriggerLabel": "Como jogar",
+        "howToPlayDescriptionLine1": "Explore o mundo com o Street View.",
+        "howToPlayDescriptionLine2": "Encontre pistas e adivinhe onde você está.",
+        "howToPlayDescriptionLine3": "Quanto mais perto você estiver, mais pontos ganhará.",
+        "githubLabel": "GitHub",
+        "discordLabel": "Discord",
+        "languageLabel": "Idioma",
+        "githubRepositoryLink": "Link do repositório do GitHub",
+        "discordServerLink": "Link do servidor do Discord"
+      },
+      "SignUpPromptModal": {
+        "title": "Boas-vindas ao GeoGuess Lite",
+        "description": "Cadastre-se para jogar com amigos e entrar em partidas online.",
+        "signUp": "Cadastre-se",
+        "close": "Fechar aviso de cadastro"
+      },
+      "UserAvatarMenu": {
+        "triggerLabel": "Menu da conta",
+        "menuLabel": "Menu da conta",
+        "nameLabel": "Nome",
+        "profile": "Perfil",
+        "signOut": "Sair"
+      },
+      "NavigationFooter": {
+        "navigationLabel": "Navegação do rodapé",
+        "credit": "© {year} GeoGuess Lite Todos os direitos reservados.",
+        "privacy": "Privacidade",
+        "terms": "Termos",
+        "contact": "Contato"
+      }
+    }
+  }
+}

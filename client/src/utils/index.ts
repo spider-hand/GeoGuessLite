@@ -5,33 +5,10 @@ import {
   MAX_SCORE,
   PERFECT_SCORE_THRESHOLD_KM,
 } from '@/consts'
-import type { UserDistanceUnitEnum } from '@/services'
 import type { LatLng } from '@/types'
 
 export const getAvatarClass = (avatarBg?: string) => {
   return avatarBg ? (AVATAR_CLASS_MAP[avatarBg] ?? '') : ''
-}
-
-export const convertDistance = (
-  distanceKm: number,
-  distanceUnit: UserDistanceUnitEnum,
-): { value: number; unit: string } => {
-  if (distanceUnit === 'mile') {
-    const distanceMiles = distanceKm * 0.621371
-    return {
-      value: Math.round(distanceMiles * 100) / 100,
-      unit: 'mi',
-    }
-  }
-  return {
-    value: Math.round(distanceKm * 100) / 100,
-    unit: 'km',
-  }
-}
-
-export const formatDistance = (distanceKm: number, distanceUnit: UserDistanceUnitEnum): string => {
-  const { value, unit } = convertDistance(distanceKm, distanceUnit)
-  return `${value}${unit}`
 }
 
 export const calculateDistance = (pos1: LatLng, pos2: LatLng): number => {

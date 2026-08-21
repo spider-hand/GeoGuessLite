@@ -1,0 +1,108 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+:root {
+  color-scheme: dark;
+
+  /* Color tokens */
+  --primary: #fcd535;
+  --primary-active: #f0b90b;
+  --primary-disabled: #3a3a1f;
+  --ink: #181a20;
+  --body: #eaecef;
+  --muted: #707a8a;
+  --muted-strong: #929aa5;
+  --hairline: #2b3139;
+  --border-strong: #cdd1d6;
+  --canvas-dark: #0b0e11;
+  --surface-card-dark: #1e2329;
+  --surface-elevated-dark: #2b3139;
+  --on-primary: #181a20;
+  --on-dark: #ffffff;
+  --success: #0ecb81;
+  --danger: #f6465d;
+  --info: #3b82f6;
+  --info-ring: #3b82f6;
+
+  /* Typography foundations */
+  --font-display:
+    "Inter", "Segoe UI", Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body:
+    "Inter", "Segoe UI", Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-number:
+    "Inter", "Segoe UI", Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Typography role metrics */
+  --font-size-hero-display: 64px;
+  --font-size-display-lg: 48px;
+  --font-size-display-md: 40px;
+  --font-size-display-sm: 32px;
+  --font-size-title-lg: 24px;
+  --font-size-title-md: 20px;
+  --font-size-title-sm: 16px;
+  --font-size-number-display: 40px;
+  --font-size-number-md: 16px;
+  --font-size-number-sm: 14px;
+  --font-size-body-md: 14px;
+  --font-size-body-sm: 13px;
+  --font-size-caption: 12px;
+  --font-size-button: 14px;
+  --font-size-nav-link: 14px;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.1;
+  --line-height-display-md: 1.15;
+  --line-height-display-sm: 1.2;
+  --line-height-title-lg: 1.3;
+  --line-height-title-md: 1.35;
+  --line-height-copy: 1.4;
+  --line-height-body: 1.5;
+  --line-height-button: 1;
+
+  --letter-spacing-hero-display: -1px;
+  --letter-spacing-display-lg: -0.5px;
+  --letter-spacing-display-md: -0.3px;
+  --letter-spacing-number-display: -0.3px;
+  --letter-spacing-default: 0;
+
+  /* Radius tokens */
+  --radius-token-xs: 2px;
+  --radius-token-sm: 4px;
+  --radius-token-md: 6px;
+  --radius-token-lg: 8px;
+  --radius-token-xl: 12px;
+  --radius-token-pill: 9999px;
+  --radius-token-full: 9999px;
+
+  /* Spacing tokens */
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  --spacing-section: 80px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  border-color: var(--hairline);
+  outline-color: color-mix(in srgb, var(--info-ring) 50%, transparent);
+}
+
+html {
+  background-color: var(--on-primary);
+}
+
+body {
+  margin: 0;
+  background-color: var(--on-primary);
+  color: var(--body);
+  font-family: var(--font-body);
+}

@@ -13,24 +13,24 @@
  */
 
 import * as runtime from '../runtime'
-import type { HealthCheck200Response } from '../models/index'
-import { HealthCheck200ResponseFromJSON, HealthCheck200ResponseToJSON } from '../models/index'
+import type { GetHealth200Response } from '../models/index'
+import { GetHealth200ResponseFromJSON, GetHealth200ResponseToJSON } from '../models/index'
 
 /**
  *
  */
 export class HealthApi extends runtime.BaseAPI {
   /**
-   * Health check endpoint
+   * Health check
    */
-  async healthCheckRaw(
+  async getHealthRaw(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<HealthCheck200Response>> {
+  ): Promise<runtime.ApiResponse<GetHealth200Response>> {
     const queryParameters: any = {}
 
     const headerParameters: runtime.HTTPHeaders = {}
 
-    let urlPath = `/health`
+    let urlPath = `/api/v1/health`
 
     const response = await this.request(
       {
@@ -43,17 +43,17 @@ export class HealthApi extends runtime.BaseAPI {
     )
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      HealthCheck200ResponseFromJSON(jsonValue),
+      GetHealth200ResponseFromJSON(jsonValue),
     )
   }
 
   /**
-   * Health check endpoint
+   * Health check
    */
-  async healthCheck(
+  async getHealth(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<HealthCheck200Response> {
-    const response = await this.healthCheckRaw(initOverrides)
+  ): Promise<GetHealth200Response> {
+    const response = await this.getHealthRaw(initOverrides)
     return await response.value()
   }
 }

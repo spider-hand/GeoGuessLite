@@ -1,83 +1,42 @@
-import pytest
-from core.auth import lambda_handler, generate_policy
+from unittest.mock import patch
+
+from src.core import auth
+from src.core.events import CustomApiGatewayEvent
+from src.core.http import ApiError
+from tests.factories.http_events import make_api_gateway_event, make_authorizer_event
 
 
-def test_returns_allow_policy_when_token_valid(mocker, lambda_context):
-    mocker.patch("core.auth.verify_firebase_token", return_value={"uid": "user123"})
-    mocker.patch(
-        "core.auth.get_secret",
-        return_value={"lambda_resource_arn": "arn:aws:execute-api:*"},
+@patch("src.core.auth.verify_firebase_token")
+def test_lambda_authorizer_returns_simple_allow_response(mock_verify_firebase_token):
+    mock_verify_firebase_token.return_value = {"uid": "user-123"}
+
+    response = auth.lambda_handler(make_authorizer_event(), None)
+
+    assert response == {"isAuthorized": True, "context": {"uid": "user-123"}}
+    mock_verify_firebase_token.assert_called_once_with({"Authorization": "Bearer token"}, allow_anonymous=False)
+
+
+@patch("src.core.auth.verify_firebase_token")
+def test_lambda_authorizer_rejects_invalid_user(mock_verify_firebase_token):
+    mock_verify_firebase_token.side_effect = ApiError(
+        401,
+        "authentication_required",
+        "Authorization header is required.",
     )
 
-    event = {"authorizationToken": "valid-token"}
-
-    result = lambda_handler(event, lambda_context)
-
-    assert result["principalId"] == "user123"
-    assert result["policyDocument"]["Statement"][0]["Effect"] == "Allow"
-    assert result["context"]["uid"] == "user123"
-    assert result["context"]["authorized"] is True
+    assert auth.lambda_handler(make_authorizer_event(authorization_header=None), None) == {"isAuthorized": False}
 
 
-def test_returns_deny_policy_when_token_missing(mocker, lambda_context):
-    event = {"authorizationToken": None}
+@patch("src.core.auth.verify_firebase_token")
+def test_lambda_authorizer_rejects_anonymous_users_by_default(mock_verify_firebase_token):
+    mock_verify_firebase_token.return_value = {"uid": "user-123"}
 
-    result = lambda_handler(event, lambda_context)
+    auth.lambda_handler(make_authorizer_event(raw_path="/api/v1/future-resource"), None)
 
-    assert result["principalId"] == "user"
-    assert result["policyDocument"]["Statement"][0]["Effect"] == "Deny"
-    assert result["context"]["authorized"] is False
-
-
-def test_returns_deny_policy_when_token_invalid(mocker, lambda_context):
-    mocker.patch(
-        "core.auth.verify_firebase_token", side_effect=Exception("Invalid token")
-    )
-
-    event = {"authorizationToken": "invalid-token"}
-
-    result = lambda_handler(event, lambda_context)
-
-    assert result["principalId"] == "user"
-    assert result["policyDocument"]["Statement"][0]["Effect"] == "Deny"
-    assert result["context"]["authorized"] is False
+    mock_verify_firebase_token.assert_called_once_with({"Authorization": "Bearer token"}, allow_anonymous=False)
 
 
-def test_uses_lambda_resource_arn_from_secrets(mocker, lambda_context):
-    mocker.patch("core.auth.verify_firebase_token", return_value={"uid": "user123"})
-    mocker.patch(
-        "core.auth.get_secret",
-        return_value={
-            "lambda_resource_arn": "arn:aws:execute-api:us-east-1:123456789012:abc123/*"
-        },
-    )
+def test_get_authorized_uid_reads_lambda_authorizer_context():
+    event = CustomApiGatewayEvent.model_validate(make_api_gateway_event(authenticated_uid="user-123"))
 
-    event = {"authorizationToken": "valid-token"}
-
-    result = lambda_handler(event, lambda_context)
-
-    assert (
-        result["policyDocument"]["Statement"][0]["Resource"]
-        == "arn:aws:execute-api:us-east-1:123456789012:abc123/*"
-    )
-
-
-@pytest.mark.parametrize(
-    "principal_id,effect,resource,expected_uid,expected_authorized",
-    [
-        ("user123", "Allow", "arn:aws:execute-api:*", "user123", True),
-        ("user", "Deny", "*", None, False),
-    ],
-)
-def test_generate_policy_creates_correct_policy(
-    principal_id, effect, resource, expected_uid, expected_authorized
-):
-    result = generate_policy(principal_id, effect, resource)
-
-    assert result["principalId"] == principal_id
-    assert result["policyDocument"]["Version"] == "2012-10-17"
-    assert result["policyDocument"]["Statement"][0]["Action"] == "execute-api:Invoke"
-    assert result["policyDocument"]["Statement"][0]["Effect"] == effect
-    assert result["policyDocument"]["Statement"][0]["Resource"] == resource
-    assert result["context"]["uid"] == expected_uid
-    assert result["context"]["authorized"] is expected_authorized
+    assert auth.get_authorized_uid(event) == "user-123"

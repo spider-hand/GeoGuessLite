@@ -1,0 +1,195 @@
+{
+  "components": {
+    "pages": {
+      "Game": {
+        "AvailableMovesCard": {
+          "title": "Verfügbare Züge",
+          "select": "Auswählen",
+          "selecting": "Wird ausgewählt",
+          "aiWaiting": "Die KI wählt..",
+          "opponentWaiting": "Der Gegner wählt.."
+        },
+        "PathHistoryCard": {
+          "title": "Pfadverlauf",
+          "legendLabel": "Legende des Pfadverlaufs",
+          "you": "Du",
+          "ai": "KI",
+          "opponent": "Gegner"
+        },
+        "PathResultCard": {
+          "start": "Start",
+          "turn": "Runde {turn}",
+          "countries": {
+            "us": "Vereinigte Staaten",
+            "jp": "Japan",
+            "fr": "Frankreich",
+            "br": "Brasilien",
+            "de": "Deutschland",
+            "ca": "Kanada"
+          }
+        },
+        "GameMapModal": {
+          "showMap": "Karte anzeigen",
+          "close": "Karte schließen"
+        },
+        "RoomKeyStrip": {
+          "label": "Raumcode"
+        },
+        "GameVsAiPage": {
+          "playAgain": "Nochmal spielen",
+          "exit": "Beenden"
+        },
+        "GameWithFriendsPage": {
+          "createRoom": "Raum erstellen",
+          "exit": "Beenden",
+          "starting": "Das Spiel ist bereit und startet in Kürze.",
+          "waitingForOpponent": "Warten auf den Gegner..."
+        },
+        "TurnStatusStrip": {
+          "yourTurn": "Du bist dran",
+          "aiTurn": "KI ist dran",
+          "opponentTurn": "Gegner ist dran",
+          "turn": "Runde {turn}"
+        },
+        "ResultBadge": {
+          "youWin": "Du gewinnst",
+          "youLose": "Du verlierst"
+        },
+        "PlayerMatchupCard": {
+          "versus": "vs",
+          "ai": "KI",
+          "easy": "Leicht",
+          "medium": "Mittel",
+          "hard": "Schwer"
+        }
+      },
+      "Home": {
+        "PlayVsAiCard": {
+          "title": "Gegen die KI spielen",
+          "easy": "Leicht",
+          "medium": "Mittel",
+          "hard": "Schwer",
+          "startGame": "Spiel starten"
+        },
+        "PlayWithFriendsCard": {
+          "title": "Mit Freunden spielen",
+          "createRoom": "Raum erstellen",
+          "or": "oder",
+          "roomKey": "6-stelliger Code",
+          "roomKeyError": "Gib einen 6-stelligen Code ein",
+          "enterRoom": "Raum betreten"
+        },
+        "RandomMatchCard": {
+          "title": "Zufallsmatch",
+          "joinLobby": "Lobby beitreten",
+          "comingSoon": "Demnächst verfügbar",
+          "onlinePlayersOne": "{count} Spieler online",
+          "onlinePlayersOther": "{count} Spieler online"
+        }
+      },
+      "User": {
+        "profile": "Profil",
+        "aiGames": "KI-Spiele",
+        "friendsGames": "Freundesspiele",
+        "name": "Name",
+        "editProfile": "Profil bearbeiten",
+        "cancel": "Abbrechen",
+        "saveChanges": "Änderungen speichern",
+        "deleteAccount": "Konto löschen",
+        "saveError": "Profil konnte nicht gespeichert werden.",
+        "CountrySelect": {
+          "country": "Land",
+          "search": "Länder suchen",
+          "noCountry": "Kein Land"
+        },
+        "AiGamesSection": {
+          "loading": "KI-Spiele werden geladen…",
+          "loadError": "KI-Spiele konnten nicht geladen werden.",
+          "wins": "Siege: {count}",
+          "losses": "Niederlagen: {count}",
+          "winsLabel": "Siege",
+          "lossesLabel": "Niederlagen",
+          "win": "Sieg",
+          "lose": "Niederlage",
+          "easy": "Leicht",
+          "medium": "Mittel",
+          "hard": "Schwer",
+          "recentGames": "Letzte Spiele",
+          "noRecentGames": "Noch keine abgeschlossenen KI-Spiele.",
+          "viewGame": "Spiel ansehen"
+        },
+        "FriendsGamesSection": {
+          "loading": "Freundesspiele werden geladen…",
+          "loadError": "Freundesspiele konnten nicht geladen werden.",
+          "winsLabel": "Siege",
+          "lossesLabel": "Niederlagen",
+          "win": "Sieg",
+          "lose": "Niederlage",
+          "topFriends": "Beste Freunde",
+          "recentGames": "Letzte Spiele",
+          "noRecentGames": "Noch keine abgeschlossenen Freundesspiele.",
+          "viewGame": "Spiel ansehen",
+          "archived": "Archiviert"
+        },
+        "DeleteAccountModal": {
+          "title": "Konto löschen",
+          "description": "Dadurch wird dein Konto dauerhaft gelöscht.",
+          "confirmationPlaceholder": "Zum Fortfahren Delete eingeben",
+          "close": "Dialog zum Löschen des Kontos schließen",
+          "cancel": "Abbrechen",
+          "delete": "Löschen",
+          "deleteError": "Konto konnte nicht gelöscht werden."
+        }
+      }
+    },
+    "shared": {
+      "HowToPlayButton": {
+        "triggerLabel": "Spielanleitung",
+        "descriptionLine1": "Erkunde die Welt mit Street View.",
+        "descriptionLine2": "Finde Hinweise und rate, wo du bist.",
+        "descriptionLine3": "Je näher du liegst, desto mehr Punkte bekommst du."
+      },
+      "LanguageSelector": {
+        "triggerLabel": "Sprache",
+        "supportedLanguagesLabel": "Unterstützte Sprachen. Aktuelle Auswahl: {language}"
+      },
+      "NavigationHeader": {
+        "primaryNavigationLabel": "Hauptnavigation",
+        "signUp": "Registrieren",
+        "signOut": "Abmelden",
+        "profile": "Profil",
+        "openMenu": "Navigationsmenü öffnen",
+        "closeMenu": "Navigationsmenü schließen",
+        "howToPlayTriggerLabel": "Spielanleitung",
+        "howToPlayDescriptionLine1": "Erkunde die Welt mit Street View.",
+        "howToPlayDescriptionLine2": "Finde Hinweise und rate, wo du bist.",
+        "howToPlayDescriptionLine3": "Je näher du liegst, desto mehr Punkte bekommst du.",
+        "githubLabel": "GitHub",
+        "discordLabel": "Discord",
+        "languageLabel": "Sprache",
+        "githubRepositoryLink": "GitHub-Repository-Link",
+        "discordServerLink": "Discord-Server-Link"
+      },
+      "SignUpPromptModal": {
+        "title": "Willkommen bei GeoGuess Lite",
+        "description": "Registriere dich, um mit Freunden zu spielen und Online-Matches beizutreten.",
+        "signUp": "Registrieren",
+        "close": "Registrierungsdialog schließen"
+      },
+      "UserAvatarMenu": {
+        "triggerLabel": "Kontomenü",
+        "menuLabel": "Kontomenü",
+        "nameLabel": "Name",
+        "profile": "Profil",
+        "signOut": "Abmelden"
+      },
+      "NavigationFooter": {
+        "navigationLabel": "Fußzeilennavigation",
+        "credit": "© {year} GeoGuess Lite Alle Rechte vorbehalten.",
+        "privacy": "Datenschutz",
+        "terms": "Nutzungsbedingungen",
+        "contact": "Kontakt"
+      }
+    }
+  }
+}

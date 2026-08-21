@@ -1,8 +1,0 @@
-type: object
-properties:
-  scores:
-    type: array
-    items:
-      $ref: ./daily-score.yml
-required:
-  - scores

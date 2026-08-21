@@ -1,0 +1,10 @@
+{
+  "name": "geoguess-lite",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.32.1",
+  "devDependencies": {
+    "lefthook": "^2.1.9"
+  }
+}

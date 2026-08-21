@@ -1,62 +1,45 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { getCurrentUser } from 'vuefire'
+
+import GameRandomMatchPage from '@/pages/GameRandomMatchPage.vue'
+import GameVsAiPage from '@/pages/GameVsAiPage.vue'
+import GameWithFriendsPage from '@/pages/GameWithFriendsPage.vue'
+import HomePage from '@/pages/HomePage.vue'
+import PrivacyPage from '@/pages/PrivacyPage.vue'
+import TermsPage from '@/pages/TermsPage.vue'
+import UserPage from '@/pages/UserPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'landing',
-      component: () => import('@/pages/LandingPage.vue'),
+      component: HomePage,
     },
     {
       path: '/terms',
-      name: 'terms',
-      component: () => import('@/pages/TermsPage.vue'),
+      component: TermsPage,
     },
     {
       path: '/privacy',
-      name: 'privacy',
-      component: () => import('@/pages/PrivacyPage.vue'),
+      component: PrivacyPage,
     },
     {
-      path: '/game',
-      name: 'game',
-      component: () => import('@/pages/GamePage.vue'),
+      path: '/user',
+      component: UserPage,
     },
     {
-      path: '/game/single-player',
-      name: 'game-single-player',
-      component: () => import('@/pages/SinglePlayerGamePage.vue'),
+      path: '/game/vs-ai/:gameId',
+      component: GameVsAiPage,
     },
     {
-      path: '/game/multiplayer/:roomId',
-      name: 'game-multiplayer',
-      component: () => import('@/pages/MultiplayerGamePage.vue'),
-      meta: { requiresAuth: true },
-      props: (route) => ({ roomId: route.params.roomId as string }),
+      path: '/game/with-friends/:gameId',
+      component: GameWithFriendsPage,
     },
     {
-      path: '/game/daily-challenge',
-      name: 'game-daily-challenge',
-      component: () => import('@/pages/DailyChallengeGamePage.vue'),
-      meta: { requiresAuth: true },
+      path: '/game/random-match',
+      component: GameRandomMatchPage,
     },
   ],
-})
-
-router.beforeEach(async (to) => {
-  if (to.meta.requiresAuth) {
-    const currentUser = await getCurrentUser()
-    if (!currentUser) {
-      return {
-        path: '/',
-        query: {
-          redirect: to.fullPath,
-        },
-      }
-    }
-  }
 })
 
 export default router

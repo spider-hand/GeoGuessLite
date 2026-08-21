@@ -1,0 +1,195 @@
+{
+  "components": {
+    "pages": {
+      "Game": {
+        "AvailableMovesCard": {
+          "title": "選択可能な手",
+          "select": "選択",
+          "selecting": "選択中...",
+          "aiWaiting": "AIが選択中..",
+          "opponentWaiting": "対戦相手が選択中.."
+        },
+        "PathHistoryCard": {
+          "title": "経路履歴",
+          "legendLabel": "経路履歴の凡例",
+          "you": "You",
+          "ai": "AI",
+          "opponent": "対戦相手"
+        },
+        "PathResultCard": {
+          "start": "開始地点",
+          "turn": "{turn} ターン目",
+          "countries": {
+            "us": "アメリカ",
+            "jp": "日本",
+            "fr": "フランス",
+            "br": "ブラジル",
+            "de": "ドイツ",
+            "ca": "カナダ"
+          }
+        },
+        "GameMapModal": {
+          "showMap": "地図を表示",
+          "close": "地図を閉じる"
+        },
+        "RoomKeyStrip": {
+          "label": "ルームキー"
+        },
+        "GameVsAiPage": {
+          "playAgain": "もう一度プレイ",
+          "exit": "終了"
+        },
+        "GameWithFriendsPage": {
+          "createRoom": "ルームを作成",
+          "exit": "終了",
+          "starting": "ゲームの準備ができました。まもなく開始します。",
+          "waitingForOpponent": "対戦相手を待っています..."
+        },
+        "TurnStatusStrip": {
+          "yourTurn": "あなたのターン",
+          "aiTurn": "AIのターン",
+          "opponentTurn": "対戦相手のターン",
+          "turn": "{turn} ターン目"
+        },
+        "ResultBadge": {
+          "youWin": "あなたの勝ち",
+          "youLose": "あなたの負け"
+        },
+        "PlayerMatchupCard": {
+          "versus": "vs",
+          "ai": "AI",
+          "easy": "かんたん",
+          "medium": "ふつう",
+          "hard": "むずかしい"
+        }
+      },
+      "Home": {
+        "PlayVsAiCard": {
+          "title": "AI と対戦",
+          "easy": "かんたん",
+          "medium": "ふつう",
+          "hard": "むずかしい",
+          "startGame": "ゲーム開始"
+        },
+        "PlayWithFriendsCard": {
+          "title": "友達と遊ぶ",
+          "createRoom": "ルームを作成",
+          "or": "または",
+          "roomKey": "6桁のキー",
+          "roomKeyError": "6桁のキーを入力してください",
+          "enterRoom": "ルームに入る"
+        },
+        "RandomMatchCard": {
+          "title": "ランダムマッチ",
+          "joinLobby": "ロビーに参加",
+          "comingSoon": "近日公開",
+          "onlinePlayersOne": "オンライン {count} 人",
+          "onlinePlayersOther": "オンライン {count} 人"
+        }
+      },
+      "User": {
+        "profile": "プロフィール",
+        "aiGames": "AI対戦",
+        "friendsGames": "フレンド対戦",
+        "name": "名前",
+        "editProfile": "プロフィールを編集",
+        "cancel": "キャンセル",
+        "saveChanges": "変更を保存",
+        "deleteAccount": "アカウントを削除",
+        "saveError": "プロフィールを保存できませんでした。",
+        "CountrySelect": {
+          "country": "国",
+          "search": "国を検索",
+          "noCountry": "国を選択しない"
+        },
+        "AiGamesSection": {
+          "loading": "AI対戦を読み込み中…",
+          "loadError": "AI対戦を読み込めませんでした。",
+          "wins": "勝ち: {count}",
+          "losses": "負け: {count}",
+          "winsLabel": "勝ち",
+          "lossesLabel": "負け",
+          "win": "勝ち",
+          "lose": "負け",
+          "easy": "かんたん",
+          "medium": "ふつう",
+          "hard": "むずかしい",
+          "recentGames": "最近の対戦",
+          "noRecentGames": "完了したAI対戦はまだありません。",
+          "viewGame": "対戦を見る"
+        },
+        "FriendsGamesSection": {
+          "loading": "フレンド対戦を読み込み中…",
+          "loadError": "フレンド対戦を読み込めませんでした。",
+          "winsLabel": "勝ち",
+          "lossesLabel": "負け",
+          "win": "勝ち",
+          "lose": "負け",
+          "topFriends": "よく対戦するフレンド",
+          "recentGames": "最近の対戦",
+          "noRecentGames": "完了したフレンド対戦はまだありません。",
+          "viewGame": "対戦を見る",
+          "archived": "アーカイブ済み"
+        },
+        "DeleteAccountModal": {
+          "title": "アカウントを削除",
+          "description": "アカウントは完全に削除されます。",
+          "confirmationPlaceholder": "続行するには Delete と入力",
+          "close": "アカウント削除ダイアログを閉じる",
+          "cancel": "キャンセル",
+          "delete": "削除",
+          "deleteError": "アカウントを削除できませんでした。"
+        }
+      }
+    },
+    "shared": {
+      "HowToPlayButton": {
+        "triggerLabel": "遊び方",
+        "descriptionLine1": "ストリートビューで世界を探索。",
+        "descriptionLine2": "手がかりを見つけて、現在地を予想しよう。",
+        "descriptionLine3": "近いほど多くのポイントを獲得できます。"
+      },
+      "LanguageSelector": {
+        "triggerLabel": "言語",
+        "supportedLanguagesLabel": "対応言語。現在の選択: {language}"
+      },
+      "NavigationHeader": {
+        "primaryNavigationLabel": "メインナビゲーション",
+        "signUp": "サインアップ",
+        "signOut": "サインアウト",
+        "profile": "プロフィール",
+        "openMenu": "ナビゲーションメニューを開く",
+        "closeMenu": "ナビゲーションメニューを閉じる",
+        "howToPlayTriggerLabel": "遊び方",
+        "howToPlayDescriptionLine1": "ストリートビューで世界を探索。",
+        "howToPlayDescriptionLine2": "手がかりを見つけて、現在地を予想しよう。",
+        "howToPlayDescriptionLine3": "近いほど多くのポイントを獲得できます。",
+        "githubLabel": "GitHub",
+        "discordLabel": "Discord",
+        "languageLabel": "言語",
+        "githubRepositoryLink": "GitHub リポジトリへのリンク",
+        "discordServerLink": "Discord サーバーへのリンク"
+      },
+      "SignUpPromptModal": {
+        "title": "GeoGuess Liteへようこそ",
+        "description": "フレンド対戦やオンライン対戦に参加するにはサインアップしてください。",
+        "signUp": "サインアップ",
+        "close": "サインアップ案内を閉じる"
+      },
+      "UserAvatarMenu": {
+        "triggerLabel": "アカウントメニュー",
+        "menuLabel": "アカウントメニュー",
+        "nameLabel": "名前",
+        "profile": "プロフィール",
+        "signOut": "サインアウト"
+      },
+      "NavigationFooter": {
+        "navigationLabel": "フッターナビゲーション",
+        "credit": "© {year} GeoGuess Lite All rights reserved.",
+        "privacy": "プライバシー",
+        "terms": "利用規約",
+        "contact": "お問い合わせ"
+      }
+    }
+  }
+}

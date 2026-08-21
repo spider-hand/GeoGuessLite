@@ -1,0 +1,29 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.32.1",
+  "scripts": {
+    "db:migrate": "dbmate --migrations-dir db/migrations up",
+    "db:new": "dbmate --migrations-dir db/migrations new",
+    "db:rollback": "dbmate --migrations-dir db/migrations down",
+    "db:status": "dbmate --migrations-dir db/migrations status",
+    "dev": "sst dev --stage dev",
+    "deploy:dev": "sst deploy --stage dev",
+    "deploy:prod": "sst deploy --stage prod",
+    "state:list": "sst state list",
+    "state:dev": "sst state export --stage dev",
+    "state:prod": "sst state export --stage prod",
+    "remove:dev": "sst remove --stage dev",
+    "remove:prod": "sst remove --stage prod",
+    "unlock:dev": "sst unlock --stage dev",
+    "unlock:prod": "sst unlock --stage prod"
+  },
+  "dependencies": {
+    "sst": "4.15.2"
+  },
+  "devDependencies": {
+    "dbmate": "^2.33.0"
+  }
+}

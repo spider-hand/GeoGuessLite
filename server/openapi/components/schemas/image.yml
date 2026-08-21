@@ -1,9 +1,0 @@
-type: object
-required:
-  - id
-  - is_pano
-properties:
-  id:
-    type: string
-  is_pano:
-    type: boolean

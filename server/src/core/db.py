@@ -1,12 +1,8 @@
-import psycopg
-from core.secret import get_secret
+from src.core.secret import get_secrets
 
 
-def get_db_connection() -> psycopg.Connection:
-    secrets = get_secret()
-    neon_db_uri = secrets.get("neon_db_uri")
+def get_connection():
+    import psycopg
+    from psycopg.rows import dict_row
 
-    conn = psycopg.connect(
-        neon_db_uri, row_factory=psycopg.rows.dict_row, autocommit=True
-    )
-    return conn
+    return psycopg.connect(conninfo=get_secrets()["neon_db_uri"], row_factory=dict_row)

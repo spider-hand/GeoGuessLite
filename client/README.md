@@ -25,51 +25,55 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 
 ## Project Setup
 
+Install workspace dependencies from the repository root:
+
 ```sh
-npm install
+pnpm install
 ```
+
+Run the remaining commands from `client/`.
 
 ### Compile and Hot-Reload for Development
 
 ```sh
-npm run dev
+pnpm dev
 ```
 
 ### Type-Check, Compile and Minify for Production
 
 ```sh
-npm run build
+pnpm build
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+### Run Browser Tests with [Vitest](https://vitest.dev/)
 
 ```sh
-npm run test:unit
+# Install Chromium for the first run
+pnpm exec playwright install chromium
+
+# Run browser tests
+pnpm test:browser -- --run
+
+# Run browser tests with coverage
+pnpm test:browser:coverage
 ```
 
-### Run End-to-End Tests with [Playwright](https://playwright.dev)
+### Run [Storybook](https://storybook.js.org/)
 
 ```sh
-# Install browsers for the first run
-npx playwright install
+# Start the component explorer
+pnpm storybook
 
-# When testing on CI, must build the project first
-npm run build
-
-# Runs the end-to-end tests
-npm run test:e2e
-# Runs the tests only on Chromium
-npm run test:e2e -- --project=chromium
-# Runs the tests of a specific file
-npm run test:e2e -- tests/example.spec.ts
-# Runs the tests in debug mode
-npm run test:e2e -- --debug
+# Build the static Storybook site
+pnpm build-storybook
 ```
 
 ### Lint with [ESLint](https://eslint.org/)
 
 ```sh
-npm run lint
+pnpm lint
+
+pnpm format:check
 ```
 
 ## Generate API client with [OpenAPI generator](https://openapi-generator.tech)
@@ -77,5 +81,5 @@ npm run lint
 Run
 
 ```sh
-openapi-generator generate -i ../server/openapi/openapi.yml -g typescript-fetch -o ./src/services/
+pnpm generate:api
 ```
