@@ -1,0 +1,10 @@
+pre-commit:
+  commands:
+    ruff:
+      run: cd server && uv run ruff check .
+
+    eslint:
+      run: cd client && pnpm lint
+
+    prettier:
+      run: cd client && pnpm format:check

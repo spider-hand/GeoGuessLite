@@ -1,0 +1,9 @@
+type: object
+required:
+  - message
+properties:
+  message:
+    type: string
+    description: Health status message.
+    example: alive
+additionalProperties: false

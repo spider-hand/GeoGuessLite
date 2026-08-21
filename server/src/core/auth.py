@@ -1,7 +1,12 @@
-from core.firebase import verify_firebase_token
-from core.secret import get_secret
+from http import HTTPStatus
+from typing import Any
+
+from aws_lambda_powertools.utilities.parser import event_parser
 from aws_lambda_powertools.utilities.typing import LambdaContext
-from core.logger import dynamic_inject_lambda_context, logger
+
+from src.core.events import CustomApiGatewayEvent, CustomAuthorizerEvent
+from src.core.firebase import get_firebase_app
+from src.core.http import ApiError
 
 CORS_HEADERS = {
     "Access-Control-Allow-Origin": "*",
@@ -10,57 +15,68 @@ CORS_HEADERS = {
 }
 
 
-@dynamic_inject_lambda_context
-def lambda_handler(event: dict, context: LambdaContext) -> dict:
+def verify_firebase_token(headers: dict[str, str] | None, *, allow_anonymous: bool = False) -> dict[str, Any]:
+    from firebase_admin import auth as firebase_auth
+
+    authorization_header = next(
+        (value for key, value in (headers or {}).items() if key.lower() == "authorization"),
+        None,
+    )
+    if authorization_header is None:
+        raise ApiError(HTTPStatus.UNAUTHORIZED, "authentication_required", "Authorization header is required.")
+
+    scheme, _, token = authorization_header.partition(" ")
+    if scheme != "Bearer" or not token:
+        raise ApiError(
+            HTTPStatus.UNAUTHORIZED,
+            "invalid_authorization_header",
+            "Authorization header must use the Bearer scheme.",
+        )
+
     try:
-        token = event["authorizationToken"]
+        decoded_token = firebase_auth.verify_id_token(token, app=get_firebase_app())
+    except Exception as error:
+        raise ApiError(
+            HTTPStatus.UNAUTHORIZED,
+            "invalid_authentication_token",
+            "Authentication token is invalid.",
+        ) from error
 
-        if not token:
-            logger.warning("Missing authorization token")
-            raise Exception("Unauthorized: No token provided")
-
-        decoded_token = verify_firebase_token(token)
-        uid = decoded_token["uid"]
-
-        logger.info(
-            {
-                "event": "authentication_successful",
-                "uid": uid,
-            }
+    if decoded_token.get("firebase", {}).get("sign_in_provider") == "anonymous" and not allow_anonymous:
+        raise ApiError(
+            HTTPStatus.UNAUTHORIZED,
+            "anonymous_user_not_allowed",
+            "Anonymous users cannot access this resource.",
         )
 
-        secrets = get_secret()
-        lambda_resource_arn = secrets.get("lambda_resource_arn")
-
-        policy = generate_policy(uid, "Allow", lambda_resource_arn)
-
-        return policy
-
-    except Exception as e:
-        logger.exception("Authentication error")
-        logger.info(
-            {
-                "event": "authentication_failed",
-                "error": str(e),
-            }
-        )
-        policy = generate_policy("user", "Deny", "*")
-        return policy
+    return decoded_token
 
 
-def generate_policy(principal_id: str, effect: str, resource: str) -> dict:
-    policy_document = {
-        "principalId": principal_id,
-        "policyDocument": {
-            "Version": "2012-10-17",
-            "Statement": [
-                {"Action": "execute-api:Invoke", "Effect": effect, "Resource": resource}
-            ],
-        },
-        "context": {
-            "uid": principal_id if effect == "Allow" else None,
-            "authorized": effect == "Allow",
-        },
-    }
+def verify_user_access(uid: str, expected_user_id: str) -> None:
+    if uid != expected_user_id:
+        raise ApiError(HTTPStatus.FORBIDDEN, "forbidden", "You do not have access to this resource.")
 
-    return policy_document
+
+def get_authorized_uid(event: CustomApiGatewayEvent) -> str:
+    uid = (
+        event.requestContext.authorizer.lambda_.uid
+        if event.requestContext.authorizer and event.requestContext.authorizer.lambda_
+        else None
+    )
+    if not isinstance(uid, str) or not uid:
+        raise RuntimeError("Missing authorizer context uid.")
+    return uid
+
+
+def _allow_anonymous_user(event: CustomAuthorizerEvent) -> bool:
+    return False
+
+
+@event_parser(model=CustomAuthorizerEvent)
+def lambda_handler(event: CustomAuthorizerEvent, context: LambdaContext | Any) -> dict[str, Any]:
+    try:
+        decoded_token = verify_firebase_token(event.headers, allow_anonymous=_allow_anonymous_user(event))
+    except ApiError:
+        return {"isAuthorized": False}
+
+    return {"isAuthorized": True, "context": {"uid": decoded_token["uid"]}}

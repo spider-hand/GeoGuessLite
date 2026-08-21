@@ -1,62 +1,152 @@
-## Local development
+# Server
 
-### Prerequisite
+## Setup
 
-- [Docker](https://www.docker.com)
-- [AWS CLI](https://docs.localstack.cloud/user-guide/integrations/aws-cli/#localstack-aws-cli-awslocal)
-- [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html#install-sam-cli-instructions)
-- [LocalStack](https://github.com/localstack/localstack)
+### Prerequisites
 
-1. Sign up for LocalStack, create an auth token, and set `LOCALSTACK_AUTH_TOKEN` in `server/.env`.
+- [Node.js](https://nodejs.org)
+- [pnpm](https://pnpm.io/installation)
+- [Python 3.14](https://www.python.org/downloads/)
+- [uv](https://docs.astral.sh/uv/getting-started/installation/)
+- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-prereqs.html#getting-started-prereqs-iam)
 
-```
-LOCALSTACK_AUTH_TOKEN=<your_localstack_auth_token>
-```
+This doc assumes that you already configured IAM Identity Center authentication. Please follow [this instructions](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sso.html).
 
-2. Start LocalStack to manage Secrets Manager locally:
+Verify available profiles:
 
-```bash
-docker compose up -d
-```
-
-3. Save secrets:
-
-```bash
-awslocal --region us-east-1 secretsmanager create-secret --name geoguess-lite-localstack --secret-string file://secret.localstack.json
+```sh
+cat ~/.aws/config
 ```
 
-Check if the secrets have been saved:
-
-```bash
-awslocal --region us-east-1 secretsmanager describe-secret --secret-id geoguess-lite-localstack
+Expected output:
+```sh
+[profile my-profile] 
+sso_session = my-sso 
+sso_account_id = 123456789012 
+sso_role_name = AdministratorAccess
+region = ap-northeast-1
 ```
 
-You can delete the secrets by running the following command:
+Login using AWS SSO:
 
-```bash
-awslocal --region us-east-1 secretsmanager delete-secret --secret-id geoguess-lite-localstack --force-delete-without-recovery
+```sh
+aws sso login --profile <your-profile>
 ```
 
-4. Build SAM:
+Set the profile for the current shell:
 
-```bash
-sam build --use-container
+```sh
+export AWS_PROFILE=<your-profile>
 ```
 
-5. Find the Docker network name for the running LocalStack container:
+Verify authentication:
 
-```bash
-docker inspect localstack-geoguess-lite --format '{{range $name, $_ := .NetworkSettings.Networks}}{{$name}}{{end}}'
+```sh
+aws sts get-caller-identity
 ```
 
-6. Run SAM:
+Expected output:
 
-```bash
-sam local start-api --region us-east-1 --docker-network <localstack-network-id> --port 3001 --parameter-overrides Environment=localstack
+```sh
+{
+  "Account": "...",
+  "Arn": "...",
+  "UserId": "..."
+}
 ```
 
-7. Test scheduled functions locally:
+Install dependencies:
 
-```bash
-sam local invoke <function> --parameter-overrides Environment=local
+```sh
+uv sync
+```
+
+```sh
+pnpm install
+```
+
+Start development environment:
+
+```sh
+pnpm dev
+```
+
+Run unit tests:
+
+```sh
+uv run pytest
+```
+
+Run Linter:
+
+```sh
+uv run ruff check .
+```
+
+```sh
+uv run ruff check . --fix
+```
+
+##### Manage database migrations:
+
+Set the connection string for the current shell:
+
+```sh
+export DATABASE_URL='postgresql://...'
+```
+
+Apply pending migrations:
+
+```sh
+pnpm db:migrate
+```
+
+Create a new migration:
+
+```sh
+pnpm db:new <migration_name>
+```
+
+Rollback the latest migration:
+
+```sh
+pnpm db:rollback
+```
+
+Check migration status:
+
+```sh
+pnpm db:status
+```
+
+##### Manage resources:
+
+List deployed stages:
+
+```sh
+pnpm state:list
+```
+
+Show deployed resources for `dev`:
+
+```sh
+pnpm state:dev
+```
+
+Show deployed resources for `prod`:
+
+```sh
+pnpm state:prod
+```
+
+Remove deployed `dev` resources:
+
+```sh
+pnpm remove:dev
+```
+
+Remove deployed `prod` resources:
+
+```sh
+pnpm remove:prod
 ```

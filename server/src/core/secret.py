@@ -1,52 +1,61 @@
 import json
-import boto3
 import os
 from functools import lru_cache
-from typing import TypedDict
+from typing import TypedDict, cast
 
 
 class SecretsDict(TypedDict):
-    lambda_resource_arn: str
     neon_db_uri: str
+    firebase_service_account: dict[str, object]
     mapillary_token: str
-    firebase_service_account: dict
-    firebase_database_url: str
+
+
+def get_app_secret_name() -> str:
+    environment = os.getenv("ENVIRONMENT")
+    if not environment:
+        raise ValueError("ENVIRONMENT is required to resolve the app secret name.")
+    return f"geoguesslite-{environment}"
+
+
+@lru_cache(maxsize=None)
+def get_secret_string(secret_name: str) -> str:
+    import boto3
+
+    secret_string = boto3.client("secretsmanager").get_secret_value(SecretId=secret_name).get("SecretString")
+    if secret_string is None:
+        raise ValueError(f"Secret '{secret_name}' does not contain a string value.")
+    return secret_string
+
+
+@lru_cache(maxsize=None)
+def get_secret_json(secret_name: str) -> dict[str, object]:
+    try:
+        secret_json = json.loads(get_secret_string(secret_name))
+    except json.JSONDecodeError as error:
+        raise ValueError(f"Secret '{secret_name}' does not contain valid JSON.") from error
+    if not isinstance(secret_json, dict):
+        raise ValueError(f"Secret '{secret_name}' must contain a JSON object.")
+    return cast(dict[str, object], secret_json)
 
 
 @lru_cache(maxsize=1)
-def get_secret() -> SecretsDict:
-    environment = os.getenv("Environment", "localstack")
+def get_secrets() -> SecretsDict:
+    secret_name = get_app_secret_name()
+    secret_json = get_secret_json(secret_name)
+    neon_db_uri = secret_json.get("neon_db_uri")
+    if not isinstance(neon_db_uri, str) or not neon_db_uri:
+        raise ValueError(f"Secret '{secret_name}' must contain a non-empty 'neon_db_uri' string.")
 
-    secret_name = f"geoguess-lite-{environment}"
-    service_name = "secretsmanager"
-    region_name = "us-east-1"
+    firebase_service_account = secret_json.get("firebase_service_account")
+    if not isinstance(firebase_service_account, str):
+        raise ValueError(f"Secret '{secret_name}' must contain a 'firebase_service_account' string.")
 
-    if environment == "local":
-        secret_files = "/var/task/secret.local.json"
+    mapillary_token = secret_json.get("mapillary_token")
+    if not isinstance(mapillary_token, str) or not mapillary_token:
+        raise ValueError(f"Secret '{secret_name}' must contain a non-empty 'mapillary_token' string.")
 
-        if os.path.exists(secret_files):
-            with open(secret_files, "r") as f:
-                return json.load(f)
-
-        raise FileNotFoundError(
-            "No local secret file found. Please ensure secret.local.json is available."
-        )
-    elif environment == "localstack":
-        client = boto3.client(
-            service_name=service_name,
-            region_name=region_name,
-            endpoint_url="http://localstack-geoguess-lite:4566",
-        )
-    else:
-        client = boto3.client(
-            service_name=service_name,
-            region_name=region_name,
-        )
-
-    response = client.get_secret_value(SecretId=secret_name)
-    secret_string = response["SecretString"]
-
-    try:
-        return json.loads(secret_string)
-    except Exception as e:
-        return {"error": str(e)}
+    return {
+        "neon_db_uri": neon_db_uri,
+        "firebase_service_account": cast(dict[str, object], json.loads(firebase_service_account)),
+        "mapillary_token": mapillary_token,
+    }

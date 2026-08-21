@@ -3,43 +3,9 @@ info:
   title: Geoguess Lite
   version: "1.0.0"
 paths:
-  /health:
-    $ref: ./paths/health.yml
-  /users/me:
-    $ref: ./paths/users-me.yml
-  /daily-challenges/today:
-    $ref: ./paths/daily-challenges-today.yml
-  /daily-scores:
-    $ref: ./paths/daily-scores.yml
-  /multiplayer-rounds:
-    $ref: ./paths/multiplayer-rounds.yml
-  /images:
-    $ref: ./paths/images.yml
+  /api/v1/health:
+    $ref: ./paths/api/v1/health.yml
 components:
   schemas:
-    User:
-      $ref: ./components/schemas/user.yml
-    DailyChallenge:
-      $ref: ./components/schemas/daily-challenge.yml
-    DailyScore:
-      $ref: ./components/schemas/daily-score.yml
-    TopDailyScores:
-      $ref: ./components/schemas/top-daily-scores.yml
-    ErrorResponse:
-      $ref: ./components/schemas/error-response.yml
-    Image:
-      $ref: ./components/schemas/image.yml
-    ImagesResponse:
-      $ref: ./components/schemas/images-response.yml
-  requestBodies:
-    CreateUserRequest:
-      $ref: ./components/requestBodies/user-me-post.yml
-    UpdateUserRequest:
-      $ref: ./components/requestBodies/user-me-patch.yml
-    CreateDailyScoreRequest:
-      $ref: ./components/requestBodies/daily-score-post.yml
-    UpdateDailyScoreRequest:
-      $ref: ./components/requestBodies/daily-score-patch.yml
-    CreateMultiplayerRoundsRequest:
-      $ref: ./components/requestBodies/multiplayer-rounds-post.yml
-
+    GetHealthResponse:
+      $ref: ./components/schemas/get-health-response.yml

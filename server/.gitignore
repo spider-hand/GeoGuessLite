@@ -207,6 +207,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+.sst/
 
 ### VisualStudioCode ###
 .vscode/*

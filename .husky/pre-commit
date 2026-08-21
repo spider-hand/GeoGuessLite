@@ -1,7 +1,0 @@
-#!/usr/bin/env sh
-
-# Server-side checks
-cd server && source .venv/bin/activate && pre-commit run --all-files && pytest && cd ..
-
-# Client-side checks  
-cd client && npx lint-staged && npm run test:unit -- --run

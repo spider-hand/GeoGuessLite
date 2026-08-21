@@ -1,0 +1,12 @@
+get:
+  tags:
+    - Health
+  summary: Health check
+  operationId: getHealth
+  responses:
+    "200":
+      description: Server health status
+      content:
+        application/json:
+          schema:
+            $ref: ../../../openapi.yml#/components/schemas/GetHealthResponse

@@ -1,8 +1,0 @@
-type: object
-required:
-  - images
-properties:
-  images:
-    type: array
-    items:
-      $ref: ./image.yml

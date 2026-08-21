@@ -1,0 +1,195 @@
+{
+  "components": {
+    "pages": {
+      "Game": {
+        "AvailableMovesCard": {
+          "title": "可用走法",
+          "select": "选择",
+          "selecting": "选择中...",
+          "aiWaiting": "AI 正在选择..",
+          "opponentWaiting": "对手正在选择.."
+        },
+        "PathHistoryCard": {
+          "title": "路径历史",
+          "legendLabel": "路径历史图例",
+          "you": "你",
+          "ai": "AI",
+          "opponent": "对手"
+        },
+        "PathResultCard": {
+          "start": "起点",
+          "turn": "第 {turn} 回合",
+          "countries": {
+            "us": "美国",
+            "jp": "日本",
+            "fr": "法国",
+            "br": "巴西",
+            "de": "德国",
+            "ca": "加拿大"
+          }
+        },
+        "GameMapModal": {
+          "showMap": "显示地图",
+          "close": "关闭地图"
+        },
+        "RoomKeyStrip": {
+          "label": "房间密钥"
+        },
+        "GameVsAiPage": {
+          "playAgain": "再玩一次",
+          "exit": "退出"
+        },
+        "GameWithFriendsPage": {
+          "createRoom": "创建房间",
+          "exit": "退出",
+          "starting": "游戏已准备就绪，即将开始。",
+          "waitingForOpponent": "正在等待对手..."
+        },
+        "TurnStatusStrip": {
+          "yourTurn": "轮到你了",
+          "aiTurn": "AI 回合",
+          "opponentTurn": "对手回合",
+          "turn": "第 {turn} 回合"
+        },
+        "ResultBadge": {
+          "youWin": "你赢了",
+          "youLose": "你输了"
+        },
+        "PlayerMatchupCard": {
+          "versus": "vs",
+          "ai": "AI",
+          "easy": "简单",
+          "medium": "中等",
+          "hard": "困难"
+        }
+      },
+      "Home": {
+        "PlayVsAiCard": {
+          "title": "与 AI 对战",
+          "easy": "简单",
+          "medium": "中等",
+          "hard": "困难",
+          "startGame": "开始游戏"
+        },
+        "PlayWithFriendsCard": {
+          "title": "与朋友一起玩",
+          "createRoom": "创建房间",
+          "or": "或",
+          "roomKey": "6位数字密钥",
+          "roomKeyError": "请输入6位数字密钥",
+          "enterRoom": "进入房间"
+        },
+        "RandomMatchCard": {
+          "title": "随机匹配",
+          "joinLobby": "加入大厅",
+          "comingSoon": "即将推出",
+          "onlinePlayersOne": "{count} 名玩家在线",
+          "onlinePlayersOther": "{count} 名玩家在线"
+        }
+      },
+      "User": {
+        "profile": "个人资料",
+        "aiGames": "人机对战",
+        "friendsGames": "好友对战",
+        "name": "名称",
+        "editProfile": "编辑个人资料",
+        "cancel": "取消",
+        "saveChanges": "保存更改",
+        "deleteAccount": "删除账户",
+        "saveError": "无法保存个人资料。",
+        "CountrySelect": {
+          "country": "国家",
+          "search": "搜索国家",
+          "noCountry": "不选择国家"
+        },
+        "AiGamesSection": {
+          "loading": "正在加载人机对战…",
+          "loadError": "无法加载人机对战。",
+          "wins": "胜场：{count}",
+          "losses": "负场：{count}",
+          "winsLabel": "胜场",
+          "lossesLabel": "负场",
+          "win": "胜",
+          "lose": "负",
+          "easy": "简单",
+          "medium": "普通",
+          "hard": "困难",
+          "recentGames": "最近对局",
+          "noRecentGames": "尚无已完成的人机对战。",
+          "viewGame": "查看对局"
+        },
+        "FriendsGamesSection": {
+          "loading": "正在加载好友对局…",
+          "loadError": "无法加载好友对局。",
+          "winsLabel": "胜利",
+          "lossesLabel": "失败",
+          "win": "胜利",
+          "lose": "失败",
+          "topFriends": "常玩好友",
+          "recentGames": "最近对局",
+          "noRecentGames": "还没有已完成的好友对局。",
+          "viewGame": "查看对局",
+          "archived": "已归档"
+        },
+        "DeleteAccountModal": {
+          "title": "删除账户",
+          "description": "这将永久删除您的账户。",
+          "confirmationPlaceholder": "输入 Delete 以继续",
+          "close": "关闭删除账户对话框",
+          "cancel": "取消",
+          "delete": "删除",
+          "deleteError": "无法删除您的账户。"
+        }
+      }
+    },
+    "shared": {
+      "HowToPlayButton": {
+        "triggerLabel": "玩法说明",
+        "descriptionLine1": "用街景探索世界。",
+        "descriptionLine2": "寻找线索，猜猜你在哪里。",
+        "descriptionLine3": "猜得越近，获得的分数越多。"
+      },
+      "LanguageSelector": {
+        "triggerLabel": "语言",
+        "supportedLanguagesLabel": "支持的语言。当前选择：{language}"
+      },
+      "NavigationHeader": {
+        "primaryNavigationLabel": "主导航",
+        "signUp": "注册",
+        "signOut": "退出登录",
+        "profile": "个人资料",
+        "openMenu": "打开导航菜单",
+        "closeMenu": "关闭导航菜单",
+        "howToPlayTriggerLabel": "玩法说明",
+        "howToPlayDescriptionLine1": "用街景探索世界。",
+        "howToPlayDescriptionLine2": "寻找线索，猜猜你在哪里。",
+        "howToPlayDescriptionLine3": "猜得越近，获得的分数越多。",
+        "githubLabel": "GitHub",
+        "discordLabel": "Discord",
+        "languageLabel": "语言",
+        "githubRepositoryLink": "GitHub 仓库链接",
+        "discordServerLink": "Discord 服务器链接"
+      },
+      "SignUpPromptModal": {
+        "title": "欢迎来到 GeoGuess Lite",
+        "description": "注册后即可与好友对战并加入在线比赛。",
+        "signUp": "注册",
+        "close": "关闭注册提示"
+      },
+      "UserAvatarMenu": {
+        "triggerLabel": "账户菜单",
+        "menuLabel": "账户菜单",
+        "nameLabel": "名称",
+        "profile": "个人资料",
+        "signOut": "退出登录"
+      },
+      "NavigationFooter": {
+        "navigationLabel": "页脚导航",
+        "credit": "© {year} GeoGuess Lite 版权所有。",
+        "privacy": "隐私",
+        "terms": "条款",
+        "contact": "联系"
+      }
+    }
+  }
+}
