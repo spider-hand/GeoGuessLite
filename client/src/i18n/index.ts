@@ -22,7 +22,7 @@ export const messages = {
 
 export type AppLocale = keyof typeof messages
 
-export const LOCALE_STORAGE_KEY = 'geoguess-lite.locale'
+export const LOCALE_STORAGE_KEY = 'geoguesslite.locale'
 
 export const getStoredLocale = (): AppLocale => {
   if (typeof window.localStorage?.getItem !== 'function') {

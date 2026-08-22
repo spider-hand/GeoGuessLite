@@ -1,4 +1,4 @@
-<p align="center"> <img src="./client/public/apple-touch-icon.png" width="120" /> </p> <h1 align="center">Geoguess Lite</h1> <p align="center"> <em>Lightweight, subscription-free Geoguessr experience</em> </p><p align="center"> <strong><a href="https://geoguesslite.com" target="_blank">geoguesslite.com</a></strong> </p>
+<p align="center"> <img src="./client/public/apple-touch-icon.png" width="120" /> </p> <h1 align="center">GeoGuessLite</h1> <p align="center"> <em>Lightweight, subscription-free Geoguessr experience</em> </p><p align="center"> <strong><a href="https://geoguesslite.com" target="_blank">geoguesslite.com</a></strong> </p>
 
 ## Features
 

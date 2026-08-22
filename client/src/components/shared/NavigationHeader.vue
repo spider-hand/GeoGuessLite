@@ -17,7 +17,7 @@ import type { SupportedLanguage } from '@/types/language'
 
 defineOptions({ name: 'SharedNavigationHeader' })
 
-const GITHUB_URL = 'https://github.com/spider-hand/geoguess-lite'
+const GITHUB_URL = 'https://github.com/spider-hand/GeoGuessLite'
 const DISCORD_URL = 'https://discord.gg/H9RwrfgeDH'
 const { locale, t } = useI18n({ useScope: 'global' })
 const router = useRouter()
@@ -88,7 +88,7 @@ useOnClickOutside({ root: mobileMenuRoot, close: closeMobileMenu })
       :aria-label="t('components.shared.NavigationHeader.primaryNavigationLabel')"
     >
       <button class="navigation-header__brand" type="button" @click="router.push('/')">
-        GeoGuess Lite
+        GeoGuessLite
       </button>
 
       <div class="navigation-header__actions">

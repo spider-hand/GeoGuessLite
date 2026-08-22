@@ -169,7 +169,7 @@
         "discordServerLink": "Discord-Server-Link"
       },
       "SignUpPromptModal": {
-        "title": "Willkommen bei GeoGuess Lite",
+        "title": "Willkommen bei GeoGuessLite",
         "description": "Registriere dich, um mit Freunden zu spielen und Online-Matches beizutreten.",
         "signUp": "Registrieren",
         "close": "Registrierungsdialog schließen"
@@ -183,7 +183,7 @@
       },
       "NavigationFooter": {
         "navigationLabel": "Fußzeilennavigation",
-        "credit": "© {year} GeoGuess Lite Alle Rechte vorbehalten.",
+        "credit": "© {year} GeoGuessLite Alle Rechte vorbehalten.",
         "privacy": "Datenschutz",
         "terms": "Nutzungsbedingungen",
         "contact": "Kontakt"

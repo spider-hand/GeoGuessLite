@@ -1,4 +1,4 @@
-# GeoGuess Lite
+# GeoGuessLite
 
 ## Directory Structure
 

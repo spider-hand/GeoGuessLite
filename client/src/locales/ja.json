@@ -169,7 +169,7 @@
         "discordServerLink": "Discord サーバーへのリンク"
       },
       "SignUpPromptModal": {
-        "title": "GeoGuess Liteへようこそ",
+        "title": "GeoGuessLiteへようこそ",
         "description": "フレンド対戦やオンライン対戦に参加するにはサインアップしてください。",
         "signUp": "サインアップ",
         "close": "サインアップ案内を閉じる"
@@ -183,7 +183,7 @@
       },
       "NavigationFooter": {
         "navigationLabel": "フッターナビゲーション",
-        "credit": "© {year} GeoGuess Lite All rights reserved.",
+        "credit": "© {year} GeoGuessLite All rights reserved.",
         "privacy": "プライバシー",
         "terms": "利用規約",
         "contact": "お問い合わせ"
