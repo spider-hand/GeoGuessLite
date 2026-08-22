@@ -1,0 +1,15 @@
+type: object
+additionalProperties: false
+minProperties: 1
+properties:
+  displayName:
+    type: string
+    minLength: 1
+    maxLength: 50
+  country:
+    $ref: ./update-user-country.yml
+  distanceUnit:
+    type: string
+    enum:
+      - km
+      - mile

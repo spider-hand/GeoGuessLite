@@ -1,0 +1,39 @@
+type: object
+additionalProperties: false
+required:
+  - userId
+  - displayName
+  - country
+  - gamesPlayed
+  - bestScore
+  - averageScore
+  - distanceUnit
+  - createdAt
+  - updatedAt
+properties:
+  userId:
+    type: string
+  displayName:
+    type: string
+  country:
+    type:
+      - string
+      - "null"
+    pattern: ^[A-Z]{2}$
+  gamesPlayed:
+    type: integer
+  bestScore:
+    type: integer
+  averageScore:
+    type: number
+  distanceUnit:
+    type: string
+    enum:
+      - km
+      - mile
+  createdAt:
+    type: string
+    format: date-time
+  updatedAt:
+    type: string
+    format: date-time

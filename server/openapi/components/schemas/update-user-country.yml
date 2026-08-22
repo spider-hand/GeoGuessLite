@@ -1,0 +1,4 @@
+type:
+  - string
+  - "null"
+pattern: ^[A-Za-z]{2}$

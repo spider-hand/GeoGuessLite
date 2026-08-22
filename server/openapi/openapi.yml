@@ -5,7 +5,32 @@ info:
 paths:
   /api/v1/health:
     $ref: ./paths/api/v1/health.yml
+  /api/v1/users/me:
+    $ref: ./paths/api/v1/users/me.yml
+  /api/v1/users/{userId}:
+    $ref: ./paths/api/v1/users/user-by-id.yml
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Firebase ID token
   schemas:
+    CreateUserRequest:
+      $ref: ./components/schemas/create-user-request.yml
+    CreateUserResponse:
+      $ref: ./components/schemas/create-user-response.yml
+    ErrorResponse:
+      $ref: ./components/schemas/error-response.yml
+    GetCurrentUserResponse:
+      $ref: ./components/schemas/get-current-user-response.yml
     GetHealthResponse:
       $ref: ./components/schemas/get-health-response.yml
+    GetUserResponse:
+      $ref: ./components/schemas/get-user-response.yml
+    UpdateUserRequest:
+      $ref: ./components/schemas/update-user-request.yml
+    UpdateUserCountry:
+      $ref: ./components/schemas/update-user-country.yml
+    UpdateUserResponse:
+      $ref: ./components/schemas/update-user-response.yml

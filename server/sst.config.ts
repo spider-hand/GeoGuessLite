@@ -22,7 +22,7 @@ export default $config({
       resources: [appSecretArn],
     });
 
-    api.addAuthorizer({
+    const firebaseAuthorizer = api.addAuthorizer({
       name: "firebaseAuthorizer",
       lambda: {
         function: {
@@ -49,5 +49,65 @@ export default $config({
         ENVIRONMENT: $app.stage,
       },
     });
+
+    api.route(
+      "GET /api/v1/users/{userId}",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler: "src/api/v1/users/handler.get_user",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "GET /api/v1/users/me",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler: "src/api/v1/users/handler.get_current_user",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "POST /api/v1/users/me",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler: "src/api/v1/users/handler.create_user",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "PATCH /api/v1/users/me",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler: "src/api/v1/users/handler.update_user",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "DELETE /api/v1/users/me",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler: "src/api/v1/users/handler.delete_user",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
   },
 });

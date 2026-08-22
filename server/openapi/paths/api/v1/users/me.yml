@@ -1,0 +1,110 @@
+get:
+  operationId: getCurrentUser
+  summary: Get the current user
+  security:
+    - BearerAuth: []
+  responses:
+    "200":
+      description: Current user
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/get-current-user-response.yml
+    "401":
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "404":
+      description: User not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+post:
+  operationId: createUser
+  summary: Create the current user if needed
+  security:
+    - BearerAuth: []
+  requestBody:
+    required: false
+    content:
+      application/json:
+        schema:
+          $ref: ../../../../components/schemas/create-user-request.yml
+  responses:
+    "200":
+      description: Existing user
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/create-user-response.yml
+    "201":
+      description: Created user
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/create-user-response.yml
+    "400":
+      description: Invalid request body
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "401":
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+patch:
+  operationId: updateUser
+  summary: Update the current user
+  security:
+    - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../../../../components/schemas/update-user-request.yml
+  responses:
+    "200":
+      description: Updated user
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/update-user-response.yml
+    "400":
+      description: Invalid request body
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "401":
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "404":
+      description: User not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+delete:
+  operationId: deleteUser
+  summary: Delete the current user
+  security:
+    - BearerAuth: []
+  responses:
+    "204":
+      description: User deleted
+    "401":
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
