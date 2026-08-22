@@ -35,10 +35,6 @@
         "RoomKeyStrip": {
           "label": "房间密钥"
         },
-        "GameVsAiPage": {
-          "playAgain": "再玩一次",
-          "exit": "退出"
-        },
         "GameWithFriendsPage": {
           "createRoom": "创建房间",
           "exit": "退出",
@@ -64,11 +60,8 @@
         }
       },
       "Home": {
-        "PlayVsAiCard": {
-          "title": "与 AI 对战",
-          "easy": "简单",
-          "medium": "中等",
-          "hard": "困难",
+        "SinglePlayerCard": {
+          "title": "单人游戏",
           "startGame": "开始游戏"
         },
         "PlayWithFriendsCard": {
@@ -78,6 +71,11 @@
           "roomKey": "6位数字密钥",
           "roomKeyError": "请输入6位数字密钥",
           "enterRoom": "进入房间"
+        },
+        "DailyChallengeCard": {
+          "title": "每日挑战",
+          "startGame": "开始游戏",
+          "alreadyPlayedToday": "今日已完成"
         },
         "RandomMatchCard": {
           "title": "随机匹配",

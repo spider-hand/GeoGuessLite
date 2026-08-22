@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+import GameDailyChallengePage from '@/pages/GameDailyChallengePage.vue'
 import GameRandomMatchPage from '@/pages/GameRandomMatchPage.vue'
-import GameVsAiPage from '@/pages/GameVsAiPage.vue'
+import GameSinglePlayerPage from '@/pages/GameSinglePlayerPage.vue'
 import GameWithFriendsPage from '@/pages/GameWithFriendsPage.vue'
 import HomePage from '@/pages/HomePage.vue'
 import PrivacyPage from '@/pages/PrivacyPage.vue'
@@ -28,8 +29,12 @@ const router = createRouter({
       component: UserPage,
     },
     {
-      path: '/game/vs-ai/:gameId',
-      component: GameVsAiPage,
+      path: '/game/single-player',
+      component: GameSinglePlayerPage,
+    },
+    {
+      path: '/game/daily-challenge',
+      component: GameDailyChallengePage,
     },
     {
       path: '/game/with-friends/:gameId',

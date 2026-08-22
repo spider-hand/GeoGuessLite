@@ -35,10 +35,6 @@
         "RoomKeyStrip": {
           "label": "Clave de sala"
         },
-        "GameVsAiPage": {
-          "playAgain": "Jugar de nuevo",
-          "exit": "Salir"
-        },
         "GameWithFriendsPage": {
           "createRoom": "Crear sala",
           "exit": "Salir",
@@ -64,11 +60,8 @@
         }
       },
       "Home": {
-        "PlayVsAiCard": {
-          "title": "Jugar contra la IA",
-          "easy": "Fácil",
-          "medium": "Medio",
-          "hard": "Difícil",
+        "SinglePlayerCard": {
+          "title": "Un jugador",
           "startGame": "Iniciar partida"
         },
         "PlayWithFriendsCard": {
@@ -78,6 +71,11 @@
           "roomKey": "Clave de 6 dígitos",
           "roomKeyError": "Introduce una clave de 6 dígitos",
           "enterRoom": "Entrar en la sala"
+        },
+        "DailyChallengeCard": {
+          "title": "Desafío diario",
+          "startGame": "Iniciar partida",
+          "alreadyPlayedToday": "Ya jugaste hoy"
         },
         "RandomMatchCard": {
           "title": "Partida aleatoria",
