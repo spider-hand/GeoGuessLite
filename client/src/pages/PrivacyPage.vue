@@ -16,8 +16,8 @@ import NavigationHeader from '@/components/shared/NavigationHeader.vue'
       <section>
         <h2>Information we collect</h2>
         <p>
-          GeoGuess Lite collects your Google account identifier and display name when you sign in.
-          We also store your optional country selection, account details, game records, and the
+          GeoGuessLite collects your Google account identifier and display name when you sign in. We
+          also store your optional country selection, account details, game records, and the
           language you select for the app.
         </p>
       </section>
@@ -33,7 +33,7 @@ import NavigationHeader from '@/components/shared/NavigationHeader.vue'
       <section>
         <h2>Service providers</h2>
         <p>
-          GeoGuess Lite uses Google Firebase for authentication and real-time game state, and
+          GeoGuessLite uses Google Firebase for authentication and real-time game state, and
           AWS-hosted infrastructure to operate the service. These providers process information as
           needed to provide their services.
         </p>

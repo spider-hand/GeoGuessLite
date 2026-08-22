@@ -281,7 +281,7 @@ components:
 
 ## Overview
 
-GeoGuess Lite uses a dark-mode design language that feels confident, dense, and highly legible. The site base is **On Primary** (`{colors.on-primary}` — #181a20), carrying light text and a single, high-contrast accent: **yellow** (`{colors.primary}` — #FCD535). Darker support surfaces such as **Canvas Dark** (`{colors.canvas-dark}` — #0b0e11) are layered on top for navigation bands and section separation. That accent does most of the visual emphasis work. It appears on primary CTAs, highlighted statistics, key links, and moments that need immediate visual priority.
+GeoGuessLite uses a dark-mode design language that feels confident, dense, and highly legible. The site base is **On Primary** (`{colors.on-primary}` — #181a20), carrying light text and a single, high-contrast accent: **yellow** (`{colors.primary}` — #FCD535). Darker support surfaces such as **Canvas Dark** (`{colors.canvas-dark}` — #0b0e11) are layered on top for navigation bands and section separation. That accent does most of the visual emphasis work. It appears on primary CTAs, highlighted statistics, key links, and moments that need immediate visual priority.
 
 The system is intentionally compact. It prefers flat surfaces, clear color separation, modest corner radii, and consistent 4px-based spacing over decorative depth or oversized whitespace. The result is a UI language that can support product messaging, navigation, dashboards, forms, and data-heavy layouts without changing its underlying structure.
 

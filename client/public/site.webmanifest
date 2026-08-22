@@ -1,6 +1,6 @@
 {
-  "name": "GeoGuess Lite",
-  "short_name": "GeoGuess Lite",
+  "name": "GeoGuessLite",
+  "short_name": "GeoGuessLite",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",

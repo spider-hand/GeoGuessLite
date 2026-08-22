@@ -14,11 +14,11 @@ def test_parse_json_body_returns_empty_dict_for_missing_body():
 
 
 def test_parse_json_body_parses_json_string():
-    assert parse_json_body(make_event('{"name":"GeoGuess Lite"}')) == {"name": "GeoGuess Lite"}
+    assert parse_json_body(make_event('{"name":"GeoGuessLite"}')) == {"name": "GeoGuessLite"}
 
 
 def test_parse_json_body_returns_dict_body_as_is():
-    assert parse_json_body(make_event({"name": "GeoGuess Lite"})) == {"name": "GeoGuess Lite"}
+    assert parse_json_body(make_event({"name": "GeoGuessLite"})) == {"name": "GeoGuessLite"}
 
 
 def test_parse_json_body_raises_for_invalid_json():
