@@ -13,19 +13,24 @@ describe('HomePage', () => {
         { path: '/', component: HomePage },
         { path: '/privacy', component: HomePage },
         { path: '/terms', component: HomePage },
-        { path: '/game/vs-ai/:gameId', component: HomePage },
+        { path: '/game/single-player', component: HomePage },
+        { path: '/game/daily-challenge', component: HomePage },
         { path: '/game/with-friends/:gameId', component: HomePage },
+        { path: '/game/random-match', component: HomePage },
       ],
     })
 
     await router.push('/')
     await router.isReady()
 
-    const { getByRole } = render(HomePage, {
+    const { container, getByRole } = render(HomePage, {
       global: { plugins: [router, createAppI18n()] },
     })
 
     await expect.element(getByRole('img', { name: 'Hero Image' })).toBeVisible()
-    await expect.element(getByRole('heading', { name: 'Play vs AI' })).toBeVisible()
+    expect(
+      Array.from(container.querySelectorAll('h2'), (heading) => heading.textContent?.trim()),
+    ).toEqual(['Single Player', 'Play with Friends', 'Daily Challenge', 'Random Match'])
+    expect(container.textContent).not.toContain('Play vs AI')
   })
 })

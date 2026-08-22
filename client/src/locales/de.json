@@ -35,10 +35,6 @@
         "RoomKeyStrip": {
           "label": "Raumcode"
         },
-        "GameVsAiPage": {
-          "playAgain": "Nochmal spielen",
-          "exit": "Beenden"
-        },
         "GameWithFriendsPage": {
           "createRoom": "Raum erstellen",
           "exit": "Beenden",
@@ -64,11 +60,8 @@
         }
       },
       "Home": {
-        "PlayVsAiCard": {
-          "title": "Gegen die KI spielen",
-          "easy": "Leicht",
-          "medium": "Mittel",
-          "hard": "Schwer",
+        "SinglePlayerCard": {
+          "title": "Einzelspieler",
           "startGame": "Spiel starten"
         },
         "PlayWithFriendsCard": {
@@ -78,6 +71,11 @@
           "roomKey": "6-stelliger Code",
           "roomKeyError": "Gib einen 6-stelligen Code ein",
           "enterRoom": "Raum betreten"
+        },
+        "DailyChallengeCard": {
+          "title": "Tägliche Herausforderung",
+          "startGame": "Spiel starten",
+          "alreadyPlayedToday": "Heute bereits gespielt"
         },
         "RandomMatchCard": {
           "title": "Zufallsmatch",

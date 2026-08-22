@@ -35,10 +35,6 @@
         "RoomKeyStrip": {
           "label": "ルームキー"
         },
-        "GameVsAiPage": {
-          "playAgain": "もう一度プレイ",
-          "exit": "終了"
-        },
         "GameWithFriendsPage": {
           "createRoom": "ルームを作成",
           "exit": "終了",
@@ -64,11 +60,8 @@
         }
       },
       "Home": {
-        "PlayVsAiCard": {
-          "title": "AI と対戦",
-          "easy": "かんたん",
-          "medium": "ふつう",
-          "hard": "むずかしい",
+        "SinglePlayerCard": {
+          "title": "シングルプレイ",
           "startGame": "ゲーム開始"
         },
         "PlayWithFriendsCard": {
@@ -78,6 +71,11 @@
           "roomKey": "6桁のキー",
           "roomKeyError": "6桁のキーを入力してください",
           "enterRoom": "ルームに入る"
+        },
+        "DailyChallengeCard": {
+          "title": "デイリーチャレンジ",
+          "startGame": "ゲーム開始",
+          "alreadyPlayedToday": "今日はプレイ済み"
         },
         "RandomMatchCard": {
           "title": "ランダムマッチ",

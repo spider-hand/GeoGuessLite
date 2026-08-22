@@ -35,10 +35,6 @@
         "RoomKeyStrip": {
           "label": "Room Key"
         },
-        "GameVsAiPage": {
-          "playAgain": "Play Again",
-          "exit": "Exit"
-        },
         "GameWithFriendsPage": {
           "createRoom": "Create Room",
           "exit": "Exit",
@@ -64,11 +60,8 @@
         }
       },
       "Home": {
-        "PlayVsAiCard": {
-          "title": "Play vs AI",
-          "easy": "Easy",
-          "medium": "Medium",
-          "hard": "Hard",
+        "SinglePlayerCard": {
+          "title": "Single Player",
           "startGame": "Start Game"
         },
         "PlayWithFriendsCard": {
@@ -78,6 +71,11 @@
           "roomKey": "6-Digit Key",
           "roomKeyError": "Enter a 6-digit key",
           "enterRoom": "Enter Room"
+        },
+        "DailyChallengeCard": {
+          "title": "Daily Challenge",
+          "startGame": "Start Game",
+          "alreadyPlayedToday": "Already Played Today"
         },
         "RandomMatchCard": {
           "title": "Random Match",

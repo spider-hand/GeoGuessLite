@@ -2,25 +2,23 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import type { Difficulty } from '@/types/game'
 import heroImage from '@/assets/hero.png'
-import PlayVsAiCard from '@/components/pages/Home/PlayVsAiCard.vue'
+import DailyChallengeCard from '@/components/pages/Home/DailyChallengeCard.vue'
 import PlayWithFriendsCard from '@/components/pages/Home/PlayWithFriendsCard.vue'
 import RandomMatchCard from '@/components/pages/Home/RandomMatchCard.vue'
+import SinglePlayerCard from '@/components/pages/Home/SinglePlayerCard.vue'
 import NavigationFooter from '@/components/shared/NavigationFooter.vue'
 import NavigationHeader from '@/components/shared/NavigationHeader.vue'
 import SignUpPromptModal from '@/components/shared/SignUpPromptModal.vue'
 
 const router = useRouter()
-const isStartingAiGame = ref(false)
 const isCreatingFriendsRoom = ref(false)
 const isEnteringFriendsRoom = ref(false)
 const isSignUpPromptOpen = ref(false)
 const isSigningUp = ref(false)
 
-const handleStartAiMatch = async (difficulty: Difficulty) => {
-  void difficulty
-  await router.push('/game/vs-ai/scaffold')
+const handleStartSinglePlayer = async () => {
+  await router.push('/game/single-player')
 }
 const handleCreateFriendsRoom = async () => {
   await router.push('/game/with-friends/scaffold')
@@ -31,6 +29,9 @@ const handleEnterFriendsRoom = async (roomKey: string) => {
 }
 const handleJoinRandomMatch = async () => {
   await router.push('/game/random-match')
+}
+const handleStartDailyChallenge = async () => {
+  await router.push('/game/daily-challenge')
 }
 const openSignUpPrompt = () => {
   isSignUpPromptOpen.value = true
@@ -51,20 +52,24 @@ const handleSignUp = () => closeSignUpPrompt()
       </div>
 
       <div class="home-page__cards">
-        <PlayVsAiCard
-          :is-starting-game="isStartingAiGame"
-          :disabled="isStartingAiGame || isCreatingFriendsRoom || isEnteringFriendsRoom"
-          @start-ai-match="handleStartAiMatch"
+        <SinglePlayerCard
+          :disabled="isCreatingFriendsRoom || isEnteringFriendsRoom"
+          @start-single-player="handleStartSinglePlayer"
         />
         <PlayWithFriendsCard
-          :disabled="isStartingAiGame || isCreatingFriendsRoom || isEnteringFriendsRoom"
+          :disabled="isCreatingFriendsRoom || isEnteringFriendsRoom"
           :is-creating-room="isCreatingFriendsRoom"
           :is-entering-room="isEnteringFriendsRoom"
           @create-friends-room="handleCreateFriendsRoom"
           @enter-friends-room="handleEnterFriendsRoom"
         />
+        <DailyChallengeCard
+          :disabled="isCreatingFriendsRoom || isEnteringFriendsRoom"
+          :has-played-today="false"
+          @start-daily-challenge="handleStartDailyChallenge"
+        />
         <RandomMatchCard
-          :disabled="isStartingAiGame || isCreatingFriendsRoom || isEnteringFriendsRoom"
+          :disabled="isCreatingFriendsRoom || isEnteringFriendsRoom"
           :online-players="40"
           @join-random-match="handleJoinRandomMatch"
         />
