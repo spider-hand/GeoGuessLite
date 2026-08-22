@@ -86,9 +86,8 @@ CREATE TABLE public.schema_migrations (
 
 CREATE TABLE public.users (
     id character varying(64) NOT NULL,
-    name character varying(50) NOT NULL,
-    avatar_emoji character varying(8) NOT NULL,
-    avatar_bg character varying(16) NOT NULL,
+    display_name character varying(50) NOT NULL,
+    country text,
     games_played integer DEFAULT 0 NOT NULL,
     best_score integer DEFAULT 0 NOT NULL,
     average_score double precision DEFAULT 0 NOT NULL,
@@ -241,4 +240,5 @@ ALTER TABLE ONLY public.daily_scores
 --
 
 INSERT INTO public.schema_migrations (version) VALUES
-    ('20260822173227');
+    ('20260822173227'),
+    ('20260822234712');

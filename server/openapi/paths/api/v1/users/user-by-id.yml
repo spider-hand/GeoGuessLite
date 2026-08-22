@@ -1,0 +1,36 @@
+get:
+  operationId: getUser
+  summary: Get a user profile
+  security:
+    - BearerAuth: []
+  parameters:
+    - name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    "200":
+      description: User profile
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/get-user-response.yml
+    "400":
+      description: Invalid path parameter
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "401":
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "404":
+      description: User not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml

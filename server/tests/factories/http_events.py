@@ -9,6 +9,7 @@ def make_api_gateway_event(
     body=None,
     serialize_body: bool = True,
     authenticated_uid: str | None = "user-123",
+    path_parameters: dict[str, str] | None = None,
 ):
     authorizer = {"lambda": {"uid": authenticated_uid}} if authenticated_uid is not None else None
     return {
@@ -37,6 +38,7 @@ def make_api_gateway_event(
             "timeEpoch": 1783296000000,
         },
         "body": json.dumps(body) if serialize_body and body is not None else body,
+        "pathParameters": path_parameters,
     }
 
 

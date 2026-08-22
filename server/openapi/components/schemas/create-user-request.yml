@@ -1,0 +1,14 @@
+type: object
+additionalProperties: false
+required:
+  - displayName
+properties:
+  displayName:
+    type: string
+    minLength: 1
+    maxLength: 50
+  country:
+    type:
+      - string
+      - "null"
+    pattern: ^[A-Za-z]{2}$
