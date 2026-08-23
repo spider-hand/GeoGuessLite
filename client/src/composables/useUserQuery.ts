@@ -3,7 +3,6 @@ import { computed, toValue, type MaybeRefOrGetter } from 'vue'
 
 import useApi from '@/composables/useApi'
 import {
-  Configuration,
   DefaultApi,
   type CreateUser200Response,
   type CreateUserRequest,
@@ -11,11 +10,6 @@ import {
   type UpdateUser200Response,
   type UpdateUserRequest,
 } from '@/services'
-
-type CreateUserVariables = {
-  createUserRequest: CreateUserRequest
-  idToken: string
-}
 
 const useUserQuery = (userId?: MaybeRefOrGetter<string | null>) => {
   const { apiConfig } = useApi()
@@ -30,16 +24,8 @@ const useUserQuery = (userId?: MaybeRefOrGetter<string | null>) => {
   })
 
   const createUserMutation = useMutation({
-    mutationFn: async ({ createUserRequest, idToken }: CreateUserVariables) => {
-      const authenticatedUsersApi = new DefaultApi(
-        new Configuration({
-          basePath: import.meta.env.VITE_API_BASE_URL,
-          accessToken: idToken,
-        }),
-      )
-
-      return authenticatedUsersApi.createUser({ createUserRequest })
-    },
+    mutationFn: async (createUserRequest: CreateUserRequest) =>
+      usersApi.createUser({ createUserRequest }),
     onSuccess: (user: CreateUser200Response) => {
       queryClient.invalidateQueries({ queryKey: ['user', user.userId] })
     },

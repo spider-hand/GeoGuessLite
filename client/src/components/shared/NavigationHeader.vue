@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
 import { SUPPORTED_LANGUAGES } from '@/constants/languages'
+import useAuth from '@/composables/useAuth'
 import useOnClickOutside from '@/composables/useOnClickOutside'
 import Avatar from '@/components/shared/Avatar.vue'
 import Button from '@/components/shared/Button.vue'
@@ -21,11 +22,15 @@ const GITHUB_URL = 'https://github.com/spider-hand/GeoGuessLite'
 const DISCORD_URL = 'https://discord.gg/H9RwrfgeDH'
 const { locale, t } = useI18n({ useScope: 'global' })
 const router = useRouter()
-const isCurrentUserLoaded = true
-const isAuthenticatedUser = false
-const isRegisteredUser = false
-const username = ''
-const userCountry = undefined
+const {
+  username,
+  userCountry,
+  isAuthenticatedUser,
+  isRegisteredUser,
+  isCurrentUserLoaded,
+  signUpWithGoogle,
+  signOutUser,
+} = useAuth()
 const isSigningUpInternal = ref(false)
 const mobileMenuRoot = ref<HTMLElement | null>(null)
 const isMobileMenuOpen = ref(false)
@@ -34,7 +39,6 @@ const isMobileLanguageOpen = ref(false)
 
 const emit = defineEmits<{
   languageSelect: [language: string]
-  signUp: []
 }>()
 
 const emitLanguageSelect = (language: string) => {
@@ -60,11 +64,32 @@ const selectMobileLanguage = (language: SupportedLanguage) => {
   emitLanguageSelect(language)
   closeMobileMenu()
 }
-const handleSignUp = () => {
+const handleSignUp = async () => {
+  if (isSigningUpInternal.value) {
+    return
+  }
+
   closeMobileMenu()
-  emit('signUp')
+  isSigningUpInternal.value = true
+
+  try {
+    await signUpWithGoogle()
+    await router.push('/')
+  } catch (error) {
+    console.error(error)
+  } finally {
+    isSigningUpInternal.value = false
+  }
 }
-const handleSignOut = () => closeMobileMenu()
+const handleSignOut = async () => {
+  try {
+    closeMobileMenu()
+    await signOutUser()
+    await router.push('/')
+  } catch (error) {
+    console.error(error)
+  }
+}
 const handleProfileClick = async () => {
   closeMobileMenu()
   await router.push('/user')

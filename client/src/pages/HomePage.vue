@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import heroImage from '@/assets/hero.png'
+import useAuth from '@/composables/useAuth'
 import DailyChallengeCard from '@/components/pages/Home/DailyChallengeCard.vue'
 import PlayWithFriendsCard from '@/components/pages/Home/PlayWithFriendsCard.vue'
 import RandomMatchCard from '@/components/pages/Home/RandomMatchCard.vue'
@@ -12,6 +13,7 @@ import NavigationHeader from '@/components/shared/NavigationHeader.vue'
 import SignUpPromptModal from '@/components/shared/SignUpPromptModal.vue'
 
 const router = useRouter()
+const { isCurrentUserLoaded, isRegisteredUser, signUpWithGoogle } = useAuth()
 const isCreatingFriendsRoom = ref(false)
 const isEnteringFriendsRoom = ref(false)
 const isSignUpPromptOpen = ref(false)
@@ -20,10 +22,32 @@ const isSigningUp = ref(false)
 const handleStartSinglePlayer = async () => {
   await router.push('/game/single-player')
 }
+const openSignUpPrompt = () => {
+  isSignUpPromptOpen.value = true
+}
+const closeSignUpPrompt = () => {
+  isSignUpPromptOpen.value = false
+}
+const ensureRegisteredUser = () => {
+  if (!isCurrentUserLoaded.value || !isRegisteredUser.value) {
+    openSignUpPrompt()
+    return false
+  }
+
+  return true
+}
 const handleCreateFriendsRoom = async () => {
+  if (!ensureRegisteredUser() || isCreatingFriendsRoom.value || isEnteringFriendsRoom.value) {
+    return
+  }
+
   await router.push('/game/with-friends/scaffold')
 }
 const handleEnterFriendsRoom = async (roomKey: string) => {
+  if (!ensureRegisteredUser() || isCreatingFriendsRoom.value || isEnteringFriendsRoom.value) {
+    return
+  }
+
   void roomKey
   await router.push('/game/with-friends/scaffold')
 }
@@ -31,20 +55,34 @@ const handleJoinRandomMatch = async () => {
   await router.push('/game/random-match')
 }
 const handleStartDailyChallenge = async () => {
+  if (!ensureRegisteredUser()) {
+    return
+  }
+
   await router.push('/game/daily-challenge')
 }
-const openSignUpPrompt = () => {
-  isSignUpPromptOpen.value = true
+const handleSignUp = async () => {
+  if (isSigningUp.value) {
+    return
+  }
+
+  isSigningUp.value = true
+
+  try {
+    await signUpWithGoogle()
+    closeSignUpPrompt()
+    await router.push('/')
+  } catch (error) {
+    console.error(error)
+  } finally {
+    isSigningUp.value = false
+  }
 }
-const closeSignUpPrompt = () => {
-  isSignUpPromptOpen.value = false
-}
-const handleSignUp = () => closeSignUpPrompt()
 </script>
 
 <template>
   <main class="home-page">
-    <NavigationHeader @sign-up="openSignUpPrompt" />
+    <NavigationHeader />
 
     <section class="home-page__content">
       <div class="home-page__hero">

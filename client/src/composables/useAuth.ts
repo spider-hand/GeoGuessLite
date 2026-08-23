@@ -1,34 +1,90 @@
-import { useCurrentUser, useFirebaseAuth, useIsCurrentUserLoaded } from 'vuefire'
-import { signInWithPopup } from 'firebase/auth'
-import type { FirebaseError } from 'firebase/app'
-import { googleAuthProvider } from '@/lib/firebase'
+import { computed } from 'vue'
+import { getCurrentUser, useCurrentUser, useFirebaseAuth, useIsCurrentUserLoaded } from 'vuefire'
+import { signInAnonymously, signInWithPopup, signOut } from 'firebase/auth'
+
+import useUserQuery from '@/composables/useUserQuery'
+import { firebaseAuth, googleAuthProvider } from '@/lib/firebase'
+
+export const signInAnonymouslyIfNeeded = async () => {
+  const currentUser = await getCurrentUser()
+
+  if (currentUser) {
+    return currentUser
+  }
+
+  return (await signInAnonymously(firebaseAuth)).user
+}
 
 const useAuth = () => {
   const isCurrentUserLoaded = useIsCurrentUserLoaded()
   const currentUser = useCurrentUser()
   const auth = useFirebaseAuth()!
+  const userId = computed(() => {
+    if (!currentUser.value || currentUser.value.isAnonymous) {
+      return null
+    }
+
+    return currentUser.value.uid
+  })
+  const { createUserAsync, isCreatingUser, isLoadingUser, refetchUser, user } = useUserQuery(userId)
+  const isAuthenticatedUser = computed(() => !!currentUser.value)
+  const isAnonymousUser = computed(() => currentUser.value?.isAnonymous ?? false)
+  const isRegisteredUser = computed(
+    () => isAuthenticatedUser.value && !isAnonymousUser.value && !!user.value,
+  )
+  const username = computed(() =>
+    currentUser.value?.isAnonymous
+      ? 'Guest'
+      : (user.value?.displayName ?? currentUser.value?.displayName?.trim() ?? 'Guest'),
+  )
+  const userCountry = computed(() =>
+    currentUser.value?.isAnonymous ? undefined : (user.value?.country ?? undefined),
+  )
 
   const signUpWithGoogle = async () => {
-    try {
-      await signInWithPopup(auth, googleAuthProvider)
-    } catch (error) {
-      console.error((error as FirebaseError).code, (error as FirebaseError).message)
+    const currentFirebaseUser = await getCurrentUser()
+
+    if (currentFirebaseUser?.isAnonymous) {
+      await signOut(firebaseAuth)
     }
+
+    const credential = await signInWithPopup(auth, googleAuthProvider)
+    const displayName = credential.user.displayName?.trim()
+
+    if (!displayName) {
+      await signOut(auth)
+      throw new Error('Authenticated user must have a display name.')
+    }
+
+    try {
+      await createUserAsync({ displayName })
+      await refetchUser()
+    } catch (error) {
+      await signOut(auth)
+      throw error
+    }
+
+    return credential
   }
 
-  const signOut = async () => {
-    try {
-      await auth.signOut()
-    } catch (error) {
-      console.error('signOut error:', error)
-    }
-  }
+  const signInAnonymously = async () => signInAnonymouslyIfNeeded()
+
+  const signOutUser = async () => signOut(auth)
 
   return {
-    isCurrentUserLoaded,
     currentUser,
+    isAnonymousUser,
+    isAuthenticatedUser,
+    isCreatingUser,
+    isCurrentUserLoaded,
+    isLoadingUser,
+    isRegisteredUser,
+    signInAnonymously,
     signUpWithGoogle,
-    signOut,
+    signOutUser,
+    user,
+    userCountry,
+    username,
   }
 }
 
