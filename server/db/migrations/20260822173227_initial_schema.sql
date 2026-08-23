@@ -1,5 +1,5 @@
 -- migrate:up
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id CHARACTER VARYING(64) PRIMARY KEY,
     name CHARACTER VARYING(50) NOT NULL,
     avatar_emoji CHARACTER VARYING(8) NOT NULL,
@@ -15,19 +15,19 @@ CREATE TABLE users (
     )
 );
 
-CREATE TABLE images (
+CREATE TABLE IF NOT EXISTS images (
     id TEXT PRIMARY KEY,
     is_pano BOOLEAN NOT NULL
 );
 
-CREATE TABLE daily_challenges (
+CREATE TABLE IF NOT EXISTS daily_challenges (
     id CHARACTER VARYING(64) PRIMARY KEY DEFAULT gen_random_uuid()::TEXT,
     date DATE NOT NULL UNIQUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE daily_challenge_rounds (
+CREATE TABLE IF NOT EXISTS daily_challenge_rounds (
     id CHARACTER VARYING(64) PRIMARY KEY DEFAULT gen_random_uuid()::TEXT,
     daily_challenge_id CHARACTER VARYING(64) NOT NULL,
     round INTEGER NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE daily_challenge_rounds (
     ) REFERENCES daily_challenges (id) ON DELETE CASCADE
 );
 
-CREATE TABLE daily_scores (
+CREATE TABLE IF NOT EXISTS daily_scores (
     id CHARACTER VARYING(64) PRIMARY KEY DEFAULT gen_random_uuid()::TEXT,
     user_id CHARACTER VARYING(64) NOT NULL,
     date DATE NOT NULL,
@@ -57,17 +57,17 @@ CREATE TABLE daily_scores (
         REFERENCES users (id) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_daily_challenge_rounds_daily_challenge_id
+CREATE INDEX IF NOT EXISTS idx_daily_challenge_rounds_daily_challenge_id
     ON daily_challenge_rounds (daily_challenge_id);
-CREATE INDEX idx_daily_challenge_rounds_round
+CREATE INDEX IF NOT EXISTS idx_daily_challenge_rounds_round
     ON daily_challenge_rounds (round);
-CREATE INDEX idx_daily_challenges_date
+CREATE INDEX IF NOT EXISTS idx_daily_challenges_date
     ON daily_challenges (date);
-CREATE INDEX idx_daily_scores_date
+CREATE INDEX IF NOT EXISTS idx_daily_scores_date
     ON daily_scores (date);
-CREATE INDEX idx_daily_scores_score_date
+CREATE INDEX IF NOT EXISTS idx_daily_scores_score_date
     ON daily_scores (score DESC, date);
-CREATE INDEX idx_daily_scores_user_id
+CREATE INDEX IF NOT EXISTS idx_daily_scores_user_id
     ON daily_scores (user_id);
 
 -- migrate:down
