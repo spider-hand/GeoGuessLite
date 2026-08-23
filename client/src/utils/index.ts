@@ -1,15 +1,10 @@
 import {
-  AVATAR_CLASS_MAP,
   DEFAULT_WORLD_SCALE,
   EARTH_RADIUS_KM,
   MAX_SCORE,
   PERFECT_SCORE_THRESHOLD_KM,
-} from '@/consts'
+} from '@/constants/game'
 import type { LatLng } from '@/types'
-
-export const getAvatarClass = (avatarBg?: string) => {
-  return avatarBg ? (AVATAR_CLASS_MAP[avatarBg] ?? '') : ''
-}
 
 export const calculateDistance = (pos1: LatLng, pos2: LatLng): number => {
   const dLat = ((pos2.lat - pos1.lat) * Math.PI) / 180

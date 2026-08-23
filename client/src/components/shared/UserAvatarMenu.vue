@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import useAuth from '@/composables/useAuth'
 import useOnClickOutside from '@/composables/useOnClickOutside'
 import Avatar from '@/components/shared/Avatar.vue'
 
@@ -10,7 +11,7 @@ defineOptions({ name: 'SharedUserAvatarMenu' })
 const props = defineProps<{ displayName: string; country?: string }>()
 const emit = defineEmits<{ profileClick: []; signOutClick: [] }>()
 const { t } = useI18n()
-const isRegisteredUser = true
+const { isRegisteredUser } = useAuth()
 const root = ref<HTMLElement | null>(null)
 const isOpen = ref(false)
 const countryFlagSrc = (country: string) => `https://flagcdn.com/24x18/${country.toLowerCase()}.png`
