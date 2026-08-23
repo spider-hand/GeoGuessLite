@@ -1,0 +1,51 @@
+type: object
+additionalProperties: false
+required:
+  - roundNumber
+  - imageId
+  - startedAt
+  - result
+properties:
+  roundNumber:
+    type: integer
+    minimum: 1
+    maximum: 5
+  imageId:
+    type: string
+  startedAt:
+    type: string
+    format: date-time
+  result:
+    type: object
+    additionalProperties: false
+    required:
+      - guess
+      - target
+      - distanceKm
+      - score
+      - completedAt
+    properties:
+      guess:
+        $ref: ./create-single-player-game-guess-coordinate.yml
+        nullable: true
+        x-nullable: true
+      target:
+        type: object
+        additionalProperties: false
+        required: [latitude, longitude]
+        properties:
+          latitude:
+            type: number
+          longitude:
+            type: number
+      distanceKm:
+        type:
+          - number
+          - "null"
+      score:
+        type: integer
+        minimum: 0
+        maximum: 5000
+      completedAt:
+        type: string
+        format: date-time

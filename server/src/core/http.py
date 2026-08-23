@@ -44,3 +44,41 @@ def parse_json_body(event: CustomApiGatewayEvent) -> dict[str, Any]:
     if isinstance(event.body, dict):
         return event.body
     raise ApiError(HTTPStatus.BAD_REQUEST, "invalid_request_body", "Request body must be valid JSON.")
+
+
+def parse_list_query_parameters(
+    event: CustomApiGatewayEvent,
+    *,
+    allowed_sort_by: tuple[str, ...] = ("created_at", "updated_at"),
+    default_sort_by: str = "updated_at",
+) -> tuple[int, str, str]:
+    parameters = event.queryStringParameters or {}
+    try:
+        limit = int(parameters.get("limit", "20"))
+    except ValueError as error:
+        raise ApiError(
+            HTTPStatus.BAD_REQUEST,
+            "invalid_limit",
+            "limit must be an integer between 1 and 100.",
+        ) from error
+    sort_by = parameters.get("sort_by", default_sort_by)
+    order_by = parameters.get("order_by", "desc")
+    if not 1 <= limit <= 100:
+        raise ApiError(
+            HTTPStatus.BAD_REQUEST,
+            "invalid_limit",
+            "limit must be an integer between 1 and 100.",
+        )
+    if sort_by not in allowed_sort_by:
+        raise ApiError(
+            HTTPStatus.BAD_REQUEST,
+            "invalid_sort_by",
+            f"sort_by must be {' or '.join(allowed_sort_by)}.",
+        )
+    if order_by not in ("asc", "desc"):
+        raise ApiError(
+            HTTPStatus.BAD_REQUEST,
+            "invalid_order_by",
+            "order_by must be asc or desc.",
+        )
+    return limit, sort_by, order_by

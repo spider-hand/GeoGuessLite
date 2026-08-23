@@ -1,7 +1,7 @@
 import pytest
 
 from src.core.events import CustomApiGatewayEvent
-from src.core.http import ApiError, error_response, parse_json_body
+from src.core.http import ApiError, error_response, parse_json_body, parse_list_query_parameters
 from tests.factories.http_events import make_api_gateway_event
 
 
@@ -34,3 +34,37 @@ def test_error_response_serializes_api_error_fields():
         "headers": {"X-Test": "true"},
         "body": '{"code": "invalid_request_body", "message": "Request body must be valid JSON."}',
     }
+
+
+def test_parse_list_query_parameters_supports_resource_sort_fields():
+    event = make_api_gateway_event()
+    event["queryStringParameters"] = {
+        "limit": "5",
+        "sort_by": "completed_at",
+        "order_by": "asc",
+    }
+
+    assert parse_list_query_parameters(
+        CustomApiGatewayEvent.model_validate(event),
+        allowed_sort_by=("created_at", "completed_at"),
+        default_sort_by="completed_at",
+    ) == (5, "completed_at", "asc")
+
+
+@pytest.mark.parametrize(
+    ("parameters", "code"),
+    [
+        ({"limit": "none"}, "invalid_limit"),
+        ({"limit": "0"}, "invalid_limit"),
+        ({"sort_by": "score"}, "invalid_sort_by"),
+        ({"order_by": "sideways"}, "invalid_order_by"),
+    ],
+)
+def test_parse_list_query_parameters_rejects_invalid_values(parameters, code):
+    event = make_api_gateway_event()
+    event["queryStringParameters"] = parameters
+
+    with pytest.raises(ApiError) as error:
+        parse_list_query_parameters(CustomApiGatewayEvent.model_validate(event))
+
+    assert error.value.code == code

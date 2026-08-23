@@ -14,40 +14,76 @@
 
 import * as runtime from '../runtime'
 import type {
+  CreateSinglePlayerGame201Response,
+  CreateSinglePlayerGameGuess200Response,
+  CreateSinglePlayerGameGuessRequest,
   CreateUser200Response,
   CreateUserRequest,
   GetCurrentUser200Response,
-  GetCurrentUser401Response,
-  GetCurrentUser404Response,
+  GetSinglePlayerGames200ResponseInner,
+  GetSinglePlayerGames400Response,
+  GetSinglePlayerGames401Response,
   GetUser200Response,
+  StartSinglePlayerGameRound200Response,
   UpdateUser200Response,
   UpdateUserRequest,
 } from '../models/index'
 import {
+  CreateSinglePlayerGame201ResponseFromJSON,
+  CreateSinglePlayerGame201ResponseToJSON,
+  CreateSinglePlayerGameGuess200ResponseFromJSON,
+  CreateSinglePlayerGameGuess200ResponseToJSON,
+  CreateSinglePlayerGameGuessRequestFromJSON,
+  CreateSinglePlayerGameGuessRequestToJSON,
   CreateUser200ResponseFromJSON,
   CreateUser200ResponseToJSON,
   CreateUserRequestFromJSON,
   CreateUserRequestToJSON,
   GetCurrentUser200ResponseFromJSON,
   GetCurrentUser200ResponseToJSON,
-  GetCurrentUser401ResponseFromJSON,
-  GetCurrentUser401ResponseToJSON,
-  GetCurrentUser404ResponseFromJSON,
-  GetCurrentUser404ResponseToJSON,
+  GetSinglePlayerGames200ResponseInnerFromJSON,
+  GetSinglePlayerGames200ResponseInnerToJSON,
+  GetSinglePlayerGames400ResponseFromJSON,
+  GetSinglePlayerGames400ResponseToJSON,
+  GetSinglePlayerGames401ResponseFromJSON,
+  GetSinglePlayerGames401ResponseToJSON,
   GetUser200ResponseFromJSON,
   GetUser200ResponseToJSON,
+  StartSinglePlayerGameRound200ResponseFromJSON,
+  StartSinglePlayerGameRound200ResponseToJSON,
   UpdateUser200ResponseFromJSON,
   UpdateUser200ResponseToJSON,
   UpdateUserRequestFromJSON,
   UpdateUserRequestToJSON,
 } from '../models/index'
 
+export interface CreateSinglePlayerGameGuessOperationRequest {
+  gameId: string
+  roundNumber: number
+  createSinglePlayerGameGuessRequest: CreateSinglePlayerGameGuessRequest
+}
+
 export interface CreateUserOperationRequest {
   createUserRequest?: CreateUserRequest
 }
 
+export interface GetSinglePlayerGameRequest {
+  gameId: string
+}
+
+export interface GetSinglePlayerGamesRequest {
+  limit?: number
+  sortBy?: GetSinglePlayerGamesSortByEnum
+  orderBy?: GetSinglePlayerGamesOrderByEnum
+}
+
 export interface GetUserRequest {
   userId: string
+}
+
+export interface StartSinglePlayerGameRoundRequest {
+  gameId: string
+  roundNumber: number
 }
 
 export interface UpdateUserOperationRequest {
@@ -58,6 +94,134 @@ export interface UpdateUserOperationRequest {
  *
  */
 export class DefaultApi extends runtime.BaseAPI {
+  /**
+   * Create a single-player game
+   */
+  async createSinglePlayerGameRaw(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<CreateSinglePlayerGame201Response>> {
+    const queryParameters: any = {}
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken
+      const tokenString = await token('BearerAuth', [])
+
+      if (tokenString) {
+        headerParameters['Authorization'] = `Bearer ${tokenString}`
+      }
+    }
+
+    let urlPath = `/api/v1/single-player-games`
+
+    const response = await this.request(
+      {
+        path: urlPath,
+        method: 'POST',
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    )
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      CreateSinglePlayerGame201ResponseFromJSON(jsonValue),
+    )
+  }
+
+  /**
+   * Create a single-player game
+   */
+  async createSinglePlayerGame(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<CreateSinglePlayerGame201Response> {
+    const response = await this.createSinglePlayerGameRaw(initOverrides)
+    return await response.value()
+  }
+
+  /**
+   * Complete a single-player round with a guess or timeout
+   */
+  async createSinglePlayerGameGuessRaw(
+    requestParameters: CreateSinglePlayerGameGuessOperationRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<CreateSinglePlayerGameGuess200Response>> {
+    if (requestParameters['gameId'] == null) {
+      throw new runtime.RequiredError(
+        'gameId',
+        'Required parameter "gameId" was null or undefined when calling createSinglePlayerGameGuess().',
+      )
+    }
+
+    if (requestParameters['roundNumber'] == null) {
+      throw new runtime.RequiredError(
+        'roundNumber',
+        'Required parameter "roundNumber" was null or undefined when calling createSinglePlayerGameGuess().',
+      )
+    }
+
+    if (requestParameters['createSinglePlayerGameGuessRequest'] == null) {
+      throw new runtime.RequiredError(
+        'createSinglePlayerGameGuessRequest',
+        'Required parameter "createSinglePlayerGameGuessRequest" was null or undefined when calling createSinglePlayerGameGuess().',
+      )
+    }
+
+    const queryParameters: any = {}
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    headerParameters['Content-Type'] = 'application/json'
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken
+      const tokenString = await token('BearerAuth', [])
+
+      if (tokenString) {
+        headerParameters['Authorization'] = `Bearer ${tokenString}`
+      }
+    }
+
+    let urlPath = `/api/v1/single-player-games/{gameId}/rounds/{roundNumber}/guesses`
+    urlPath = urlPath.replace(
+      `{${'gameId'}}`,
+      encodeURIComponent(String(requestParameters['gameId'])),
+    )
+    urlPath = urlPath.replace(
+      `{${'roundNumber'}}`,
+      encodeURIComponent(String(requestParameters['roundNumber'])),
+    )
+
+    const response = await this.request(
+      {
+        path: urlPath,
+        method: 'POST',
+        headers: headerParameters,
+        query: queryParameters,
+        body: CreateSinglePlayerGameGuessRequestToJSON(
+          requestParameters['createSinglePlayerGameGuessRequest'],
+        ),
+      },
+      initOverrides,
+    )
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      CreateSinglePlayerGameGuess200ResponseFromJSON(jsonValue),
+    )
+  }
+
+  /**
+   * Complete a single-player round with a guess or timeout
+   */
+  async createSinglePlayerGameGuess(
+    requestParameters: CreateSinglePlayerGameGuessOperationRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<CreateSinglePlayerGameGuess200Response> {
+    const response = await this.createSinglePlayerGameGuessRaw(requestParameters, initOverrides)
+    return await response.value()
+  }
+
   /**
    * Create the current user if needed
    */
@@ -197,6 +361,125 @@ export class DefaultApi extends runtime.BaseAPI {
   }
 
   /**
+   * Get an owned single-player game
+   */
+  async getSinglePlayerGameRaw(
+    requestParameters: GetSinglePlayerGameRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<CreateSinglePlayerGame201Response>> {
+    if (requestParameters['gameId'] == null) {
+      throw new runtime.RequiredError(
+        'gameId',
+        'Required parameter "gameId" was null or undefined when calling getSinglePlayerGame().',
+      )
+    }
+
+    const queryParameters: any = {}
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken
+      const tokenString = await token('BearerAuth', [])
+
+      if (tokenString) {
+        headerParameters['Authorization'] = `Bearer ${tokenString}`
+      }
+    }
+
+    let urlPath = `/api/v1/single-player-games/{gameId}`
+    urlPath = urlPath.replace(
+      `{${'gameId'}}`,
+      encodeURIComponent(String(requestParameters['gameId'])),
+    )
+
+    const response = await this.request(
+      {
+        path: urlPath,
+        method: 'GET',
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    )
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      CreateSinglePlayerGame201ResponseFromJSON(jsonValue),
+    )
+  }
+
+  /**
+   * Get an owned single-player game
+   */
+  async getSinglePlayerGame(
+    requestParameters: GetSinglePlayerGameRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<CreateSinglePlayerGame201Response> {
+    const response = await this.getSinglePlayerGameRaw(requestParameters, initOverrides)
+    return await response.value()
+  }
+
+  /**
+   * List the current user\'s completed single-player games
+   */
+  async getSinglePlayerGamesRaw(
+    requestParameters: GetSinglePlayerGamesRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<Array<GetSinglePlayerGames200ResponseInner>>> {
+    const queryParameters: any = {}
+
+    if (requestParameters['limit'] != null) {
+      queryParameters['limit'] = requestParameters['limit']
+    }
+
+    if (requestParameters['sortBy'] != null) {
+      queryParameters['sort_by'] = requestParameters['sortBy']
+    }
+
+    if (requestParameters['orderBy'] != null) {
+      queryParameters['order_by'] = requestParameters['orderBy']
+    }
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken
+      const tokenString = await token('BearerAuth', [])
+
+      if (tokenString) {
+        headerParameters['Authorization'] = `Bearer ${tokenString}`
+      }
+    }
+
+    let urlPath = `/api/v1/single-player-games`
+
+    const response = await this.request(
+      {
+        path: urlPath,
+        method: 'GET',
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    )
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      jsonValue.map(GetSinglePlayerGames200ResponseInnerFromJSON),
+    )
+  }
+
+  /**
+   * List the current user\'s completed single-player games
+   */
+  async getSinglePlayerGames(
+    requestParameters: GetSinglePlayerGamesRequest = {},
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<Array<GetSinglePlayerGames200ResponseInner>> {
+    const response = await this.getSinglePlayerGamesRaw(requestParameters, initOverrides)
+    return await response.value()
+  }
+
+  /**
    * Get a user profile
    */
   async getUserRaw(
@@ -252,6 +535,76 @@ export class DefaultApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<GetUser200Response> {
     const response = await this.getUserRaw(requestParameters, initOverrides)
+    return await response.value()
+  }
+
+  /**
+   * Start the next single-player round
+   */
+  async startSinglePlayerGameRoundRaw(
+    requestParameters: StartSinglePlayerGameRoundRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<StartSinglePlayerGameRound200Response>> {
+    if (requestParameters['gameId'] == null) {
+      throw new runtime.RequiredError(
+        'gameId',
+        'Required parameter "gameId" was null or undefined when calling startSinglePlayerGameRound().',
+      )
+    }
+
+    if (requestParameters['roundNumber'] == null) {
+      throw new runtime.RequiredError(
+        'roundNumber',
+        'Required parameter "roundNumber" was null or undefined when calling startSinglePlayerGameRound().',
+      )
+    }
+
+    const queryParameters: any = {}
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken
+      const tokenString = await token('BearerAuth', [])
+
+      if (tokenString) {
+        headerParameters['Authorization'] = `Bearer ${tokenString}`
+      }
+    }
+
+    let urlPath = `/api/v1/single-player-games/{gameId}/rounds/{roundNumber}/start`
+    urlPath = urlPath.replace(
+      `{${'gameId'}}`,
+      encodeURIComponent(String(requestParameters['gameId'])),
+    )
+    urlPath = urlPath.replace(
+      `{${'roundNumber'}}`,
+      encodeURIComponent(String(requestParameters['roundNumber'])),
+    )
+
+    const response = await this.request(
+      {
+        path: urlPath,
+        method: 'POST',
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    )
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      StartSinglePlayerGameRound200ResponseFromJSON(jsonValue),
+    )
+  }
+
+  /**
+   * Start the next single-player round
+   */
+  async startSinglePlayerGameRound(
+    requestParameters: StartSinglePlayerGameRoundRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<StartSinglePlayerGameRound200Response> {
+    const response = await this.startSinglePlayerGameRoundRaw(requestParameters, initOverrides)
     return await response.value()
   }
 
@@ -313,3 +666,22 @@ export class DefaultApi extends runtime.BaseAPI {
     return await response.value()
   }
 }
+
+/**
+ * @export
+ */
+export const GetSinglePlayerGamesSortByEnum = {
+  CreatedAt: 'created_at',
+  CompletedAt: 'completed_at',
+} as const
+export type GetSinglePlayerGamesSortByEnum =
+  (typeof GetSinglePlayerGamesSortByEnum)[keyof typeof GetSinglePlayerGamesSortByEnum]
+/**
+ * @export
+ */
+export const GetSinglePlayerGamesOrderByEnum = {
+  Asc: 'asc',
+  Desc: 'desc',
+} as const
+export type GetSinglePlayerGamesOrderByEnum =
+  (typeof GetSinglePlayerGamesOrderByEnum)[keyof typeof GetSinglePlayerGamesOrderByEnum]

@@ -81,6 +81,41 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: single_player_game_rounds; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.single_player_game_rounds (
+    game_id character varying(64) NOT NULL,
+    round_number integer NOT NULL,
+    image_id text NOT NULL,
+    target_latitude double precision NOT NULL,
+    target_longitude double precision NOT NULL,
+    started_at timestamp with time zone,
+    guess_latitude double precision,
+    guess_longitude double precision,
+    distance_km double precision,
+    score integer,
+    completed_at timestamp with time zone,
+    CONSTRAINT single_player_game_rounds_round_number_check CHECK (((round_number >= 1) AND (round_number <= 5))),
+    CONSTRAINT single_player_game_rounds_score_check CHECK (((score >= 0) AND (score <= 5000))),
+    CONSTRAINT single_player_game_rounds_target_latitude_check CHECK (((target_latitude >= ('-90'::integer)::double precision) AND (target_latitude <= (90)::double precision))),
+    CONSTRAINT single_player_game_rounds_target_longitude_check CHECK (((target_longitude >= ('-180'::integer)::double precision) AND (target_longitude <= (180)::double precision)))
+);
+
+
+--
+-- Name: single_player_games; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.single_player_games (
+    id character varying(64) NOT NULL,
+    user_id character varying(128) NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    completed_at timestamp with time zone
+);
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -163,6 +198,22 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: single_player_game_rounds single_player_game_rounds_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.single_player_game_rounds
+    ADD CONSTRAINT single_player_game_rounds_pkey PRIMARY KEY (game_id, round_number);
+
+
+--
+-- Name: single_player_games single_player_games_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.single_player_games
+    ADD CONSTRAINT single_player_games_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -213,6 +264,20 @@ CREATE INDEX idx_daily_scores_user_id ON public.daily_scores USING btree (user_i
 
 
 --
+-- Name: idx_single_player_games_created_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_single_player_games_created_at ON public.single_player_games USING btree (created_at);
+
+
+--
+-- Name: idx_single_player_games_user_completed; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_single_player_games_user_completed ON public.single_player_games USING btree (user_id, completed_at DESC);
+
+
+--
 -- Name: daily_challenge_rounds daily_challenge_rounds_daily_challenge_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -229,6 +294,14 @@ ALTER TABLE ONLY public.daily_scores
 
 
 --
+-- Name: single_player_game_rounds single_player_game_rounds_game_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.single_player_game_rounds
+    ADD CONSTRAINT single_player_game_rounds_game_id_fkey FOREIGN KEY (game_id) REFERENCES public.single_player_games(id) ON DELETE CASCADE;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -241,4 +314,5 @@ ALTER TABLE ONLY public.daily_scores
 
 INSERT INTO public.schema_migrations (version) VALUES
     ('20260822173227'),
-    ('20260822234712');
+    ('20260822234712'),
+    ('20260823');

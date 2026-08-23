@@ -1,0 +1,45 @@
+type: object
+additionalProperties: false
+required:
+  - id
+  - status
+  - currentRound
+  - rounds
+  - createdAt
+properties:
+  id:
+    type: string
+  status:
+    type: string
+    enum: [ongoing, completed]
+  currentRound:
+    type: integer
+    minimum: 0
+    maximum: 5
+  rounds:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - roundNumber
+        - imageId
+        - startedAt
+      properties:
+        roundNumber:
+          type: integer
+          minimum: 1
+          maximum: 5
+        imageId:
+          type: string
+        startedAt:
+          type: string
+          format: date-time
+        result:
+          $ref: ./create-single-player-game-guess-response.yml#/properties/result
+  createdAt:
+    type: string
+    format: date-time
+  completedAt:
+    type: string
+    format: date-time

@@ -1,0 +1,16 @@
+type: object
+additionalProperties: false
+required:
+  - roundNumber
+  - imageId
+  - startedAt
+properties:
+  roundNumber:
+    type: integer
+    minimum: 1
+    maximum: 5
+  imageId:
+    type: string
+  startedAt:
+    type: string
+    format: date-time
