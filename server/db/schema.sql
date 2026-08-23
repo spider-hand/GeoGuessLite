@@ -87,13 +87,13 @@ CREATE TABLE public.schema_migrations (
 CREATE TABLE public.users (
     id character varying(64) NOT NULL,
     display_name character varying(50) NOT NULL,
-    country text,
     games_played integer DEFAULT 0 NOT NULL,
     best_score integer DEFAULT 0 NOT NULL,
     average_score double precision DEFAULT 0 NOT NULL,
     created_at timestamp with time zone DEFAULT now(),
     updated_at timestamp with time zone DEFAULT now(),
     distance_unit text DEFAULT 'km'::text NOT NULL,
+    country text,
     CONSTRAINT users_distance_unit_check CHECK ((distance_unit = ANY (ARRAY['km'::text, 'mile'::text])))
 );
 
