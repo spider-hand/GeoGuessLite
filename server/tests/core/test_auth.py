@@ -36,6 +36,15 @@ def test_lambda_authorizer_rejects_anonymous_users_by_default(mock_verify_fireba
     mock_verify_firebase_token.assert_called_once_with({"Authorization": "Bearer token"}, allow_anonymous=False)
 
 
+@patch("src.core.auth.verify_firebase_token")
+def test_lambda_authorizer_allows_anonymous_single_player_users(mock_verify_firebase_token):
+    mock_verify_firebase_token.return_value = {"uid": "guest-123"}
+
+    auth.lambda_handler(make_authorizer_event(raw_path="/api/v1/single-player-games/game-123"), None)
+
+    mock_verify_firebase_token.assert_called_once_with({"Authorization": "Bearer token"}, allow_anonymous=True)
+
+
 def test_get_authorized_uid_reads_lambda_authorizer_context():
     event = CustomApiGatewayEvent.model_validate(make_api_gateway_event(authenticated_uid="user-123"))
 

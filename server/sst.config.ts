@@ -21,6 +21,17 @@ export default $config({
       actions: ["secretsmanager:GetSecretValue"],
       resources: [appSecretArn],
     });
+    const cleanupSinglePlayerGames = new sst.aws.Function(
+      "CleanupSinglePlayerGames",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/jobs/cleanup_expired_single_player_games.cleanup_expired_single_player_games",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+    );
 
     const firebaseAuthorizer = api.addAuthorizer({
       name: "firebaseAuthorizer",
@@ -49,6 +60,71 @@ export default $config({
         ENVIRONMENT: $app.stage,
       },
     });
+
+    api.route(
+      "POST /api/v1/single-player-games",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/api/v1/single_player_games/handler.create_single_player_game",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "GET /api/v1/single-player-games",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/api/v1/single_player_games/handler.get_single_player_games",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "GET /api/v1/single-player-games/{gameId}",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/api/v1/single_player_games/handler.get_single_player_game",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "POST /api/v1/single-player-games/{gameId}/rounds/{roundNumber}/start",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/api/v1/single_player_games/handler.start_single_player_game_round",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "POST /api/v1/single-player-games/{gameId}/rounds/{roundNumber}/guesses",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/api/v1/single_player_games/handler.create_single_player_game_guess",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
 
     api.route(
       "GET /api/v1/users/{userId}",
@@ -109,5 +185,10 @@ export default $config({
       },
       { auth: { lambda: firebaseAuthorizer.id } },
     );
+
+    new sst.aws.CronV2("DeleteExpiredSinglePlayerGames", {
+      schedule: "cron(0 0 * * ? *)",
+      function: cleanupSinglePlayerGames,
+    });
   },
 });

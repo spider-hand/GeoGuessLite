@@ -5,6 +5,14 @@ info:
 paths:
   /api/v1/health:
     $ref: ./paths/api/v1/health.yml
+  /api/v1/single-player-games:
+    $ref: ./paths/api/v1/single-player-games/index.yml
+  /api/v1/single-player-games/{gameId}:
+    $ref: ./paths/api/v1/single-player-games/game-by-id.yml
+  /api/v1/single-player-games/{gameId}/rounds/{roundNumber}/start:
+    $ref: ./paths/api/v1/single-player-games/round-start.yml
+  /api/v1/single-player-games/{gameId}/rounds/{roundNumber}/guesses:
+    $ref: ./paths/api/v1/single-player-games/guesses.yml
   /api/v1/users/me:
     $ref: ./paths/api/v1/users/me.yml
   /api/v1/users/{userId}:
@@ -16,6 +24,14 @@ components:
       scheme: bearer
       bearerFormat: Firebase ID token
   schemas:
+    CreateSinglePlayerGameResponse:
+      $ref: ./components/schemas/create-single-player-game-response.yml
+    CreateSinglePlayerGameGuessRequest:
+      $ref: ./components/schemas/create-single-player-game-guess-request.yml
+    CreateSinglePlayerGameGuessCoordinate:
+      $ref: ./components/schemas/create-single-player-game-guess-coordinate.yml
+    CreateSinglePlayerGameGuessResponse:
+      $ref: ./components/schemas/create-single-player-game-guess-response.yml
     CreateUserRequest:
       $ref: ./components/schemas/create-user-request.yml
     CreateUserResponse:
@@ -26,6 +42,10 @@ components:
       $ref: ./components/schemas/get-current-user-response.yml
     GetHealthResponse:
       $ref: ./components/schemas/get-health-response.yml
+    GetSinglePlayerGameResponse:
+      $ref: ./components/schemas/get-single-player-game-response.yml
+    GetSinglePlayerGamesResponse:
+      $ref: ./components/schemas/get-single-player-games-response.yml
     GetUserResponse:
       $ref: ./components/schemas/get-user-response.yml
     UpdateUserRequest:
@@ -34,3 +54,5 @@ components:
       $ref: ./components/schemas/update-user-country.yml
     UpdateUserResponse:
       $ref: ./components/schemas/update-user-response.yml
+    StartSinglePlayerGameRoundResponse:
+      $ref: ./components/schemas/start-single-player-game-round-response.yml

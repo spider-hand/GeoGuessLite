@@ -1,0 +1,36 @@
+parameters:
+  - name: gameId
+    in: path
+    required: true
+    schema:
+      type: string
+get:
+  operationId: getSinglePlayerGame
+  summary: Get an owned single-player game
+  security:
+    - BearerAuth: []
+  responses:
+    "200":
+      description: Single-player game
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/get-single-player-game-response.yml
+    "400":
+      description: Missing game ID
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "401":
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "404":
+      description: Game not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml

@@ -1,0 +1,9 @@
+type: object
+additionalProperties: false
+required:
+  - guess
+properties:
+  guess:
+    $ref: ./create-single-player-game-guess-coordinate.yml
+    nullable: true
+    x-nullable: true

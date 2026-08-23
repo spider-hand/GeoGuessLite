@@ -69,7 +69,9 @@ def get_authorized_uid(event: CustomApiGatewayEvent) -> str:
 
 
 def _allow_anonymous_user(event: CustomAuthorizerEvent) -> bool:
-    return False
+    return event.rawPath == "/api/v1/single-player-games" or event.rawPath.startswith(
+        "/api/v1/single-player-games/"
+    )
 
 
 @event_parser(model=CustomAuthorizerEvent)

@@ -1,6 +1,2 @@
-export type GameModeType = 'single-player' | 'multiplayer' | 'daily-challenge'
-
-export interface LatLng {
-  lat: number
-  lng: number
-}
+export * from '@/types/game'
+export * from '@/types/language'
