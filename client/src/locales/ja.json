@@ -41,12 +41,6 @@
           "starting": "ゲームの準備ができました。まもなく開始します。",
           "waitingForOpponent": "対戦相手を待っています..."
         },
-        "TurnStatusStrip": {
-          "yourTurn": "あなたのターン",
-          "aiTurn": "AIのターン",
-          "opponentTurn": "対戦相手のターン",
-          "turn": "{turn} ターン目"
-        },
         "ResultBadge": {
           "youWin": "あなたの勝ち",
           "youLose": "あなたの負け"

@@ -41,12 +41,6 @@
           "starting": "游戏已准备就绪，即将开始。",
           "waitingForOpponent": "正在等待对手..."
         },
-        "TurnStatusStrip": {
-          "yourTurn": "轮到你了",
-          "aiTurn": "AI 回合",
-          "opponentTurn": "对手回合",
-          "turn": "第 {turn} 回合"
-        },
         "ResultBadge": {
           "youWin": "你赢了",
           "youLose": "你输了"
