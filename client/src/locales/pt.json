@@ -41,12 +41,6 @@
           "starting": "A partida está pronta e vai começar em instantes.",
           "waitingForOpponent": "Aguardando oponente..."
         },
-        "TurnStatusStrip": {
-          "yourTurn": "Sua vez",
-          "aiTurn": "Vez da IA",
-          "opponentTurn": "Vez do oponente",
-          "turn": "Turno {turn}"
-        },
         "ResultBadge": {
           "youWin": "Você venceu",
           "youLose": "Você perdeu"

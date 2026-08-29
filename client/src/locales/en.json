@@ -41,12 +41,6 @@
           "starting": "The game is ready and will start shortly.",
           "waitingForOpponent": "Waiting for opponent..."
         },
-        "TurnStatusStrip": {
-          "yourTurn": "Your Turn",
-          "aiTurn": "AI Turn",
-          "opponentTurn": "Opponent Turn",
-          "turn": "Turn {turn}"
-        },
         "ResultBadge": {
           "youWin": "You Win",
           "youLose": "You Lose"

@@ -41,12 +41,6 @@
           "starting": "Das Spiel ist bereit und startet in Kürze.",
           "waitingForOpponent": "Warten auf den Gegner..."
         },
-        "TurnStatusStrip": {
-          "yourTurn": "Du bist dran",
-          "aiTurn": "KI ist dran",
-          "opponentTurn": "Gegner ist dran",
-          "turn": "Runde {turn}"
-        },
         "ResultBadge": {
           "youWin": "Du gewinnst",
           "youLose": "Du verlierst"

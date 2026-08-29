@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [vue()],
   optimizeDeps: {
     include: ['@tanstack/vue-query'],
-    exclude: ['fsevents', 'playwright', 'playwright-core'],
+    exclude: ['fsevents', 'mapbox-gl', 'mapillary-js', 'playwright', 'playwright-core'],
   },
   resolve: {
     alias: {
