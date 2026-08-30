@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 defineOptions({
   name: 'GameCountdownTimer',
@@ -9,11 +9,16 @@ const props = defineProps<{
   startedAtMs: number
 }>()
 
+const emit = defineEmits<{
+  expired: []
+}>()
+
 const DURATION_MS = 60_000
 const DANGER_THRESHOLD_MS = 10_000
 const TICK_INTERVAL_MS = 100
 
 const nowMs = ref(Date.now())
+const hasExpired = ref(false)
 let timeoutId: number | null = null
 
 const remainingMs = computed(() => Math.max(0, props.startedAtMs + DURATION_MS - nowMs.value))
@@ -30,6 +35,21 @@ const tick = () => {
   nowMs.value = Date.now()
   timeoutId = window.setTimeout(tick, TICK_INTERVAL_MS)
 }
+
+watch(remainingMs, (nextRemainingMs) => {
+  if (nextRemainingMs === 0 && !hasExpired.value) {
+    hasExpired.value = true
+    emit('expired')
+  }
+})
+
+watch(
+  () => props.startedAtMs,
+  () => {
+    hasExpired.value = false
+    nowMs.value = Date.now()
+  },
+)
 
 onMounted(tick)
 

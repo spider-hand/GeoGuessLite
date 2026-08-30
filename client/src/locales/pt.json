@@ -32,6 +32,44 @@
           "showMap": "Mostrar mapa",
           "close": "Fechar mapa"
         },
+        "GameStreetViewContainer": {
+          "showStreetView": "Mostrar Street View",
+          "closeStreetView": "Fechar Street View"
+        },
+        "GameSinglePlayerPage": {
+          "loading": "Preparando sua partida…",
+          "loadError": "Não foi possível carregar a partida",
+          "actionError": "Algo deu errado. Tente novamente.",
+          "retry": "Tentar novamente",
+          "home": "Início"
+        },
+        "RoundLabel": {
+          "label": "Rodada {current} de {total}"
+        },
+        "GameMapContainer": {
+          "makeGuess": "Adivinhar",
+          "submitting": "Enviando…"
+        },
+        "SinglePlayerRoundResult": {
+          "round": "Rodada {round}",
+          "points": "pontos",
+          "distance": "Distância",
+          "noGuess": "Sem palpite",
+          "totalScore": "Pontuação total",
+          "nextRound": "Próxima rodada",
+          "viewSummary": "Ver resumo",
+          "target": "Local correto"
+        },
+        "SinglePlayerGameSummary": {
+          "title": "Resumo da partida",
+          "totalScore": "Pontuação total",
+          "roundHistory": "Histórico de rodadas",
+          "round": "Rodada {round}",
+          "noGuess": "Sem palpite",
+          "target": "Local correto",
+          "playAgain": "Jogar novamente",
+          "home": "Início"
+        },
         "RoomKeyStrip": {
           "label": "Chave da sala"
         },

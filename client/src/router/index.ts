@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+import { signInAnonymouslyIfNeeded } from '@/composables/useAuth'
 import GameDailyChallengePage from '@/pages/GameDailyChallengePage.vue'
 import GameRandomMatchPage from '@/pages/GameRandomMatchPage.vue'
 import GameSinglePlayerPage from '@/pages/GameSinglePlayerPage.vue'
@@ -29,8 +30,12 @@ const router = createRouter({
       component: UserPage,
     },
     {
-      path: '/game/single-player',
+      path: '/game/single-player/:gameId',
+      name: 'single-player-game',
       component: GameSinglePlayerPage,
+      beforeEnter: async () => {
+        await signInAnonymouslyIfNeeded()
+      },
     },
     {
       path: '/game/daily-challenge',

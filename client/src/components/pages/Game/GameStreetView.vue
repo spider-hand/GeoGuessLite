@@ -21,6 +21,7 @@ onMounted(() => {
 
   viewer = new Viewer({
     accessToken: import.meta.env.VITE_MAPILLARY_TOKEN,
+    component: { cover: false },
     container: viewerElement.value,
     imageId: props.imageId,
   })

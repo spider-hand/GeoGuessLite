@@ -32,6 +32,44 @@
           "showMap": "Show map",
           "close": "Close map"
         },
+        "GameStreetViewContainer": {
+          "showStreetView": "Show Street View",
+          "closeStreetView": "Close Street View"
+        },
+        "GameSinglePlayerPage": {
+          "loading": "Preparing your game…",
+          "loadError": "Unable to load the game",
+          "actionError": "Something went wrong. Please try again.",
+          "retry": "Retry",
+          "home": "Home"
+        },
+        "RoundLabel": {
+          "label": "Round {current} of {total}"
+        },
+        "GameMapContainer": {
+          "makeGuess": "Make Guess",
+          "submitting": "Submitting…"
+        },
+        "SinglePlayerRoundResult": {
+          "round": "Round {round}",
+          "points": "points",
+          "distance": "Distance",
+          "noGuess": "No guess",
+          "totalScore": "Total score",
+          "nextRound": "Next Round",
+          "viewSummary": "View Summary",
+          "target": "Correct location"
+        },
+        "SinglePlayerGameSummary": {
+          "title": "Game Summary",
+          "totalScore": "Total score",
+          "roundHistory": "Round history",
+          "round": "Round {round}",
+          "noGuess": "No guess",
+          "target": "Correct location",
+          "playAgain": "Play Again",
+          "home": "Home"
+        },
         "RoomKeyStrip": {
           "label": "Room Key"
         },

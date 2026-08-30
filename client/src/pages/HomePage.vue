@@ -11,16 +11,33 @@ import SinglePlayerCard from '@/components/pages/Home/SinglePlayerCard.vue'
 import NavigationFooter from '@/components/shared/NavigationFooter.vue'
 import NavigationHeader from '@/components/shared/NavigationHeader.vue'
 import SignUpPromptModal from '@/components/shared/SignUpPromptModal.vue'
+import useSinglePlayerGameQuery from '@/composables/useSinglePlayerGameQuery'
 
 const router = useRouter()
-const { isCurrentUserLoaded, isRegisteredUser, signUpWithGoogle } = useAuth()
+const { isCurrentUserLoaded, isRegisteredUser, signInAnonymously, signUpWithGoogle } = useAuth()
+const { createGameAsync } = useSinglePlayerGameQuery(null)
+const isStartingSinglePlayer = ref(false)
 const isCreatingFriendsRoom = ref(false)
 const isEnteringFriendsRoom = ref(false)
 const isSignUpPromptOpen = ref(false)
 const isSigningUp = ref(false)
 
 const handleStartSinglePlayer = async () => {
-  await router.push('/game/single-player')
+  if (isStartingSinglePlayer.value) {
+    return
+  }
+
+  isStartingSinglePlayer.value = true
+
+  try {
+    await signInAnonymously()
+    const game = await createGameAsync()
+    await router.push({ name: 'single-player-game', params: { gameId: game.id } })
+  } catch (error) {
+    console.error(error)
+  } finally {
+    isStartingSinglePlayer.value = false
+  }
 }
 const openSignUpPrompt = () => {
   isSignUpPromptOpen.value = true
@@ -91,23 +108,24 @@ const handleSignUp = async () => {
 
       <div class="home-page__cards">
         <SinglePlayerCard
-          :disabled="isCreatingFriendsRoom || isEnteringFriendsRoom"
+          :disabled="isStartingSinglePlayer || isCreatingFriendsRoom || isEnteringFriendsRoom"
+          :is-starting-game="isStartingSinglePlayer"
           @start-single-player="handleStartSinglePlayer"
         />
         <PlayWithFriendsCard
-          :disabled="isCreatingFriendsRoom || isEnteringFriendsRoom"
+          :disabled="isStartingSinglePlayer || isCreatingFriendsRoom || isEnteringFriendsRoom"
           :is-creating-room="isCreatingFriendsRoom"
           :is-entering-room="isEnteringFriendsRoom"
           @create-friends-room="handleCreateFriendsRoom"
           @enter-friends-room="handleEnterFriendsRoom"
         />
         <DailyChallengeCard
-          :disabled="isCreatingFriendsRoom || isEnteringFriendsRoom"
+          :disabled="isStartingSinglePlayer || isCreatingFriendsRoom || isEnteringFriendsRoom"
           :has-played-today="false"
           @start-daily-challenge="handleStartDailyChallenge"
         />
         <RandomMatchCard
-          :disabled="isCreatingFriendsRoom || isEnteringFriendsRoom"
+          :disabled="isStartingSinglePlayer || isCreatingFriendsRoom || isEnteringFriendsRoom"
           :online-players="40"
           @join-random-match="handleJoinRandomMatch"
         />

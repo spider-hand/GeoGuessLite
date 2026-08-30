@@ -32,6 +32,44 @@
           "showMap": "Karte anzeigen",
           "close": "Karte schließen"
         },
+        "GameStreetViewContainer": {
+          "showStreetView": "Street View anzeigen",
+          "closeStreetView": "Street View schließen"
+        },
+        "GameSinglePlayerPage": {
+          "loading": "Dein Spiel wird vorbereitet…",
+          "loadError": "Das Spiel konnte nicht geladen werden",
+          "actionError": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+          "retry": "Erneut versuchen",
+          "home": "Startseite"
+        },
+        "RoundLabel": {
+          "label": "Runde {current} von {total}"
+        },
+        "GameMapContainer": {
+          "makeGuess": "Tipp abgeben",
+          "submitting": "Wird gesendet…"
+        },
+        "SinglePlayerRoundResult": {
+          "round": "Runde {round}",
+          "points": "Punkte",
+          "distance": "Entfernung",
+          "noGuess": "Kein Tipp",
+          "totalScore": "Gesamtpunktzahl",
+          "nextRound": "Nächste Runde",
+          "viewSummary": "Zusammenfassung anzeigen",
+          "target": "Richtiger Ort"
+        },
+        "SinglePlayerGameSummary": {
+          "title": "Spielübersicht",
+          "totalScore": "Gesamtpunktzahl",
+          "roundHistory": "Rundenverlauf",
+          "round": "Runde {round}",
+          "noGuess": "Kein Tipp",
+          "target": "Richtiger Ort",
+          "playAgain": "Noch einmal spielen",
+          "home": "Startseite"
+        },
         "RoomKeyStrip": {
           "label": "Raumcode"
         },

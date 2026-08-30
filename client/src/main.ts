@@ -13,12 +13,12 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(appI18n)
-app.use(router)
 app.use(VueQueryPlugin)
 
 app.use(VueFire, {
   firebaseApp,
   modules: [VueFireAuth()],
 })
+app.use(router)
 
 app.mount('#app')

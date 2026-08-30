@@ -26,3 +26,16 @@ export const calculateZoomLevel = (distance: number): number => {
   }
   return zoom
 }
+
+export const formatNumber = (value: number, locale: string) =>
+  new Intl.NumberFormat(locale).format(value)
+
+export const formatDistanceKm = (distanceKm: number | null, locale: string) =>
+  distanceKm === null
+    ? null
+    : new Intl.NumberFormat(locale, {
+        maximumFractionDigits: 1,
+        style: 'unit',
+        unit: 'kilometer',
+        unitDisplay: 'short',
+      }).format(distanceKm)

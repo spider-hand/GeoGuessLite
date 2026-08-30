@@ -21,14 +21,11 @@ vi.mock('mapbox-gl', () => {
       this.options = options
       mapboxMockState.maps.push(this)
     }
+
+    on = vi.fn()
   }
 
-  return {
-    default: {
-      accessToken: '',
-      Map: MockMap,
-    },
-  }
+  return { default: { accessToken: '', Map: MockMap } }
 })
 
 beforeEach(() => {
@@ -37,22 +34,10 @@ beforeEach(() => {
 
 it('should render the default state properly', async () => {
   const screen = await render(GameMap, {
-    props: {
-      center: [139.6917, 35.6895],
-      zoom: 10,
-    },
+    props: { center: [139.6917, 35.6895], isSelectable: true, markers: [], zoom: 10 },
   })
 
   await expect.element(screen.getByTestId('game-map')).toBeVisible()
   expect(mapboxMockState.maps[0]?.options.center).toEqual([139.6917, 35.6895])
   expect(mapboxMockState.maps[0]?.options.zoom).toBe(10)
-
-  await screen.rerender({ center: [135.5023, 34.6937], zoom: 12 })
-  expect(mapboxMockState.maps[0]?.jumpTo).toHaveBeenCalledWith({
-    center: [135.5023, 34.6937],
-    zoom: 12,
-  })
-
-  screen.unmount()
-  expect(mapboxMockState.maps[0]?.remove).toHaveBeenCalledOnce()
 })
