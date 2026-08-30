@@ -7,7 +7,7 @@ import { createAppI18n } from '@/i18n'
 describe('SinglePlayerCard', () => {
   it('should render the default state properly', async () => {
     const screen = await render(SinglePlayerCard, {
-      props: { disabled: false },
+      props: { disabled: false, isStartingGame: false },
       global: { plugins: [createAppI18n()] },
     })
 
@@ -17,7 +17,7 @@ describe('SinglePlayerCard', () => {
 
   it('should emit the start action', async () => {
     const screen = await render(SinglePlayerCard, {
-      props: { disabled: false },
+      props: { disabled: false, isStartingGame: false },
       global: { plugins: [createAppI18n()] },
     })
 
@@ -28,7 +28,7 @@ describe('SinglePlayerCard', () => {
 
   it('should disable the start action when disabled', async () => {
     const screen = await render(SinglePlayerCard, {
-      props: { disabled: true },
+      props: { disabled: true, isStartingGame: false },
       global: { plugins: [createAppI18n()] },
     })
 

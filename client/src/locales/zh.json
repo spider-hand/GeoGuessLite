@@ -32,6 +32,44 @@
           "showMap": "显示地图",
           "close": "关闭地图"
         },
+        "GameStreetViewContainer": {
+          "showStreetView": "显示街景",
+          "closeStreetView": "关闭街景"
+        },
+        "GameSinglePlayerPage": {
+          "loading": "正在准备游戏…",
+          "loadError": "无法加载游戏",
+          "actionError": "出现错误，请重试。",
+          "retry": "重试",
+          "home": "主页"
+        },
+        "RoundLabel": {
+          "label": "第 {current} / {total} 回合"
+        },
+        "GameMapContainer": {
+          "makeGuess": "提交猜测",
+          "submitting": "提交中…"
+        },
+        "SinglePlayerRoundResult": {
+          "round": "第 {round} 回合",
+          "points": "分",
+          "distance": "距离",
+          "noGuess": "未猜测",
+          "totalScore": "总分",
+          "nextRound": "下一回合",
+          "viewSummary": "查看总结",
+          "target": "正确位置"
+        },
+        "SinglePlayerGameSummary": {
+          "title": "游戏总结",
+          "totalScore": "总分",
+          "roundHistory": "回合记录",
+          "round": "第 {round} 回合",
+          "noGuess": "未猜测",
+          "target": "正确位置",
+          "playAgain": "再玩一次",
+          "home": "主页"
+        },
         "RoomKeyStrip": {
           "label": "房间密钥"
         },

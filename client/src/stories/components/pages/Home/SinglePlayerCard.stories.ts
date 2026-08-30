@@ -8,6 +8,7 @@ const meta = {
   tags: ['autodocs'],
   args: {
     disabled: false,
+    isStartingGame: false,
   },
 } satisfies Meta<typeof SinglePlayerCard>
 
@@ -16,3 +17,9 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {}
+
+export const Loading: Story = {
+  args: {
+    isStartingGame: true,
+  },
+}

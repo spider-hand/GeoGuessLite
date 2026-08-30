@@ -32,6 +32,44 @@
           "showMap": "地図を表示",
           "close": "地図を閉じる"
         },
+        "GameStreetViewContainer": {
+          "showStreetView": "ストリートビューを表示",
+          "closeStreetView": "ストリートビューを閉じる"
+        },
+        "GameSinglePlayerPage": {
+          "loading": "ゲームを準備しています…",
+          "loadError": "ゲームを読み込めませんでした",
+          "actionError": "エラーが発生しました。もう一度お試しください。",
+          "retry": "再試行",
+          "home": "ホーム"
+        },
+        "RoundLabel": {
+          "label": "ラウンド {current} / {total}"
+        },
+        "GameMapContainer": {
+          "makeGuess": "推測する",
+          "submitting": "送信中…"
+        },
+        "SinglePlayerRoundResult": {
+          "round": "ラウンド {round}",
+          "points": "ポイント",
+          "distance": "距離",
+          "noGuess": "推測なし",
+          "totalScore": "合計スコア",
+          "nextRound": "次のラウンド",
+          "viewSummary": "結果を見る",
+          "target": "正解地点"
+        },
+        "SinglePlayerGameSummary": {
+          "title": "ゲーム結果",
+          "totalScore": "合計スコア",
+          "roundHistory": "ラウンド履歴",
+          "round": "ラウンド {round}",
+          "noGuess": "推測なし",
+          "target": "正解地点",
+          "playAgain": "もう一度プレイ",
+          "home": "ホーム"
+        },
         "RoomKeyStrip": {
           "label": "ルームキー"
         },

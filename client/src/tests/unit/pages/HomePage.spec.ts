@@ -8,7 +8,9 @@ import HomePage from '@/pages/HomePage.vue'
 
 const isCurrentUserLoaded = ref(true)
 const isRegisteredUser = ref(false)
+const signInAnonymously = vi.fn()
 const signUpWithGoogle = vi.fn()
+const createGameAsync = vi.fn()
 
 vi.mock('@/composables/useAuth', () => ({
   default: () => ({
@@ -17,9 +19,14 @@ vi.mock('@/composables/useAuth', () => ({
     isAuthenticatedUser: ref(false),
     isRegisteredUser,
     isCurrentUserLoaded,
+    signInAnonymously,
     signUpWithGoogle,
     signOutUser: vi.fn(),
   }),
+}))
+
+vi.mock('@/composables/useSinglePlayerGameQuery', () => ({
+  default: () => ({ createGameAsync }),
 }))
 
 const createHomeRouter = () =>
@@ -29,7 +36,7 @@ const createHomeRouter = () =>
       { path: '/', component: HomePage },
       { path: '/privacy', component: HomePage },
       { path: '/terms', component: HomePage },
-      { path: '/game/single-player', component: HomePage },
+      { path: '/game/single-player/:gameId', name: 'single-player-game', component: HomePage },
       { path: '/game/daily-challenge', component: HomePage },
       { path: '/game/with-friends/scaffold', component: HomePage },
       { path: '/game/random-match', component: HomePage },
@@ -50,7 +57,9 @@ const renderHomePage = async () => {
 const resetAuthState = () => {
   isCurrentUserLoaded.value = true
   isRegisteredUser.value = false
+  signInAnonymously.mockReset().mockResolvedValue(undefined)
   signUpWithGoogle.mockReset()
+  createGameAsync.mockReset().mockResolvedValue({ id: 'game-123' })
 }
 
 describe('HomePage', () => {

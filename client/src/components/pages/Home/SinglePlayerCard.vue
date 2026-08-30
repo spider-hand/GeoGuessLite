@@ -10,6 +10,7 @@ defineOptions({
 
 defineProps<{
   disabled: boolean
+  isStartingGame: boolean
 }>()
 
 const emit = defineEmits<{
@@ -28,7 +29,12 @@ const { t } = useI18n()
       </h2>
     </div>
 
-    <Button class="single-player-card__start-button" :disabled @click="emit('startSinglePlayer')">
+    <Button
+      class="single-player-card__start-button"
+      :disabled
+      :loading="isStartingGame"
+      @click="emit('startSinglePlayer')"
+    >
       {{ t('components.pages.Home.SinglePlayerCard.startGame') }}
     </Button>
   </section>

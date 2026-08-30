@@ -1,41 +1,33 @@
 <script setup lang="ts">
 import { Map, X } from '@lucide/vue'
-import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import GameMap from '@/components/pages/Game/GameMap.vue'
 import IconButton from '@/components/shared/IconButton.vue'
+import type { GameMapMarker } from '@/types/game'
 
-defineOptions({
-  name: 'GameMapModal',
-})
+defineOptions({ name: 'GameMapModal' })
 
 const props = defineProps<{
   center: [number, number]
   isOpen: boolean
+  isSelectable: boolean
+  markers: Array<GameMapMarker>
   zoom: number
 }>()
 
 const emit = defineEmits<{
   close: []
   open: []
+  select: [coordinates: [number, number]]
 }>()
 
 const { t } = useI18n()
-const hasOpened = ref(props.isOpen)
-
-watch(
-  () => props.isOpen,
-  (isOpen) => {
-    if (isOpen) {
-      hasOpened.value = true
-    }
-  },
-)
 </script>
 
 <template>
   <IconButton
+    v-if="!props.isOpen"
     class="game-map-modal__trigger"
     :ariaLabel="t('components.pages.Game.GameMapModal.showMap')"
     @click="emit('open')"
@@ -43,11 +35,10 @@ watch(
     <Map :size="20" aria-hidden="true" />
   </IconButton>
 
-  <div v-if="hasOpened" v-show="props.isOpen" class="game-map-modal" role="presentation">
+  <div v-if="props.isOpen" class="game-map-modal" role="presentation">
     <div
       class="game-map-modal__panel"
       role="dialog"
-      aria-modal="true"
       :aria-label="t('components.pages.Game.GameMapModal.showMap')"
     >
       <IconButton
@@ -58,14 +49,21 @@ watch(
         <X :size="20" aria-hidden="true" />
       </IconButton>
 
-      <GameMap class="game-map-modal__map" :center="props.center" :zoom="props.zoom" />
+      <GameMap
+        class="game-map-modal__map"
+        :center="props.center"
+        :is-selectable="props.isSelectable"
+        :markers="props.markers"
+        :zoom="props.zoom"
+        @select="emit('select', $event)"
+      />
+      <div class="game-map-modal__actions"><slot /></div>
     </div>
   </div>
 </template>
 
 <style scoped>
 .game-map-modal__trigger {
-  display: none;
   position: fixed;
   right: var(--spacing-lg);
   bottom: var(--spacing-lg);
@@ -91,22 +89,29 @@ watch(
 
 .game-map-modal {
   position: fixed;
-  inset: 0;
+  right: var(--spacing-lg);
+  bottom: var(--spacing-lg);
   z-index: 30;
+  width: min(360px, calc(100% - 48px));
+  padding: var(--spacing-sm);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-token-xl);
   background-color: var(--surface-card-dark);
+  box-shadow: 0 16px 36px rgb(0 0 0 / 0.32);
 }
 
 .game-map-modal__panel {
   position: relative;
-  width: 100%;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
 }
 
 .game-map-modal__close-button {
   position: absolute;
-  z-index: 1;
-  top: var(--spacing-sm);
-  right: var(--spacing-sm);
+  z-index: 2;
+  top: var(--spacing-xs);
+  right: var(--spacing-xs);
   width: 40px;
   height: 40px;
   border: 1px solid var(--hairline);
@@ -116,7 +121,45 @@ watch(
 
 .game-map-modal__map {
   width: 100%;
-  height: 100%;
-  border-radius: 0;
+  height: 240px;
+}
+
+.game-map-modal__actions :deep(.button) {
+  width: 100%;
+}
+
+@media (max-width: 960px) {
+  .game-map-modal {
+    inset: 0;
+    width: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .game-map-modal__panel {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .game-map-modal__close-button {
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+  }
+
+  .game-map-modal__map {
+    height: 100%;
+    border-radius: 0;
+  }
+
+  .game-map-modal__actions {
+    position: absolute;
+    right: var(--spacing-lg);
+    bottom: var(--spacing-lg);
+    left: var(--spacing-lg);
+    z-index: 1;
+  }
 }
 </style>
