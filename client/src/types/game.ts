@@ -1,5 +1,8 @@
 export type GameModeType = 'single-player' | 'multiplayer' | 'daily-challenge'
 
+export type DailyChallengeStatus = 'available' | 'ongoing' | 'completed' | 'unavailable'
+export type DailyChallengeAvailability = DailyChallengeStatus | 'loading'
+
 export type GameMapMarker = {
   coordinates: [number, number]
   label: string

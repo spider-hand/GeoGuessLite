@@ -32,6 +32,27 @@ export default $config({
         permissions: [appSecretPermission],
       },
     );
+    const createDailyChallenge = new sst.aws.Function(
+      "CreateDailyChallenge",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler: "src/jobs/create_daily_challenge.create_daily_challenge",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+    );
+    const cleanupDailyChallenges = new sst.aws.Function(
+      "CleanupDailyChallenges",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/jobs/cleanup_expired_daily_challenges.cleanup_expired_daily_challenges",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+    );
 
     const firebaseAuthorizer = api.addAuthorizer({
       name: "firebaseAuthorizer",
@@ -127,6 +148,58 @@ export default $config({
     );
 
     api.route(
+      "GET /api/v1/daily-challenge-games/today",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/api/v1/daily_challenge_games/handler.get_today_daily_challenge",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "POST /api/v1/daily-challenge-games",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/api/v1/daily_challenge_games/handler.create_daily_challenge_game",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "POST /api/v1/daily-challenge-games/{gameId}/rounds/{roundNumber}/start",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/api/v1/daily_challenge_games/handler.start_daily_challenge_game_round",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "POST /api/v1/daily-challenge-games/{gameId}/rounds/{roundNumber}/guesses",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/api/v1/daily_challenge_games/handler.create_daily_challenge_game_guess",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
       "GET /api/v1/users/{userId}",
       {
         architecture: "arm64",
@@ -189,6 +262,14 @@ export default $config({
     new sst.aws.CronV2("DeleteExpiredSinglePlayerGames", {
       schedule: "cron(0 0 * * ? *)",
       function: cleanupSinglePlayerGames,
+    });
+    new sst.aws.CronV2("PrepareDailyChallenge", {
+      schedule: "cron(0 0 * * ? *)",
+      function: createDailyChallenge,
+    });
+    new sst.aws.CronV2("DeleteExpiredDailyChallenges", {
+      schedule: "cron(0 1 * * ? *)",
+      function: cleanupDailyChallenges,
     });
   },
 });

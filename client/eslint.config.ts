@@ -21,6 +21,7 @@ export default defineConfigWithVueTs(
     '**/dist-ssr/**',
     '**/coverage/**',
     '**/storybook-static/**',
+    '**/src/services/**',
   ]),
 
   pluginVue.configs['flat/essential'],

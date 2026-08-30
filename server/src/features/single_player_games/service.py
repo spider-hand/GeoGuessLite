@@ -1,14 +1,22 @@
 from concurrent.futures import ThreadPoolExecutor
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from http import HTTPStatus
 from uuid import uuid4
 
 from pydantic import ValidationError
 
-from src.core.game import calculate_distance, calculate_score, get_image_coordinates
+from src.core.game import (
+    GAME_IMAGE_CANDIDATE_COUNT,
+    GAME_ROUND_COUNT,
+    GAME_ROUND_TIMEOUT,
+    calculate_distance,
+    calculate_score,
+    get_image_coordinates,
+)
 from src.core.http import ApiError
 from src.features.single_player_games.models import (
     CreateSinglePlayerGameGuessInput,
+    GameMode,
     OrderBy,
     SinglePlayerGame,
     SinglePlayerGameRecord,
@@ -21,16 +29,36 @@ from src.features.single_player_games.models import (
 from src.features.single_player_games.repository import SinglePlayerGamesRepository
 
 
-class SinglePlayerGamesService:
-    ROUND_COUNT = 5
-    IMAGE_CANDIDATE_COUNT = ROUND_COUNT * 2
-    ROUND_TIMEOUT = timedelta(seconds=60)
+def prepare_rounds(image_ids: list[str], round_count: int) -> list[tuple[str, float, float]]:
+    prepared_rounds: list[tuple[str, float, float]] = []
+    with ThreadPoolExecutor(max_workers=round_count) as executor:
+        coordinates_by_image = executor.map(get_image_coordinates, image_ids)
+    for image_id, coordinates in zip(image_ids, coordinates_by_image, strict=True):
+        if coordinates is not None:
+            prepared_rounds.append((image_id, *coordinates))
+        if len(prepared_rounds) == round_count:
+            break
+    return prepared_rounds
 
-    def __init__(self, repository: SinglePlayerGamesRepository | None = None, clock=None):
+
+class SinglePlayerGamesService:
+    def __init__(
+        self,
+        repository: SinglePlayerGamesRepository | None = None,
+        clock=None,
+        game_mode: GameMode = "single_player",
+    ):
         self.repository = repository or SinglePlayerGamesRepository()
         self.clock = clock or (lambda: datetime.now(UTC))
+        self.game_mode = game_mode
 
     def _not_found(self) -> ApiError:
+        if self.game_mode == "daily_challenge":
+            return ApiError(
+                HTTPStatus.NOT_FOUND,
+                "daily_challenge_game_not_found",
+                "Daily challenge game was not found.",
+            )
         return ApiError(HTTPStatus.NOT_FOUND, "single_player_game_not_found", "Single-player game was not found.")
 
     def _invalid_state(self) -> ApiError:
@@ -38,7 +66,7 @@ class SinglePlayerGamesService:
 
     def _require_game(self, user_id: str, game_id: str) -> SinglePlayerGameRecord:
         game = self.repository.get_by_id(game_id, user_id)
-        if game is None:
+        if game is None or game.game_mode != self.game_mode:
             raise self._not_found()
         return game
 
@@ -85,16 +113,9 @@ class SinglePlayerGamesService:
         )
 
     def create_game(self, user_id: str) -> SinglePlayerGame:
-        prepared_rounds: list[tuple[str, float, float]] = []
-        image_ids = self.repository.get_random_panorama_ids(self.IMAGE_CANDIDATE_COUNT)
-        with ThreadPoolExecutor(max_workers=self.ROUND_COUNT) as executor:
-            coordinates_by_image = executor.map(get_image_coordinates, image_ids)
-        for image_id, coordinates in zip(image_ids, coordinates_by_image, strict=True):
-            if coordinates is not None:
-                prepared_rounds.append((image_id, *coordinates))
-            if len(prepared_rounds) == self.ROUND_COUNT:
-                break
-        if len(prepared_rounds) < self.ROUND_COUNT:
+        image_ids = self.repository.get_random_panorama_ids(GAME_IMAGE_CANDIDATE_COUNT)
+        prepared_rounds = prepare_rounds(image_ids, GAME_ROUND_COUNT)
+        if len(prepared_rounds) < GAME_ROUND_COUNT:
             raise ApiError(
                 HTTPStatus.SERVICE_UNAVAILABLE,
                 "game_images_unavailable",
@@ -116,7 +137,7 @@ class SinglePlayerGamesService:
 
     def start_round(self, user_id: str, game_id: str, round_number: int) -> SinglePlayerGameRound:
         game = self._require_game(user_id, game_id)
-        if game.completed_at is not None or not 1 <= round_number <= self.ROUND_COUNT:
+        if game.completed_at is not None or not 1 <= round_number <= GAME_ROUND_COUNT:
             raise self._invalid_state()
         target_round = game.rounds[round_number - 1]
         started_rounds = [round_record for round_record in game.rounds if round_record.started_at is not None]
@@ -153,7 +174,7 @@ class SinglePlayerGamesService:
                 "guess must be null or contain valid latitude and longitude values.",
             ) from error
         game = self._require_game(user_id, game_id)
-        if not 1 <= round_number <= self.ROUND_COUNT:
+        if not 1 <= round_number <= GAME_ROUND_COUNT:
             raise self._invalid_state()
         round_record = game.rounds[round_number - 1]
         if round_record.completed_at is not None:
@@ -162,7 +183,7 @@ class SinglePlayerGamesService:
             raise self._invalid_state()
 
         completed_at = self.clock()
-        expired = completed_at >= round_record.started_at + self.ROUND_TIMEOUT
+        expired = completed_at >= round_record.started_at + GAME_ROUND_TIMEOUT
         if guess_input.guess is None and not expired:
             raise ApiError(HTTPStatus.CONFLICT, "round_not_expired", "The active round has not expired.")
 
@@ -196,3 +217,4 @@ class SinglePlayerGamesService:
 
     def delete_expired_games(self) -> int:
         return self.repository.delete_expired()
+    GameMode,

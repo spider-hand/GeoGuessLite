@@ -3,6 +3,7 @@ from typing import Any
 
 from src.core.db import get_connection
 from src.features.single_player_games.models import (
+    GameMode,
     OrderBy,
     SinglePlayerGameRecord,
     SinglePlayerGameRoundRecord,
@@ -32,7 +33,8 @@ def _get_game(connection, game_id: str, user_id: str) -> SinglePlayerGameRecord 
     with connection.cursor() as cursor:
         cursor.execute(
             """
-            SELECT g.id, g.user_id, g.created_at, g.completed_at,
+            SELECT g.id, g.user_id, g.game_mode, g.daily_challenge_id,
+                   g.created_at, g.completed_at,
                    r.round_number, r.image_id, r.target_latitude, r.target_longitude,
                    r.started_at, r.guess_latitude, r.guess_longitude,
                    r.distance_km, r.score, r.completed_at AS round_completed_at
@@ -51,6 +53,8 @@ def _get_game(connection, game_id: str, user_id: str) -> SinglePlayerGameRecord 
         {
             "id": rows[0]["id"],
             "userId": rows[0]["user_id"],
+            "gameMode": rows[0].get("game_mode", "single_player"),
+            "dailyChallengeId": rows[0].get("daily_challenge_id"),
             "createdAt": rows[0]["created_at"],
             "completedAt": rows[0]["completed_at"],
             "rounds": [_map_round(row) for row in rows],
@@ -67,27 +71,92 @@ class SinglePlayerGamesRepository:
             )
             return [row["id"] for row in cursor.fetchall()]
 
-    def create(self, game_id: str, user_id: str, rounds: list[tuple[str, float, float]]) -> SinglePlayerGameRecord:
+    def _insert_rounds(self, cursor, game_id: str, rounds: list[tuple[str, float, float]]) -> None:
+        cursor.executemany(
+            """
+            INSERT INTO single_player_game_rounds (
+                game_id, round_number, image_id, target_latitude, target_longitude
+            ) VALUES (%s, %s, %s, %s, %s)
+            """,
+            [
+                (game_id, round_number, image_id, latitude, longitude)
+                for round_number, (image_id, latitude, longitude) in enumerate(rounds, start=1)
+            ],
+        )
+
+    def create(
+        self,
+        game_id: str,
+        user_id: str,
+        rounds: list[tuple[str, float, float]],
+        *,
+        game_mode: GameMode = "single_player",
+        daily_challenge_id: str | None = None,
+    ) -> SinglePlayerGameRecord:
         with get_connection() as connection, connection.cursor() as cursor:
             cursor.execute(
-                "INSERT INTO single_player_games (id, user_id) VALUES (%s, %s)",
-                (game_id, user_id),
-            )
-            cursor.executemany(
                 """
-                INSERT INTO single_player_game_rounds (
-                    game_id, round_number, image_id, target_latitude, target_longitude
-                ) VALUES (%s, %s, %s, %s, %s)
+                INSERT INTO single_player_games (id, user_id, game_mode, daily_challenge_id)
+                VALUES (%s, %s, %s, %s)
                 """,
-                [
-                    (game_id, round_number, image_id, latitude, longitude)
-                    for round_number, (image_id, latitude, longitude) in enumerate(rounds, start=1)
-                ],
+                (game_id, user_id, game_mode, daily_challenge_id),
             )
+            self._insert_rounds(cursor, game_id, rounds)
             game = _get_game(connection, game_id, user_id)
         if game is None:
             raise RuntimeError("Created single-player game could not be loaded.")
         return game
+
+    def create_daily(
+        self,
+        game_id: str,
+        user_id: str,
+        daily_challenge_id: str,
+        rounds: list[tuple[str, float, float]],
+    ) -> tuple[SinglePlayerGameRecord, bool]:
+        with get_connection() as connection, connection.cursor() as cursor:
+            cursor.execute(
+                """
+                INSERT INTO single_player_games (id, user_id, game_mode, daily_challenge_id)
+                VALUES (%s, %s, 'daily_challenge', %s)
+                ON CONFLICT (user_id, daily_challenge_id)
+                    WHERE daily_challenge_id IS NOT NULL
+                DO NOTHING
+                RETURNING id
+                """,
+                (game_id, user_id, daily_challenge_id),
+            )
+            inserted = cursor.fetchone()
+            if inserted is not None:
+                self._insert_rounds(cursor, game_id, rounds)
+                selected_game_id = game_id
+            else:
+                cursor.execute(
+                    """
+                    SELECT id FROM single_player_games
+                    WHERE user_id = %s AND daily_challenge_id = %s
+                    """,
+                    (user_id, daily_challenge_id),
+                )
+                selected_game_id = cursor.fetchone()["id"]
+            game = _get_game(connection, selected_game_id, user_id)
+        if game is None:
+            raise RuntimeError("Daily challenge game could not be loaded.")
+        return game, inserted is not None
+
+    def get_by_daily_challenge(
+        self, daily_challenge_id: str, user_id: str
+    ) -> SinglePlayerGameRecord | None:
+        with get_connection() as connection, connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT id FROM single_player_games
+                WHERE user_id = %s AND daily_challenge_id = %s
+                """,
+                (user_id, daily_challenge_id),
+            )
+            row = cursor.fetchone()
+            return _get_game(connection, row["id"], user_id) if row else None
 
     def get_by_id(self, game_id: str, user_id: str) -> SinglePlayerGameRecord | None:
         with get_connection() as connection:
@@ -108,7 +177,9 @@ class SinglePlayerGamesRepository:
                        g.created_at, g.completed_at
                 FROM single_player_games g
                 JOIN single_player_game_rounds r ON r.game_id = g.id
-                WHERE g.user_id = %s AND g.completed_at IS NOT NULL
+                WHERE g.user_id = %s
+                  AND g.game_mode = 'single_player'
+                  AND g.completed_at IS NOT NULL
                 GROUP BY g.id
                 ORDER BY {sort_column} {order_by.upper()}
                 LIMIT %s

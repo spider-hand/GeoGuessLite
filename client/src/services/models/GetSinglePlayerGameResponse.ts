@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime'
-import type { GetSinglePlayerGameResponseRoundsInner } from './GetSinglePlayerGameResponseRoundsInner'
+import type { CreateDailyChallengeGame200ResponseRoundsInner } from './CreateDailyChallengeGame200ResponseRoundsInner'
 import {
-  GetSinglePlayerGameResponseRoundsInnerFromJSON,
-  GetSinglePlayerGameResponseRoundsInnerFromJSONTyped,
-  GetSinglePlayerGameResponseRoundsInnerToJSON,
-  GetSinglePlayerGameResponseRoundsInnerToJSONTyped,
-} from './GetSinglePlayerGameResponseRoundsInner'
+  CreateDailyChallengeGame200ResponseRoundsInnerFromJSON,
+  CreateDailyChallengeGame200ResponseRoundsInnerFromJSONTyped,
+  CreateDailyChallengeGame200ResponseRoundsInnerToJSON,
+  CreateDailyChallengeGame200ResponseRoundsInnerToJSONTyped,
+} from './CreateDailyChallengeGame200ResponseRoundsInner'
 
 /**
  *
@@ -47,10 +47,10 @@ export interface GetSinglePlayerGameResponse {
   currentRound: number
   /**
    *
-   * @type {Array<GetSinglePlayerGameResponseRoundsInner>}
+   * @type {Array<CreateDailyChallengeGame200ResponseRoundsInner>}
    * @memberof GetSinglePlayerGameResponse
    */
-  rounds: Array<GetSinglePlayerGameResponseRoundsInner>
+  rounds: Array<CreateDailyChallengeGame200ResponseRoundsInner>
   /**
    *
    * @type {Date}
@@ -104,7 +104,9 @@ export function GetSinglePlayerGameResponseFromJSONTyped(
     id: json['id'],
     status: json['status'],
     currentRound: json['currentRound'],
-    rounds: (json['rounds'] as Array<any>).map(GetSinglePlayerGameResponseRoundsInnerFromJSON),
+    rounds: (json['rounds'] as Array<any>).map(
+      CreateDailyChallengeGame200ResponseRoundsInnerFromJSON,
+    ),
     createdAt: new Date(json['createdAt']),
     completedAt: json['completedAt'] == null ? undefined : new Date(json['completedAt']),
   }
@@ -126,7 +128,9 @@ export function GetSinglePlayerGameResponseToJSONTyped(
     id: value['id'],
     status: value['status'],
     currentRound: value['currentRound'],
-    rounds: (value['rounds'] as Array<any>).map(GetSinglePlayerGameResponseRoundsInnerToJSON),
+    rounds: (value['rounds'] as Array<any>).map(
+      CreateDailyChallengeGame200ResponseRoundsInnerToJSON,
+    ),
     createdAt: value['createdAt'].toISOString(),
     completedAt:
       value['completedAt'] == null ? value['completedAt'] : value['completedAt'].toISOString(),

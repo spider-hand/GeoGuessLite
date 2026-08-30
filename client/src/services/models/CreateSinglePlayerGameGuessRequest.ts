@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime'
-import type { CreateSinglePlayerGame201ResponseRoundsInnerResultGuess } from './CreateSinglePlayerGame201ResponseRoundsInnerResultGuess'
+import type { CreateSinglePlayerGameGuessRequestGuess } from './CreateSinglePlayerGameGuessRequestGuess'
 import {
-  CreateSinglePlayerGame201ResponseRoundsInnerResultGuessFromJSON,
-  CreateSinglePlayerGame201ResponseRoundsInnerResultGuessFromJSONTyped,
-  CreateSinglePlayerGame201ResponseRoundsInnerResultGuessToJSON,
-  CreateSinglePlayerGame201ResponseRoundsInnerResultGuessToJSONTyped,
-} from './CreateSinglePlayerGame201ResponseRoundsInnerResultGuess'
+  CreateSinglePlayerGameGuessRequestGuessFromJSON,
+  CreateSinglePlayerGameGuessRequestGuessFromJSONTyped,
+  CreateSinglePlayerGameGuessRequestGuessToJSON,
+  CreateSinglePlayerGameGuessRequestGuessToJSONTyped,
+} from './CreateSinglePlayerGameGuessRequestGuess'
 
 /**
  *
@@ -29,10 +29,10 @@ import {
 export interface CreateSinglePlayerGameGuessRequest {
   /**
    *
-   * @type {CreateSinglePlayerGame201ResponseRoundsInnerResultGuess}
+   * @type {CreateSinglePlayerGameGuessRequestGuess}
    * @memberof CreateSinglePlayerGameGuessRequest
    */
-  guess: CreateSinglePlayerGame201ResponseRoundsInnerResultGuess | null
+  guess: CreateSinglePlayerGameGuessRequestGuess | null
 }
 
 /**
@@ -59,7 +59,7 @@ export function CreateSinglePlayerGameGuessRequestFromJSONTyped(
     return json
   }
   return {
-    guess: CreateSinglePlayerGame201ResponseRoundsInnerResultGuessFromJSON(json['guess']),
+    guess: CreateSinglePlayerGameGuessRequestGuessFromJSON(json['guess']),
   }
 }
 
@@ -78,6 +78,6 @@ export function CreateSinglePlayerGameGuessRequestToJSONTyped(
   }
 
   return {
-    guess: CreateSinglePlayerGame201ResponseRoundsInnerResultGuessToJSON(value['guess']),
+    guess: CreateSinglePlayerGameGuessRequestGuessToJSON(value['guess']),
   }
 }

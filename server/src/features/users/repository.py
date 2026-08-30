@@ -26,6 +26,7 @@ def _map_current_user_row(row: dict[str, Any]) -> CurrentUserRecord:
             "bestScore": row["best_score"],
             "averageScore": row["average_score"],
             "distanceUnit": row["distance_unit"],
+            "dailyChallengeStatus": row["daily_challenge_status"],
             "createdAt": row["created_at"],
             "updatedAt": row["updated_at"],
         }
@@ -51,11 +52,22 @@ class UsersRepository:
         with get_connection() as connection, connection.cursor() as cursor:
             cursor.execute(
                 """
-                SELECT id AS user_id, display_name, country,
-                       games_played, best_score, average_score, distance_unit,
-                       created_at, updated_at
-                FROM users
-                WHERE id = %s
+                SELECT u.id AS user_id, u.display_name, u.country,
+                       u.games_played, u.best_score, u.average_score, u.distance_unit,
+                       u.created_at, u.updated_at,
+                       CASE
+                           WHEN dc.id IS NULL THEN 'unavailable'
+                           WHEN daily_game.completed_at IS NOT NULL THEN 'completed'
+                           WHEN daily_game.id IS NOT NULL THEN 'ongoing'
+                           ELSE 'available'
+                       END AS daily_challenge_status
+                FROM users u
+                LEFT JOIN daily_challenges dc
+                    ON dc.date = (CURRENT_TIMESTAMP AT TIME ZONE 'UTC')::DATE
+                LEFT JOIN single_player_games daily_game
+                    ON daily_game.daily_challenge_id = dc.id
+                    AND daily_game.user_id = u.id
+                WHERE u.id = %s
                 """,
                 (user_id,),
             )

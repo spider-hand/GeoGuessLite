@@ -98,6 +98,19 @@ def test_get_game_returns_404_for_missing_or_unowned_game():
     assert error.value.status_code == 404
 
 
+def test_get_game_rejects_a_game_from_another_mode():
+    repository = MagicMock()
+    game = make_game()
+    game.game_mode = "daily_challenge"
+    game.daily_challenge_id = "challenge-123"
+    repository.get_by_id.return_value = game
+
+    with pytest.raises(ApiError) as error:
+        SinglePlayerGamesService(repository).get_game("user-123", "game-123")
+
+    assert error.value.status_code == 404
+
+
 def test_get_game_exposes_only_started_rounds_and_hides_active_target():
     repository = MagicMock()
     repository.get_by_id.return_value = make_game(started_rounds=2, completed_rounds=1)

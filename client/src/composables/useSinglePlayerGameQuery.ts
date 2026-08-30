@@ -9,7 +9,6 @@ import {
   type CreateSinglePlayerGame201ResponseRoundsInnerResultGuess,
 } from '@/services'
 
-// Merge a started or completed round into the cached game without refetching it.
 const replaceRound = (
   game: CreateSinglePlayerGame201Response,
   round: CreateSinglePlayerGame201ResponseRoundsInner,
@@ -71,11 +70,12 @@ const useSinglePlayerGameQuery = (gameId: MaybeRefOrGetter<string | null>) => {
       queryClient.setQueryData<CreateSinglePlayerGame201Response>(
         ['single-player-game', id],
         (game) => {
-          if (!game) {
-            return game
-          }
+          if (!game) return game
 
-          const updatedGame = replaceRound(game, round)
+          const updatedGame = replaceRound(
+            game,
+            round as unknown as CreateSinglePlayerGame201ResponseRoundsInner,
+          )
           return round.roundNumber === 5
             ? { ...updatedGame, status: 'completed', completedAt: round.result.completedAt }
             : updatedGame

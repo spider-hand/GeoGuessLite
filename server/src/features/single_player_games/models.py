@@ -6,6 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field
 Latitude = Annotated[float, Field(ge=-90, le=90)]
 Longitude = Annotated[float, Field(ge=-180, le=180)]
 GameStatus = Literal["ongoing", "completed"]
+GameMode = Literal["single_player", "daily_challenge"]
 SinglePlayerGamesSortBy = Literal["created_at", "completed_at"]
 OrderBy = Literal["asc", "desc"]
 
@@ -43,6 +44,8 @@ class SinglePlayerGameRecord(BaseModel):
 
     id: str
     user_id: str = Field(alias="userId")
+    game_mode: GameMode = Field(default="single_player", alias="gameMode")
+    daily_challenge_id: str | None = Field(default=None, alias="dailyChallengeId")
     created_at: datetime = Field(alias="createdAt")
     completed_at: datetime | None = Field(default=None, alias="completedAt")
     rounds: list[SinglePlayerGameRoundRecord]

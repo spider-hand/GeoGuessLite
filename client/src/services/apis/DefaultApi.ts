@@ -14,6 +14,9 @@
 
 import * as runtime from '../runtime'
 import type {
+  CreateDailyChallengeGame200Response,
+  CreateDailyChallengeGameGuess200Response,
+  CreateDailyChallengeGameGuessRequest,
   CreateSinglePlayerGame201Response,
   CreateSinglePlayerGameGuess200Response,
   CreateSinglePlayerGameGuessRequest,
@@ -23,12 +26,20 @@ import type {
   GetSinglePlayerGames200ResponseInner,
   GetSinglePlayerGames400Response,
   GetSinglePlayerGames401Response,
+  GetTodayDailyChallenge200Response,
   GetUser200Response,
+  StartDailyChallengeGameRound200Response,
   StartSinglePlayerGameRound200Response,
   UpdateUser200Response,
   UpdateUserRequest,
 } from '../models/index'
 import {
+  CreateDailyChallengeGame200ResponseFromJSON,
+  CreateDailyChallengeGame200ResponseToJSON,
+  CreateDailyChallengeGameGuess200ResponseFromJSON,
+  CreateDailyChallengeGameGuess200ResponseToJSON,
+  CreateDailyChallengeGameGuessRequestFromJSON,
+  CreateDailyChallengeGameGuessRequestToJSON,
   CreateSinglePlayerGame201ResponseFromJSON,
   CreateSinglePlayerGame201ResponseToJSON,
   CreateSinglePlayerGameGuess200ResponseFromJSON,
@@ -47,8 +58,12 @@ import {
   GetSinglePlayerGames400ResponseToJSON,
   GetSinglePlayerGames401ResponseFromJSON,
   GetSinglePlayerGames401ResponseToJSON,
+  GetTodayDailyChallenge200ResponseFromJSON,
+  GetTodayDailyChallenge200ResponseToJSON,
   GetUser200ResponseFromJSON,
   GetUser200ResponseToJSON,
+  StartDailyChallengeGameRound200ResponseFromJSON,
+  StartDailyChallengeGameRound200ResponseToJSON,
   StartSinglePlayerGameRound200ResponseFromJSON,
   StartSinglePlayerGameRound200ResponseToJSON,
   UpdateUser200ResponseFromJSON,
@@ -56,6 +71,12 @@ import {
   UpdateUserRequestFromJSON,
   UpdateUserRequestToJSON,
 } from '../models/index'
+
+export interface CreateDailyChallengeGameGuessOperationRequest {
+  gameId: string
+  roundNumber: number
+  createDailyChallengeGameGuessRequest: CreateDailyChallengeGameGuessRequest
+}
 
 export interface CreateSinglePlayerGameGuessOperationRequest {
   gameId: string
@@ -81,6 +102,11 @@ export interface GetUserRequest {
   userId: string
 }
 
+export interface StartDailyChallengeGameRoundRequest {
+  gameId: string
+  roundNumber: number
+}
+
 export interface StartSinglePlayerGameRoundRequest {
   gameId: string
   roundNumber: number
@@ -94,6 +120,134 @@ export interface UpdateUserOperationRequest {
  *
  */
 export class DefaultApi extends runtime.BaseAPI {
+  /**
+   * Create or resume today\'s daily challenge game
+   */
+  async createDailyChallengeGameRaw(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<CreateDailyChallengeGame200Response>> {
+    const queryParameters: any = {}
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken
+      const tokenString = await token('BearerAuth', [])
+
+      if (tokenString) {
+        headerParameters['Authorization'] = `Bearer ${tokenString}`
+      }
+    }
+
+    let urlPath = `/api/v1/daily-challenge-games`
+
+    const response = await this.request(
+      {
+        path: urlPath,
+        method: 'POST',
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    )
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      CreateDailyChallengeGame200ResponseFromJSON(jsonValue),
+    )
+  }
+
+  /**
+   * Create or resume today\'s daily challenge game
+   */
+  async createDailyChallengeGame(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<CreateDailyChallengeGame200Response> {
+    const response = await this.createDailyChallengeGameRaw(initOverrides)
+    return await response.value()
+  }
+
+  /**
+   * Complete a daily challenge round with a guess or timeout
+   */
+  async createDailyChallengeGameGuessRaw(
+    requestParameters: CreateDailyChallengeGameGuessOperationRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<CreateDailyChallengeGameGuess200Response>> {
+    if (requestParameters['gameId'] == null) {
+      throw new runtime.RequiredError(
+        'gameId',
+        'Required parameter "gameId" was null or undefined when calling createDailyChallengeGameGuess().',
+      )
+    }
+
+    if (requestParameters['roundNumber'] == null) {
+      throw new runtime.RequiredError(
+        'roundNumber',
+        'Required parameter "roundNumber" was null or undefined when calling createDailyChallengeGameGuess().',
+      )
+    }
+
+    if (requestParameters['createDailyChallengeGameGuessRequest'] == null) {
+      throw new runtime.RequiredError(
+        'createDailyChallengeGameGuessRequest',
+        'Required parameter "createDailyChallengeGameGuessRequest" was null or undefined when calling createDailyChallengeGameGuess().',
+      )
+    }
+
+    const queryParameters: any = {}
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    headerParameters['Content-Type'] = 'application/json'
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken
+      const tokenString = await token('BearerAuth', [])
+
+      if (tokenString) {
+        headerParameters['Authorization'] = `Bearer ${tokenString}`
+      }
+    }
+
+    let urlPath = `/api/v1/daily-challenge-games/{gameId}/rounds/{roundNumber}/guesses`
+    urlPath = urlPath.replace(
+      `{${'gameId'}}`,
+      encodeURIComponent(String(requestParameters['gameId'])),
+    )
+    urlPath = urlPath.replace(
+      `{${'roundNumber'}}`,
+      encodeURIComponent(String(requestParameters['roundNumber'])),
+    )
+
+    const response = await this.request(
+      {
+        path: urlPath,
+        method: 'POST',
+        headers: headerParameters,
+        query: queryParameters,
+        body: CreateDailyChallengeGameGuessRequestToJSON(
+          requestParameters['createDailyChallengeGameGuessRequest'],
+        ),
+      },
+      initOverrides,
+    )
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      CreateDailyChallengeGameGuess200ResponseFromJSON(jsonValue),
+    )
+  }
+
+  /**
+   * Complete a daily challenge round with a guess or timeout
+   */
+  async createDailyChallengeGameGuess(
+    requestParameters: CreateDailyChallengeGameGuessOperationRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<CreateDailyChallengeGameGuess200Response> {
+    const response = await this.createDailyChallengeGameGuessRaw(requestParameters, initOverrides)
+    return await response.value()
+  }
+
   /**
    * Create a single-player game
    */
@@ -480,6 +634,52 @@ export class DefaultApi extends runtime.BaseAPI {
   }
 
   /**
+   * Get today\'s daily challenge availability and attempt
+   */
+  async getTodayDailyChallengeRaw(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<GetTodayDailyChallenge200Response>> {
+    const queryParameters: any = {}
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken
+      const tokenString = await token('BearerAuth', [])
+
+      if (tokenString) {
+        headerParameters['Authorization'] = `Bearer ${tokenString}`
+      }
+    }
+
+    let urlPath = `/api/v1/daily-challenge-games/today`
+
+    const response = await this.request(
+      {
+        path: urlPath,
+        method: 'GET',
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    )
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      GetTodayDailyChallenge200ResponseFromJSON(jsonValue),
+    )
+  }
+
+  /**
+   * Get today\'s daily challenge availability and attempt
+   */
+  async getTodayDailyChallenge(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<GetTodayDailyChallenge200Response> {
+    const response = await this.getTodayDailyChallengeRaw(initOverrides)
+    return await response.value()
+  }
+
+  /**
    * Get a user profile
    */
   async getUserRaw(
@@ -535,6 +735,76 @@ export class DefaultApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<GetUser200Response> {
     const response = await this.getUserRaw(requestParameters, initOverrides)
+    return await response.value()
+  }
+
+  /**
+   * Start the next daily challenge round
+   */
+  async startDailyChallengeGameRoundRaw(
+    requestParameters: StartDailyChallengeGameRoundRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<StartDailyChallengeGameRound200Response>> {
+    if (requestParameters['gameId'] == null) {
+      throw new runtime.RequiredError(
+        'gameId',
+        'Required parameter "gameId" was null or undefined when calling startDailyChallengeGameRound().',
+      )
+    }
+
+    if (requestParameters['roundNumber'] == null) {
+      throw new runtime.RequiredError(
+        'roundNumber',
+        'Required parameter "roundNumber" was null or undefined when calling startDailyChallengeGameRound().',
+      )
+    }
+
+    const queryParameters: any = {}
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken
+      const tokenString = await token('BearerAuth', [])
+
+      if (tokenString) {
+        headerParameters['Authorization'] = `Bearer ${tokenString}`
+      }
+    }
+
+    let urlPath = `/api/v1/daily-challenge-games/{gameId}/rounds/{roundNumber}/start`
+    urlPath = urlPath.replace(
+      `{${'gameId'}}`,
+      encodeURIComponent(String(requestParameters['gameId'])),
+    )
+    urlPath = urlPath.replace(
+      `{${'roundNumber'}}`,
+      encodeURIComponent(String(requestParameters['roundNumber'])),
+    )
+
+    const response = await this.request(
+      {
+        path: urlPath,
+        method: 'POST',
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    )
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      StartDailyChallengeGameRound200ResponseFromJSON(jsonValue),
+    )
+  }
+
+  /**
+   * Start the next daily challenge round
+   */
+  async startDailyChallengeGameRound(
+    requestParameters: StartDailyChallengeGameRoundRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<StartDailyChallengeGameRound200Response> {
+    const response = await this.startDailyChallengeGameRoundRaw(requestParameters, initOverrides)
     return await response.value()
   }
 

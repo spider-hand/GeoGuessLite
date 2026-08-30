@@ -63,6 +63,12 @@ export interface GetCurrentUser200Response {
   distanceUnit: GetCurrentUser200ResponseDistanceUnitEnum
   /**
    *
+   * @type {string}
+   * @memberof GetCurrentUser200Response
+   */
+  dailyChallengeStatus: GetCurrentUser200ResponseDailyChallengeStatusEnum
+  /**
+   *
    * @type {Date}
    * @memberof GetCurrentUser200Response
    */
@@ -86,6 +92,18 @@ export type GetCurrentUser200ResponseDistanceUnitEnum =
   (typeof GetCurrentUser200ResponseDistanceUnitEnum)[keyof typeof GetCurrentUser200ResponseDistanceUnitEnum]
 
 /**
+ * @export
+ */
+export const GetCurrentUser200ResponseDailyChallengeStatusEnum = {
+  Available: 'available',
+  Ongoing: 'ongoing',
+  Completed: 'completed',
+  Unavailable: 'unavailable',
+} as const
+export type GetCurrentUser200ResponseDailyChallengeStatusEnum =
+  (typeof GetCurrentUser200ResponseDailyChallengeStatusEnum)[keyof typeof GetCurrentUser200ResponseDailyChallengeStatusEnum]
+
+/**
  * Check if a given object implements the GetCurrentUser200Response interface.
  */
 export function instanceOfGetCurrentUser200Response(
@@ -98,6 +116,8 @@ export function instanceOfGetCurrentUser200Response(
   if (!('bestScore' in value) || value['bestScore'] === undefined) return false
   if (!('averageScore' in value) || value['averageScore'] === undefined) return false
   if (!('distanceUnit' in value) || value['distanceUnit'] === undefined) return false
+  if (!('dailyChallengeStatus' in value) || value['dailyChallengeStatus'] === undefined)
+    return false
   if (!('createdAt' in value) || value['createdAt'] === undefined) return false
   if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false
   return true
@@ -122,6 +142,7 @@ export function GetCurrentUser200ResponseFromJSONTyped(
     bestScore: json['bestScore'],
     averageScore: json['averageScore'],
     distanceUnit: json['distanceUnit'],
+    dailyChallengeStatus: json['dailyChallengeStatus'],
     createdAt: new Date(json['createdAt']),
     updatedAt: new Date(json['updatedAt']),
   }
@@ -147,6 +168,7 @@ export function GetCurrentUser200ResponseToJSONTyped(
     bestScore: value['bestScore'],
     averageScore: value['averageScore'],
     distanceUnit: value['distanceUnit'],
+    dailyChallengeStatus: value['dailyChallengeStatus'],
     createdAt: value['createdAt'].toISOString(),
     updatedAt: value['updatedAt'].toISOString(),
   }

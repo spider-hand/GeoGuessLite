@@ -1,0 +1,24 @@
+get:
+  operationId: getTodayDailyChallenge
+  summary: Get today's daily challenge availability and attempt
+  security:
+    - BearerAuth: []
+  responses:
+    "200":
+      description: Today's challenge state
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/get-today-daily-challenge-response.yml
+    "401":
+      description: Registered user authentication required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "404":
+      description: Today's scheduled challenge is unavailable
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml

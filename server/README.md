@@ -71,6 +71,8 @@ Start development environment:
 pnpm dev
 ```
 
+In order to run scheduled functions manually for testing purpose, we can trigger the function in AWS Console.
+
 Run unit tests:
 
 ```sh

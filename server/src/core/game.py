@@ -1,11 +1,15 @@
 import json
 import math
+from datetime import timedelta
 from urllib.parse import urlencode
 from urllib.request import urlopen
 
 from src.core.secret import get_secrets
 
 EARTH_RADIUS_KM = 6371
+GAME_ROUND_COUNT = 5
+GAME_IMAGE_CANDIDATE_COUNT = GAME_ROUND_COUNT * 2
+GAME_ROUND_TIMEOUT = timedelta(seconds=60)
 MAX_SCORE = 5000
 PERFECT_SCORE_THRESHOLD_KM = 0.025
 WORLD_SCALE = 14917

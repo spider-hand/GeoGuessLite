@@ -7,10 +7,12 @@ import { createAppI18n } from '@/i18n'
 import HomePage from '@/pages/HomePage.vue'
 
 const isCurrentUserLoaded = ref(true)
+const isLoadingUser = ref(false)
 const isRegisteredUser = ref(false)
 const signInAnonymously = vi.fn()
 const signUpWithGoogle = vi.fn()
 const createGameAsync = vi.fn()
+const user = ref({ dailyChallengeStatus: 'available' as const })
 
 vi.mock('@/composables/useAuth', () => ({
   default: () => ({
@@ -19,6 +21,8 @@ vi.mock('@/composables/useAuth', () => ({
     isAuthenticatedUser: ref(false),
     isRegisteredUser,
     isCurrentUserLoaded,
+    isLoadingUser,
+    user,
     signInAnonymously,
     signUpWithGoogle,
     signOutUser: vi.fn(),
@@ -37,7 +41,7 @@ const createHomeRouter = () =>
       { path: '/privacy', component: HomePage },
       { path: '/terms', component: HomePage },
       { path: '/game/single-player/:gameId', name: 'single-player-game', component: HomePage },
-      { path: '/game/daily-challenge', component: HomePage },
+      { path: '/game/daily-challenge', name: 'daily-challenge-game', component: HomePage },
       { path: '/game/with-friends/scaffold', component: HomePage },
       { path: '/game/random-match', component: HomePage },
     ],
@@ -56,10 +60,12 @@ const renderHomePage = async () => {
 
 const resetAuthState = () => {
   isCurrentUserLoaded.value = true
+  isLoadingUser.value = false
   isRegisteredUser.value = false
   signInAnonymously.mockReset().mockResolvedValue(undefined)
   signUpWithGoogle.mockReset()
   createGameAsync.mockReset().mockResolvedValue({ id: 'game-123' })
+  user.value = { dailyChallengeStatus: 'available' }
 }
 
 describe('HomePage', () => {
@@ -113,6 +119,37 @@ describe('HomePage', () => {
     await getByRole('button', { name: 'Create Room' }).click()
 
     await expect.element(getByText('Welcome to GeoGuessLite')).toBeInTheDocument()
+  })
+
+  it('should disable the daily challenge while the user profile is loading', async () => {
+    resetAuthState()
+    isLoadingUser.value = true
+    const { view } = await renderHomePage()
+
+    await expect.element(view.getByRole('button', { name: 'Start Game' }).nth(1)).toBeDisabled()
+  })
+
+  it('should disable other game actions while opening the daily challenge', async () => {
+    resetAuthState()
+    isRegisteredUser.value = true
+    const { router, view } = await renderHomePage()
+    let finishNavigation: () => void = () => undefined
+    router.beforeEach(
+      (to) =>
+        new Promise<boolean>((resolve) => {
+          if (to.name !== 'daily-challenge-game') {
+            resolve(true)
+            return
+          }
+          finishNavigation = () => resolve(true)
+        }),
+    )
+
+    await view.getByRole('button', { name: 'Start Game' }).nth(1).click()
+
+    await expect.element(view.getByRole('button', { name: 'Start Game' }).nth(0)).toBeDisabled()
+    await expect.element(view.getByRole('button', { name: 'Create Room' })).toBeDisabled()
+    finishNavigation()
   })
 
   it('should allow registered users to use gated actions', async () => {

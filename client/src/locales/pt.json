@@ -43,6 +43,15 @@
           "retry": "Tentar novamente",
           "home": "Início"
         },
+        "GameDailyChallengePage": {
+          "loading": "Preparando o desafio de hoje…",
+          "unavailable": "O desafio diário de hoje não está disponível",
+          "alreadyPlayedToday": "Já jogou hoje",
+          "comeBackTomorrow": "Volte amanhã para um novo desafio.",
+          "actionError": "Algo deu errado. Tente novamente.",
+          "retry": "Tentar novamente",
+          "home": "Início"
+        },
         "RoundLabel": {
           "label": "Rodada {current} de {total}"
         },
@@ -68,6 +77,15 @@
           "noGuess": "Sem palpite",
           "target": "Local correto",
           "playAgain": "Jogar novamente",
+          "home": "Início"
+        },
+        "DailyChallengeGameSummary": {
+          "title": "Resumo do desafio diário",
+          "totalScore": "Pontuação total",
+          "roundHistory": "Histórico de rodadas",
+          "round": "Rodada {round}",
+          "noGuess": "Sem palpite",
+          "target": "Local correto",
           "home": "Início"
         },
         "RoomKeyStrip": {
@@ -107,6 +125,8 @@
         "DailyChallengeCard": {
           "title": "Desafio diário",
           "startGame": "Iniciar jogo",
+          "continueGame": "Continuar desafio",
+          "unavailableToday": "Indisponível hoje",
           "alreadyPlayedToday": "Já jogou hoje"
         },
         "RandomMatchCard": {

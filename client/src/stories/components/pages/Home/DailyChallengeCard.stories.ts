@@ -8,7 +8,8 @@ const meta = {
   tags: ['autodocs'],
   args: {
     disabled: false,
-    hasPlayedToday: false,
+    isStartingChallenge: false,
+    status: 'available',
   },
 } satisfies Meta<typeof DailyChallengeCard>
 
@@ -20,6 +21,18 @@ export const Available: Story = {}
 
 export const AlreadyPlayed: Story = {
   args: {
-    hasPlayedToday: true,
+    status: 'completed',
   },
+}
+
+export const Ongoing: Story = {
+  args: { status: 'ongoing' },
+}
+
+export const Unavailable: Story = {
+  args: { status: 'unavailable' },
+}
+
+export const Starting: Story = {
+  args: { isStartingChallenge: true },
 }

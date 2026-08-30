@@ -8,6 +8,7 @@ required:
   - bestScore
   - averageScore
   - distanceUnit
+  - dailyChallengeStatus
   - createdAt
   - updatedAt
 properties:
@@ -31,6 +32,13 @@ properties:
     enum:
       - km
       - mile
+  dailyChallengeStatus:
+    type: string
+    enum:
+      - available
+      - ongoing
+      - completed
+      - unavailable
   createdAt:
     type: string
     format: date-time

@@ -29,7 +29,12 @@ const rounds = [
 
 it('should render the default state properly', async () => {
   const screen = await render(SinglePlayerGameSummary, {
-    props: { isStartingNewGame: false, playerName: 'Guest', rounds, totalScore: 4210 },
+    props: {
+      isStartingNewGame: false,
+      playerName: 'Guest',
+      rounds,
+      totalScore: 4210,
+    },
     global: { plugins: [createAppI18n()] },
   })
 

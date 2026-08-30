@@ -3,6 +3,7 @@ import { CalendarDays } from '@lucide/vue'
 import { useI18n } from 'vue-i18n'
 
 import Button from '@/components/shared/Button.vue'
+import type { DailyChallengeStatus } from '@/types/game'
 
 defineOptions({
   name: 'HomeDailyChallengeCard',
@@ -10,7 +11,8 @@ defineOptions({
 
 const props = defineProps<{
   disabled: boolean
-  hasPlayedToday: boolean
+  isStartingChallenge: boolean
+  status: DailyChallengeStatus
 }>()
 
 const emit = defineEmits<{
@@ -18,6 +20,18 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const buttonLabel = () => {
+  if (props.status === 'ongoing') {
+    return t('components.pages.Home.DailyChallengeCard.continueGame')
+  }
+  if (props.status === 'completed') {
+    return t('components.pages.Home.DailyChallengeCard.alreadyPlayedToday')
+  }
+  if (props.status === 'unavailable') {
+    return t('components.pages.Home.DailyChallengeCard.unavailableToday')
+  }
+  return t('components.pages.Home.DailyChallengeCard.startGame')
+}
 </script>
 
 <template>
@@ -31,16 +45,11 @@ const { t } = useI18n()
 
     <Button
       class="daily-challenge-card__start-button"
-      :disabled="props.disabled || props.hasPlayedToday"
+      :disabled="props.disabled || props.status === 'completed' || props.status === 'unavailable'"
+      :loading="props.isStartingChallenge"
       @click="emit('startDailyChallenge')"
     >
-      {{
-        t(
-          props.hasPlayedToday
-            ? 'components.pages.Home.DailyChallengeCard.alreadyPlayedToday'
-            : 'components.pages.Home.DailyChallengeCard.startGame',
-        )
-      }}
+      {{ buttonLabel() }}
     </Button>
   </section>
 </template>
