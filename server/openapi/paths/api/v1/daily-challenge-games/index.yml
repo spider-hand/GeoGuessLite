@@ -1,0 +1,42 @@
+post:
+  operationId: createDailyChallengeGame
+  summary: Create or resume today's daily challenge game
+  security:
+    - BearerAuth: []
+  responses:
+    "200":
+      description: Existing ongoing daily challenge game
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/create-daily-challenge-game-response.yml
+    "201":
+      description: Daily challenge game created
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/create-daily-challenge-game-response.yml
+    "400":
+      description: Invalid request body
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "401":
+      description: Registered user authentication required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "404":
+      description: Today's scheduled challenge is unavailable
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "409":
+      description: Today's challenge has already been completed
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml

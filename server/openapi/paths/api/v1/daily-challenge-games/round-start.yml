@@ -1,0 +1,49 @@
+parameters:
+  - name: gameId
+    in: path
+    required: true
+    schema:
+      type: string
+  - name: roundNumber
+    in: path
+    required: true
+    schema:
+      type: integer
+      minimum: 1
+      maximum: 5
+post:
+  operationId: startDailyChallengeGameRound
+  summary: Start the next daily challenge round
+  security:
+    - BearerAuth: []
+  responses:
+    "200":
+      description: Active round
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/start-daily-challenge-game-round-response.yml
+    "400":
+      description: Invalid path parameters
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "401":
+      description: Registered user authentication required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "404":
+      description: Daily challenge game not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "409":
+      description: Game is not ready to start this round
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml

@@ -43,6 +43,15 @@
           "retry": "重试",
           "home": "主页"
         },
+        "GameDailyChallengePage": {
+          "loading": "正在准备今日挑战…",
+          "unavailable": "今日每日挑战不可用",
+          "alreadyPlayedToday": "今日已完成",
+          "comeBackTomorrow": "请明天再来参加新的挑战。",
+          "actionError": "出现错误，请重试。",
+          "retry": "重试",
+          "home": "主页"
+        },
         "RoundLabel": {
           "label": "第 {current} / {total} 回合"
         },
@@ -68,6 +77,15 @@
           "noGuess": "未猜测",
           "target": "正确位置",
           "playAgain": "再玩一次",
+          "home": "主页"
+        },
+        "DailyChallengeGameSummary": {
+          "title": "每日挑战总结",
+          "totalScore": "总分",
+          "roundHistory": "回合记录",
+          "round": "第 {round} 回合",
+          "noGuess": "未猜测",
+          "target": "正确位置",
           "home": "主页"
         },
         "RoomKeyStrip": {
@@ -107,6 +125,8 @@
         "DailyChallengeCard": {
           "title": "每日挑战",
           "startGame": "开始游戏",
+          "continueGame": "继续挑战",
+          "unavailableToday": "今日不可用",
           "alreadyPlayedToday": "今日已完成"
         },
         "RandomMatchCard": {

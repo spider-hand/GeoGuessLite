@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime'
-import type { CreateSinglePlayerGameResponseRoundsInner } from './CreateSinglePlayerGameResponseRoundsInner'
+import type { GetTodayDailyChallenge200ResponseGameRoundsInner } from './GetTodayDailyChallenge200ResponseGameRoundsInner'
 import {
-  CreateSinglePlayerGameResponseRoundsInnerFromJSON,
-  CreateSinglePlayerGameResponseRoundsInnerFromJSONTyped,
-  CreateSinglePlayerGameResponseRoundsInnerToJSON,
-  CreateSinglePlayerGameResponseRoundsInnerToJSONTyped,
-} from './CreateSinglePlayerGameResponseRoundsInner'
+  GetTodayDailyChallenge200ResponseGameRoundsInnerFromJSON,
+  GetTodayDailyChallenge200ResponseGameRoundsInnerFromJSONTyped,
+  GetTodayDailyChallenge200ResponseGameRoundsInnerToJSON,
+  GetTodayDailyChallenge200ResponseGameRoundsInnerToJSONTyped,
+} from './GetTodayDailyChallenge200ResponseGameRoundsInner'
 
 /**
  *
@@ -47,10 +47,10 @@ export interface CreateSinglePlayerGameResponse {
   currentRound: number
   /**
    *
-   * @type {Array<CreateSinglePlayerGameResponseRoundsInner>}
+   * @type {Array<GetTodayDailyChallenge200ResponseGameRoundsInner>}
    * @memberof CreateSinglePlayerGameResponse
    */
-  rounds: Array<CreateSinglePlayerGameResponseRoundsInner>
+  rounds: Array<GetTodayDailyChallenge200ResponseGameRoundsInner>
   /**
    *
    * @type {Date}
@@ -104,7 +104,9 @@ export function CreateSinglePlayerGameResponseFromJSONTyped(
     id: json['id'],
     status: json['status'],
     currentRound: json['currentRound'],
-    rounds: (json['rounds'] as Array<any>).map(CreateSinglePlayerGameResponseRoundsInnerFromJSON),
+    rounds: (json['rounds'] as Array<any>).map(
+      GetTodayDailyChallenge200ResponseGameRoundsInnerFromJSON,
+    ),
     createdAt: new Date(json['createdAt']),
     completedAt: json['completedAt'] == null ? undefined : new Date(json['completedAt']),
   }
@@ -126,7 +128,9 @@ export function CreateSinglePlayerGameResponseToJSONTyped(
     id: value['id'],
     status: value['status'],
     currentRound: value['currentRound'],
-    rounds: (value['rounds'] as Array<any>).map(CreateSinglePlayerGameResponseRoundsInnerToJSON),
+    rounds: (value['rounds'] as Array<any>).map(
+      GetTodayDailyChallenge200ResponseGameRoundsInnerToJSON,
+    ),
     createdAt: value['createdAt'].toISOString(),
     completedAt:
       value['completedAt'] == null ? value['completedAt'] : value['completedAt'].toISOString(),

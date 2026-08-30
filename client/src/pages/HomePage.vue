@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import heroImage from '@/assets/hero.png'
@@ -12,18 +12,40 @@ import NavigationFooter from '@/components/shared/NavigationFooter.vue'
 import NavigationHeader from '@/components/shared/NavigationHeader.vue'
 import SignUpPromptModal from '@/components/shared/SignUpPromptModal.vue'
 import useSinglePlayerGameQuery from '@/composables/useSinglePlayerGameQuery'
+import type { DailyChallengeStatus } from '@/types/game'
 
 const router = useRouter()
-const { isCurrentUserLoaded, isRegisteredUser, signInAnonymously, signUpWithGoogle } = useAuth()
+const {
+  isCurrentUserLoaded,
+  isLoadingUser,
+  isRegisteredUser,
+  signInAnonymously,
+  signUpWithGoogle,
+  user,
+} = useAuth()
 const { createGameAsync } = useSinglePlayerGameQuery(null)
 const isStartingSinglePlayer = ref(false)
+const isStartingDailyChallenge = ref(false)
 const isCreatingFriendsRoom = ref(false)
 const isEnteringFriendsRoom = ref(false)
 const isSignUpPromptOpen = ref(false)
 const isSigningUp = ref(false)
+const isStartingGame = computed(
+  () =>
+    isStartingSinglePlayer.value ||
+    isStartingDailyChallenge.value ||
+    isCreatingFriendsRoom.value ||
+    isEnteringFriendsRoom.value,
+)
+const isDailyChallengeDisabled = computed(
+  () => isStartingGame.value || !isCurrentUserLoaded.value || isLoadingUser.value,
+)
+const dailyChallengeStatus = computed<DailyChallengeStatus>(
+  () => user.value?.dailyChallengeStatus ?? 'available',
+)
 
 const handleStartSinglePlayer = async () => {
-  if (isStartingSinglePlayer.value) {
+  if (isStartingGame.value) {
     return
   }
 
@@ -54,14 +76,14 @@ const ensureRegisteredUser = () => {
   return true
 }
 const handleCreateFriendsRoom = async () => {
-  if (!ensureRegisteredUser() || isCreatingFriendsRoom.value || isEnteringFriendsRoom.value) {
+  if (isStartingGame.value || !ensureRegisteredUser()) {
     return
   }
 
   await router.push('/game/with-friends/scaffold')
 }
 const handleEnterFriendsRoom = async (roomKey: string) => {
-  if (!ensureRegisteredUser() || isCreatingFriendsRoom.value || isEnteringFriendsRoom.value) {
+  if (isStartingGame.value || !ensureRegisteredUser()) {
     return
   }
 
@@ -69,14 +91,22 @@ const handleEnterFriendsRoom = async (roomKey: string) => {
   await router.push('/game/with-friends/scaffold')
 }
 const handleJoinRandomMatch = async () => {
+  if (isStartingGame.value) {
+    return
+  }
   await router.push('/game/random-match')
 }
 const handleStartDailyChallenge = async () => {
-  if (!ensureRegisteredUser()) {
+  if (isStartingGame.value || !ensureRegisteredUser()) {
     return
   }
 
-  await router.push('/game/daily-challenge')
+  isStartingDailyChallenge.value = true
+  try {
+    await router.push({ name: 'daily-challenge-game' })
+  } finally {
+    isStartingDailyChallenge.value = false
+  }
 }
 const handleSignUp = async () => {
   if (isSigningUp.value) {
@@ -108,24 +138,25 @@ const handleSignUp = async () => {
 
       <div class="home-page__cards">
         <SinglePlayerCard
-          :disabled="isStartingSinglePlayer || isCreatingFriendsRoom || isEnteringFriendsRoom"
+          :disabled="isStartingGame"
           :is-starting-game="isStartingSinglePlayer"
           @start-single-player="handleStartSinglePlayer"
         />
         <PlayWithFriendsCard
-          :disabled="isStartingSinglePlayer || isCreatingFriendsRoom || isEnteringFriendsRoom"
+          :disabled="isStartingGame"
           :is-creating-room="isCreatingFriendsRoom"
           :is-entering-room="isEnteringFriendsRoom"
           @create-friends-room="handleCreateFriendsRoom"
           @enter-friends-room="handleEnterFriendsRoom"
         />
         <DailyChallengeCard
-          :disabled="isStartingSinglePlayer || isCreatingFriendsRoom || isEnteringFriendsRoom"
-          :has-played-today="false"
+          :disabled="isDailyChallengeDisabled"
+          :is-starting-challenge="isStartingDailyChallenge"
+          :status="dailyChallengeStatus"
           @start-daily-challenge="handleStartDailyChallenge"
         />
         <RandomMatchCard
-          :disabled="isStartingSinglePlayer || isCreatingFriendsRoom || isEnteringFriendsRoom"
+          :disabled="isStartingGame"
           :online-players="40"
           @join-random-match="handleJoinRandomMatch"
         />

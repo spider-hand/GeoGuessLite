@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import { signInAnonymouslyIfNeeded } from '@/composables/useAuth'
-import GameDailyChallengePage from '@/pages/GameDailyChallengePage.vue'
 import GameRandomMatchPage from '@/pages/GameRandomMatchPage.vue'
+import GameDailyChallengePage from '@/pages/GameDailyChallengePage.vue'
 import GameSinglePlayerPage from '@/pages/GameSinglePlayerPage.vue'
 import GameWithFriendsPage from '@/pages/GameWithFriendsPage.vue'
 import HomePage from '@/pages/HomePage.vue'
@@ -39,6 +39,7 @@ const router = createRouter({
     },
     {
       path: '/game/daily-challenge',
+      name: 'daily-challenge-game',
       component: GameDailyChallengePage,
     },
     {

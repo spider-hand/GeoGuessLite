@@ -10,6 +10,7 @@ CountryCode = Annotated[
     StringConstraints(min_length=2, max_length=2, pattern=r"^[A-Z]{2}$"),
 ]
 DistanceUnit = Literal["km", "mile"]
+DailyChallengeStatus = Literal["available", "ongoing", "completed", "unavailable"]
 
 
 class UserRecord(BaseModel):
@@ -27,6 +28,7 @@ class CurrentUserRecord(UserRecord):
     best_score: int = Field(alias="bestScore")
     average_score: float = Field(alias="averageScore")
     distance_unit: DistanceUnit = Field(alias="distanceUnit")
+    daily_challenge_status: DailyChallengeStatus = Field(alias="dailyChallengeStatus")
 
 
 class CreateUserInput(BaseModel):

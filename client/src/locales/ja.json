@@ -43,6 +43,15 @@
           "retry": "再試行",
           "home": "ホーム"
         },
+        "GameDailyChallengePage": {
+          "loading": "今日のチャレンジを準備しています…",
+          "unavailable": "今日のデイリーチャレンジは利用できません",
+          "alreadyPlayedToday": "今日はプレイ済みです",
+          "comeBackTomorrow": "新しいチャレンジは明日プレイできます。",
+          "actionError": "エラーが発生しました。もう一度お試しください。",
+          "retry": "再試行",
+          "home": "ホーム"
+        },
         "RoundLabel": {
           "label": "ラウンド {current} / {total}"
         },
@@ -68,6 +77,15 @@
           "noGuess": "推測なし",
           "target": "正解地点",
           "playAgain": "もう一度プレイ",
+          "home": "ホーム"
+        },
+        "DailyChallengeGameSummary": {
+          "title": "デイリーチャレンジ結果",
+          "totalScore": "合計スコア",
+          "roundHistory": "ラウンド履歴",
+          "round": "ラウンド {round}",
+          "noGuess": "推測なし",
+          "target": "正解地点",
           "home": "ホーム"
         },
         "RoomKeyStrip": {
@@ -107,6 +125,8 @@
         "DailyChallengeCard": {
           "title": "デイリーチャレンジ",
           "startGame": "ゲーム開始",
+          "continueGame": "チャレンジを続ける",
+          "unavailableToday": "今日は利用できません",
           "alreadyPlayedToday": "今日はプレイ済み"
         },
         "RandomMatchCard": {

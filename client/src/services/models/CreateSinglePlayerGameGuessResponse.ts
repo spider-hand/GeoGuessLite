@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime'
-import type { CreateSinglePlayerGameGuess200ResponseResult } from './CreateSinglePlayerGameGuess200ResponseResult'
+import type { GetTodayDailyChallenge200ResponseGameRoundsInnerResult } from './GetTodayDailyChallenge200ResponseGameRoundsInnerResult'
 import {
-  CreateSinglePlayerGameGuess200ResponseResultFromJSON,
-  CreateSinglePlayerGameGuess200ResponseResultFromJSONTyped,
-  CreateSinglePlayerGameGuess200ResponseResultToJSON,
-  CreateSinglePlayerGameGuess200ResponseResultToJSONTyped,
-} from './CreateSinglePlayerGameGuess200ResponseResult'
+  GetTodayDailyChallenge200ResponseGameRoundsInnerResultFromJSON,
+  GetTodayDailyChallenge200ResponseGameRoundsInnerResultFromJSONTyped,
+  GetTodayDailyChallenge200ResponseGameRoundsInnerResultToJSON,
+  GetTodayDailyChallenge200ResponseGameRoundsInnerResultToJSONTyped,
+} from './GetTodayDailyChallenge200ResponseGameRoundsInnerResult'
 
 /**
  *
@@ -47,10 +47,10 @@ export interface CreateSinglePlayerGameGuessResponse {
   startedAt: Date
   /**
    *
-   * @type {CreateSinglePlayerGameGuess200ResponseResult}
+   * @type {GetTodayDailyChallenge200ResponseGameRoundsInnerResult}
    * @memberof CreateSinglePlayerGameGuessResponse
    */
-  result: CreateSinglePlayerGameGuess200ResponseResult
+  result: GetTodayDailyChallenge200ResponseGameRoundsInnerResult
 }
 
 /**
@@ -83,7 +83,7 @@ export function CreateSinglePlayerGameGuessResponseFromJSONTyped(
     roundNumber: json['roundNumber'],
     imageId: json['imageId'],
     startedAt: new Date(json['startedAt']),
-    result: CreateSinglePlayerGameGuess200ResponseResultFromJSON(json['result']),
+    result: GetTodayDailyChallenge200ResponseGameRoundsInnerResultFromJSON(json['result']),
   }
 }
 
@@ -105,6 +105,6 @@ export function CreateSinglePlayerGameGuessResponseToJSONTyped(
     roundNumber: value['roundNumber'],
     imageId: value['imageId'],
     startedAt: value['startedAt'].toISOString(),
-    result: CreateSinglePlayerGameGuess200ResponseResultToJSON(value['result']),
+    result: GetTodayDailyChallenge200ResponseGameRoundsInnerResultToJSON(value['result']),
   }
 }

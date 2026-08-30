@@ -35,6 +35,7 @@ def make_current_user(**overrides) -> CurrentUserRecord:
             "bestScore": 4990,
             "averageScore": 3210.5,
             "distanceUnit": "km",
+            "dailyChallengeStatus": "ongoing",
             "createdAt": NOW,
             "updatedAt": NOW,
             **overrides,
@@ -52,6 +53,7 @@ def test_get_current_user_retains_statistics():
     assert user.best_score == 4990
     assert user.average_score == 3210.5
     assert user.distance_unit == "km"
+    assert user.daily_challenge_status == "ongoing"
 
 
 def test_get_user_raises_when_missing():

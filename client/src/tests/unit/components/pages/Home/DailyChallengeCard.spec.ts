@@ -7,7 +7,7 @@ import { createAppI18n } from '@/i18n'
 describe('DailyChallengeCard', () => {
   it('should render the default state properly', async () => {
     const screen = await render(DailyChallengeCard, {
-      props: { disabled: false, hasPlayedToday: false },
+      props: { disabled: false, isStartingChallenge: false, status: 'available' },
       global: { plugins: [createAppI18n()] },
     })
 
@@ -17,7 +17,7 @@ describe('DailyChallengeCard', () => {
 
   it('should emit the start action', async () => {
     const screen = await render(DailyChallengeCard, {
-      props: { disabled: false, hasPlayedToday: false },
+      props: { disabled: false, isStartingChallenge: false, status: 'available' },
       global: { plugins: [createAppI18n()] },
     })
 
@@ -28,7 +28,7 @@ describe('DailyChallengeCard', () => {
 
   it('should disable the start action when disabled', async () => {
     const screen = await render(DailyChallengeCard, {
-      props: { disabled: true, hasPlayedToday: false },
+      props: { disabled: true, isStartingChallenge: false, status: 'available' },
       global: { plugins: [createAppI18n()] },
     })
 
@@ -37,7 +37,7 @@ describe('DailyChallengeCard', () => {
 
   it('should show the already played state properly', async () => {
     const screen = await render(DailyChallengeCard, {
-      props: { disabled: false, hasPlayedToday: true },
+      props: { disabled: false, isStartingChallenge: false, status: 'completed' },
       global: { plugins: [createAppI18n()] },
     })
 

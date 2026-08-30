@@ -1,0 +1,14 @@
+type: object
+additionalProperties: false
+required:
+  - date
+  - status
+properties:
+  date:
+    type: string
+    format: date
+  status:
+    type: string
+    enum: [available, ongoing, completed]
+  game:
+    $ref: ./create-daily-challenge-game-response.yml

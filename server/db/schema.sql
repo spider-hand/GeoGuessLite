@@ -1,6 +1,6 @@
 \restrict dbmate
 
--- Dumped from database version 17.11 (df1f1a3)
+-- Dumped from database version 17.11 (32e7196)
 -- Dumped by pg_dump version 18.0
 
 SET statement_timeout = 0;
@@ -26,10 +26,15 @@ SET default_table_access_method = heap;
 CREATE TABLE public.daily_challenge_rounds (
     id character varying(64) DEFAULT (gen_random_uuid())::text NOT NULL,
     daily_challenge_id character varying(64) NOT NULL,
-    round integer NOT NULL,
+    round_number integer NOT NULL,
     image_id character varying(255) NOT NULL,
     created_at timestamp with time zone DEFAULT now(),
-    updated_at timestamp with time zone DEFAULT now()
+    updated_at timestamp with time zone DEFAULT now(),
+    target_latitude double precision NOT NULL,
+    target_longitude double precision NOT NULL,
+    CONSTRAINT daily_challenge_rounds_round_number_check CHECK (((round_number >= 1) AND (round_number <= 5))),
+    CONSTRAINT daily_challenge_rounds_target_latitude_check CHECK (((target_latitude >= ('-90'::integer)::double precision) AND (target_latitude <= (90)::double precision))),
+    CONSTRAINT daily_challenge_rounds_target_longitude_check CHECK (((target_longitude >= ('-180'::integer)::double precision) AND (target_longitude <= (180)::double precision)))
 );
 
 
@@ -40,22 +45,6 @@ CREATE TABLE public.daily_challenge_rounds (
 CREATE TABLE public.daily_challenges (
     id character varying(64) DEFAULT (gen_random_uuid())::text NOT NULL,
     date date NOT NULL,
-    created_at timestamp with time zone DEFAULT now(),
-    updated_at timestamp with time zone DEFAULT now()
-);
-
-
---
--- Name: daily_scores; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.daily_scores (
-    id character varying(64) DEFAULT (gen_random_uuid())::text NOT NULL,
-    user_id character varying(64) NOT NULL,
-    date date NOT NULL,
-    score integer NOT NULL,
-    distance double precision NOT NULL,
-    time_taken integer NOT NULL,
     created_at timestamp with time zone DEFAULT now(),
     updated_at timestamp with time zone DEFAULT now()
 );
@@ -111,7 +100,11 @@ CREATE TABLE public.single_player_games (
     id character varying(64) NOT NULL,
     user_id character varying(128) NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    completed_at timestamp with time zone
+    completed_at timestamp with time zone,
+    game_mode text DEFAULT 'single_player'::text NOT NULL,
+    daily_challenge_id character varying(64),
+    CONSTRAINT single_player_games_daily_challenge_check CHECK ((((game_mode = 'single_player'::text) AND (daily_challenge_id IS NULL)) OR ((game_mode = 'daily_challenge'::text) AND (daily_challenge_id IS NOT NULL)))),
+    CONSTRAINT single_player_games_game_mode_check CHECK ((game_mode = ANY (ARRAY['single_player'::text, 'daily_challenge'::text])))
 );
 
 
@@ -138,7 +131,7 @@ CREATE TABLE public.users (
 --
 
 ALTER TABLE ONLY public.daily_challenge_rounds
-    ADD CONSTRAINT daily_challenge_rounds_daily_challenge_id_round_key UNIQUE (daily_challenge_id, round);
+    ADD CONSTRAINT daily_challenge_rounds_daily_challenge_id_round_key UNIQUE (daily_challenge_id, round_number);
 
 
 --
@@ -163,22 +156,6 @@ ALTER TABLE ONLY public.daily_challenges
 
 ALTER TABLE ONLY public.daily_challenges
     ADD CONSTRAINT daily_challenges_pkey PRIMARY KEY (id);
-
-
---
--- Name: daily_scores daily_scores_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.daily_scores
-    ADD CONSTRAINT daily_scores_pkey PRIMARY KEY (id);
-
-
---
--- Name: daily_scores daily_scores_user_id_date_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.daily_scores
-    ADD CONSTRAINT daily_scores_user_id_date_key UNIQUE (user_id, date);
 
 
 --
@@ -232,7 +209,7 @@ CREATE INDEX idx_daily_challenge_rounds_daily_challenge_id ON public.daily_chall
 -- Name: idx_daily_challenge_rounds_round; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_daily_challenge_rounds_round ON public.daily_challenge_rounds USING btree (round);
+CREATE INDEX idx_daily_challenge_rounds_round ON public.daily_challenge_rounds USING btree (round_number);
 
 
 --
@@ -240,27 +217,6 @@ CREATE INDEX idx_daily_challenge_rounds_round ON public.daily_challenge_rounds U
 --
 
 CREATE INDEX idx_daily_challenges_date ON public.daily_challenges USING btree (date);
-
-
---
--- Name: idx_daily_scores_date; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX idx_daily_scores_date ON public.daily_scores USING btree (date);
-
-
---
--- Name: idx_daily_scores_score_date; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX idx_daily_scores_score_date ON public.daily_scores USING btree (score DESC, date);
-
-
---
--- Name: idx_daily_scores_user_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX idx_daily_scores_user_id ON public.daily_scores USING btree (user_id);
 
 
 --
@@ -278,6 +234,13 @@ CREATE INDEX idx_single_player_games_user_completed ON public.single_player_game
 
 
 --
+-- Name: idx_single_player_games_user_daily_challenge; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX idx_single_player_games_user_daily_challenge ON public.single_player_games USING btree (user_id, daily_challenge_id) WHERE (daily_challenge_id IS NOT NULL);
+
+
+--
 -- Name: daily_challenge_rounds daily_challenge_rounds_daily_challenge_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -286,19 +249,19 @@ ALTER TABLE ONLY public.daily_challenge_rounds
 
 
 --
--- Name: daily_scores daily_scores_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.daily_scores
-    ADD CONSTRAINT daily_scores_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
-
-
---
 -- Name: single_player_game_rounds single_player_game_rounds_game_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.single_player_game_rounds
     ADD CONSTRAINT single_player_game_rounds_game_id_fkey FOREIGN KEY (game_id) REFERENCES public.single_player_games(id) ON DELETE CASCADE;
+
+
+--
+-- Name: single_player_games single_player_games_daily_challenge_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.single_player_games
+    ADD CONSTRAINT single_player_games_daily_challenge_id_fkey FOREIGN KEY (daily_challenge_id) REFERENCES public.daily_challenges(id) ON DELETE CASCADE;
 
 
 --
@@ -315,4 +278,5 @@ ALTER TABLE ONLY public.single_player_game_rounds
 INSERT INTO public.schema_migrations (version) VALUES
     ('20260822173227'),
     ('20260822234712'),
-    ('20260823');
+    ('20260823'),
+    ('20260830');

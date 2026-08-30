@@ -32,6 +32,7 @@ def make_current_user() -> CurrentUserRecord:
             "bestScore": 4800,
             "averageScore": 3000.5,
             "distanceUnit": "km",
+            "dailyChallengeStatus": "completed",
         }
     )
 
@@ -63,6 +64,7 @@ def test_get_current_user_uses_authorizer_context_and_returns_statistics(mocker)
     assert response["statusCode"] == 200
     assert body["gamesPlayed"] == 8
     assert body["distanceUnit"] == "km"
+    assert body["dailyChallengeStatus"] == "completed"
     service.get_current_user.assert_called_once_with("user-123")
 
 
