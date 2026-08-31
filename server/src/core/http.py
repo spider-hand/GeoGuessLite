@@ -29,6 +29,35 @@ def error_response(status_code: int, code: str, message: str, headers: dict[str,
     return json_response(status_code, {"code": code, "message": message}, headers)
 
 
+def handle_api_error(error: Exception, headers: dict[str, str]) -> dict[str, Any]:
+    if isinstance(error, ApiError):
+        return error_response(error.status_code, error.code, error.message, headers)
+    raise error
+
+
+def get_path_parameter(event: CustomApiGatewayEvent, name: str) -> str:
+    value = (event.pathParameters or {}).get(name)
+    if not value:
+        raise ApiError(
+            HTTPStatus.BAD_REQUEST,
+            f"missing_{name}",
+            f"Path parameter '{name}' is required.",
+        )
+    return value
+
+
+def get_round_number(event: CustomApiGatewayEvent) -> int:
+    value = get_path_parameter(event, "roundNumber")
+    try:
+        return int(value)
+    except ValueError as error:
+        raise ApiError(
+            HTTPStatus.BAD_REQUEST,
+            "invalid_round_number",
+            "roundNumber must be an integer.",
+        ) from error
+
+
 def parse_json_body(event: CustomApiGatewayEvent) -> dict[str, Any]:
     if event.body in (None, ""):
         return {}

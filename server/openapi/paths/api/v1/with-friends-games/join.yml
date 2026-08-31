@@ -1,0 +1,42 @@
+post:
+  operationId: joinWithFriendsGame
+  summary: Join a waiting with-friends game
+  security:
+    - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../../../../components/schemas/join-with-friends-game-request.yml
+  responses:
+    '200':
+      description: With-friends game joined
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/join-with-friends-game-response.yml
+    '400':
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    '401':
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    '404':
+      description: User or room not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    '409':
+      description: Room full or already started
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml

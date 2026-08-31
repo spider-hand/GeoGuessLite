@@ -3,15 +3,17 @@ from http import HTTPStatus
 from aws_lambda_powertools.utilities.parser import event_parser
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
-from src.api.v1.single_player_games.handler import (
-    _game_payload,
-    _handle_api_error,
-    _path_parameter,
-    _round_number,
-)
+from src.api.v1.single_player_games.handler import _game_payload
 from src.core.auth import CORS_HEADERS, get_authorized_uid
 from src.core.events import CustomApiGatewayEvent
-from src.core.http import ApiError, json_response, parse_json_body
+from src.core.http import (
+    ApiError,
+    get_path_parameter,
+    get_round_number,
+    handle_api_error,
+    json_response,
+    parse_json_body,
+)
 from src.core.logger import dynamic_inject_lambda_context
 from src.features.daily_challenges import DailyChallengesService
 
@@ -30,7 +32,7 @@ def get_today_daily_challenge(event: CustomApiGatewayEvent, context: LambdaConte
             payload["game"] = _game_payload(today.game)
         return json_response(HTTPStatus.OK, payload, CORS_HEADERS)
     except Exception as error:
-        return _handle_api_error(error)
+        return handle_api_error(error, CORS_HEADERS)
 
 
 @dynamic_inject_lambda_context
@@ -42,7 +44,7 @@ def create_daily_challenge_game(event: CustomApiGatewayEvent, context: LambdaCon
         game, created = _service.create_or_resume_today(get_authorized_uid(event))
         return json_response(HTTPStatus.CREATED if created else HTTPStatus.OK, _game_payload(game), CORS_HEADERS)
     except Exception as error:
-        return _handle_api_error(error)
+        return handle_api_error(error, CORS_HEADERS)
 
 
 @dynamic_inject_lambda_context
@@ -51,15 +53,15 @@ def start_daily_challenge_game_round(event: CustomApiGatewayEvent, context: Lamb
     try:
         game_round = _service.start_round(
             get_authorized_uid(event),
-            _path_parameter(event, "gameId"),
-            _round_number(event),
+            get_path_parameter(event, "gameId"),
+            get_round_number(event),
         )
         payload = game_round.model_dump(by_alias=True, mode="json")
         if payload["result"] is None:
             payload.pop("result")
         return json_response(HTTPStatus.OK, payload, CORS_HEADERS)
     except Exception as error:
-        return _handle_api_error(error)
+        return handle_api_error(error, CORS_HEADERS)
 
 
 @dynamic_inject_lambda_context
@@ -68,8 +70,8 @@ def create_daily_challenge_game_guess(event: CustomApiGatewayEvent, context: Lam
     try:
         game_round = _service.create_guess(
             get_authorized_uid(event),
-            _path_parameter(event, "gameId"),
-            _round_number(event),
+            get_path_parameter(event, "gameId"),
+            get_round_number(event),
             parse_json_body(event),
         )
         return json_response(
@@ -78,4 +80,4 @@ def create_daily_challenge_game_guess(event: CustomApiGatewayEvent, context: Lam
             CORS_HEADERS,
         )
     except Exception as error:
-        return _handle_api_error(error)
+        return handle_api_error(error, CORS_HEADERS)

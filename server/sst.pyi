@@ -16,7 +16,28 @@ class Resource:
     class CleanupSinglePlayerGames:
         name: str
         type: str
+    class CleanupWithFriendsGames:
+        name: str
+        type: str
     class CreateDailyChallenge:
+        name: str
+        type: str
+    class WithFriendsRoundAdvance:
+        type: str
+        url: str
+    class WithFriendsRoundAdvanceDLQ:
+        type: str
+        url: str
+    class WithFriendsRoundAdvanceWorker:
+        name: str
+        type: str
+    class WithFriendsRoundTimeout:
+        type: str
+        url: str
+    class WithFriendsRoundTimeoutDLQ:
+        type: str
+        url: str
+    class WithFriendsRoundTimeoutWorker:
         name: str
         type: str
 

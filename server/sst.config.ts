@@ -21,6 +21,34 @@ export default $config({
       actions: ["secretsmanager:GetSecretValue"],
       resources: [appSecretArn],
     });
+    const withFriendsRoundTimeoutDlq = new sst.aws.Queue(
+      "WithFriendsRoundTimeoutDLQ",
+    );
+    const withFriendsRoundTimeoutQueue = new sst.aws.Queue(
+      "WithFriendsRoundTimeout",
+      {
+        delay: "60 seconds",
+        dlq: { queue: withFriendsRoundTimeoutDlq.arn, retry: 3 },
+      },
+    );
+    const withFriendsRoundAdvanceDlq = new sst.aws.Queue(
+      "WithFriendsRoundAdvanceDLQ",
+    );
+    const withFriendsRoundAdvanceQueue = new sst.aws.Queue(
+      "WithFriendsRoundAdvance",
+      {
+        delay: "10 seconds",
+        dlq: { queue: withFriendsRoundAdvanceDlq.arn, retry: 3 },
+      },
+    );
+    const withFriendsRoundTimeoutSendPermission = sst.aws.permission({
+      actions: ["sqs:SendMessage"],
+      resources: [withFriendsRoundTimeoutQueue.arn],
+    });
+    const withFriendsRoundAdvanceSendPermission = sst.aws.permission({
+      actions: ["sqs:SendMessage"],
+      resources: [withFriendsRoundAdvanceQueue.arn],
+    });
     const cleanupSinglePlayerGames = new sst.aws.Function(
       "CleanupSinglePlayerGames",
       {
@@ -51,6 +79,53 @@ export default $config({
           "src/jobs/cleanup_expired_daily_challenges.cleanup_expired_daily_challenges",
         environment: { ENVIRONMENT: $app.stage },
         permissions: [appSecretPermission],
+      },
+    );
+    const cleanupWithFriendsGames = new sst.aws.Function(
+      "CleanupWithFriendsGames",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/jobs/cleanup_expired_with_friends_games.cleanup_expired_with_friends_games",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+    );
+    const withFriendsRoundTimeoutWorker = new sst.aws.Function(
+      "WithFriendsRoundTimeoutWorker",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/jobs/process_with_friends_round_timeout.process_with_friends_round_timeout",
+        environment: {
+          ENVIRONMENT: $app.stage,
+          WITH_FRIENDS_ROUND_ADVANCE_QUEUE_URL:
+            withFriendsRoundAdvanceQueue.url,
+        },
+        permissions: [
+          appSecretPermission,
+          withFriendsRoundAdvanceSendPermission,
+        ],
+      },
+    );
+    const withFriendsRoundAdvanceWorker = new sst.aws.Function(
+      "WithFriendsRoundAdvanceWorker",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/jobs/process_with_friends_round_advance.process_with_friends_round_advance",
+        environment: {
+          ENVIRONMENT: $app.stage,
+          WITH_FRIENDS_ROUND_TIMEOUT_QUEUE_URL:
+            withFriendsRoundTimeoutQueue.url,
+        },
+        permissions: [
+          appSecretPermission,
+          withFriendsRoundTimeoutSendPermission,
+        ],
       },
     );
 
@@ -143,6 +218,72 @@ export default $config({
           "src/api/v1/single_player_games/handler.create_single_player_game_guess",
         environment: { ENVIRONMENT: $app.stage },
         permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "POST /api/v1/with-friends-games",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/api/v1/with_friends_games/handler.create_with_friends_game",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "POST /api/v1/with-friends-games/join",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/api/v1/with_friends_games/handler.join_with_friends_game",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "POST /api/v1/with-friends-games/{gameId}/start",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/api/v1/with_friends_games/handler.start_with_friends_game",
+        environment: {
+          ENVIRONMENT: $app.stage,
+          WITH_FRIENDS_ROUND_TIMEOUT_QUEUE_URL:
+            withFriendsRoundTimeoutQueue.url,
+        },
+        permissions: [
+          appSecretPermission,
+          withFriendsRoundTimeoutSendPermission,
+        ],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "POST /api/v1/with-friends-games/{gameId}/rounds/{roundNumber}/guesses",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/api/v1/with_friends_games/handler.create_with_friends_game_guess",
+        environment: {
+          ENVIRONMENT: $app.stage,
+          WITH_FRIENDS_ROUND_ADVANCE_QUEUE_URL:
+            withFriendsRoundAdvanceQueue.url,
+        },
+        permissions: [
+          appSecretPermission,
+          withFriendsRoundAdvanceSendPermission,
+        ],
       },
       { auth: { lambda: firebaseAuthorizer.id } },
     );
@@ -271,5 +412,11 @@ export default $config({
       schedule: "cron(0 1 * * ? *)",
       function: cleanupDailyChallenges,
     });
+    new sst.aws.CronV2("DeleteExpiredWithFriendsGames", {
+      schedule: "cron(0 2 * * ? *)",
+      function: cleanupWithFriendsGames,
+    });
+    withFriendsRoundTimeoutQueue.subscribe(withFriendsRoundTimeoutWorker);
+    withFriendsRoundAdvanceQueue.subscribe(withFriendsRoundAdvanceWorker);
   },
 });

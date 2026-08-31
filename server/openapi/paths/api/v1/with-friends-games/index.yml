@@ -1,0 +1,36 @@
+post:
+  operationId: createWithFriendsGame
+  summary: Create a with-friends game
+  security:
+    - BearerAuth: []
+  responses:
+    '201':
+      description: With-friends game created
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/create-with-friends-game-response.yml
+    '400':
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    '401':
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    '404':
+      description: Registered user not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    '503':
+      description: Playable images unavailable
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml

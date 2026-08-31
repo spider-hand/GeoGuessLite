@@ -48,7 +48,7 @@ Key paths are below:
 
 - Always keep API handlers, OpenAPI spec, and SST infrastructure definitions in sync
 - Always keep OpenAPI component schema files in `server/openapi/components/schemas/` scoped to REST operations. Request/response schema filenames must start with the operation verb they serve, such as `get-`, `create-`, `update-`, or `delete-`, instead of generic domain nouns, except for shared `error-response.yml`
-- Always create a new migration file when modifying the database schema. Name migration files as `{currentDate}_{title}.sql`. Every migration file must contain both `-- migrate:up` and `-- migrate:down` sections.
+- Always create a new migration file when modifying the database schema. Name migration files as `{YYYYMMDDHHMMSS}_{title}.sql`, including the local 24-hour time down to seconds; date-only names are invalid. Every migration file must contain both `-- migrate:up` and `-- migrate:down` sections.
 - Always run `pnpm generate:api` at `apps/web/` after updating API endpoint and OpenAPI spec inside `server/openapi/`
 - Always run `uv run ruff check .` and `uv run pytest` and make sure to resolve all errors before finishing work
 

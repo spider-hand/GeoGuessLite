@@ -1,0 +1,57 @@
+parameters:
+  - name: gameId
+    in: path
+    required: true
+    schema:
+      type: string
+  - name: roundNumber
+    in: path
+    required: true
+    schema:
+      type: integer
+      minimum: 1
+      maximum: 5
+post:
+  operationId: createWithFriendsGameGuess
+  summary: Submit a with-friends game guess
+  security:
+    - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../../../../components/schemas/create-with-friends-game-guess-request.yml
+  responses:
+    '202':
+      description: Guess accepted
+    '400':
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    '401':
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    '403':
+      description: Participant required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    '404':
+      description: Game not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    '409':
+      description: Round expired or invalid game state
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml

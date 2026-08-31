@@ -24,6 +24,10 @@ models/CreateSinglePlayerGameResponse.ts
 models/CreateUser200Response.ts
 models/CreateUserRequest.ts
 models/CreateUserResponse.ts
+models/CreateWithFriendsGame201Response.ts
+models/CreateWithFriendsGameGuessRequest.ts
+models/CreateWithFriendsGameGuessRequestGuess.ts
+models/CreateWithFriendsGameResponse.ts
 models/ErrorResponse.ts
 models/GetCurrentUser200Response.ts
 models/GetCurrentUserResponse.ts
@@ -40,6 +44,9 @@ models/GetTodayDailyChallenge200ResponseGameRoundsInnerResult.ts
 models/GetTodayDailyChallengeResponse.ts
 models/GetUser200Response.ts
 models/GetUserResponse.ts
+models/JoinWithFriendsGame200Response.ts
+models/JoinWithFriendsGameRequest.ts
+models/JoinWithFriendsGameResponse.ts
 models/StartDailyChallengeGameRound200Response.ts
 models/StartDailyChallengeGameRoundResponse.ts
 models/StartSinglePlayerGameRound200Response.ts
