@@ -1,0 +1,44 @@
+parameters:
+  - name: gameId
+    in: path
+    required: true
+    schema:
+      type: string
+post:
+  operationId: startWithFriendsGame
+  summary: Start a with-friends game
+  security:
+    - BearerAuth: []
+  responses:
+    '202':
+      description: Game start accepted
+    '400':
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    '401':
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    '403':
+      description: Host required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    '404':
+      description: Game not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    '409':
+      description: Opponent required or invalid game state
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml

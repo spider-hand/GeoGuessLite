@@ -22,12 +22,16 @@ import type {
   CreateSinglePlayerGameGuessRequest,
   CreateUser200Response,
   CreateUserRequest,
+  CreateWithFriendsGame201Response,
+  CreateWithFriendsGameGuessRequest,
   GetCurrentUser200Response,
   GetSinglePlayerGames200ResponseInner,
   GetSinglePlayerGames400Response,
   GetSinglePlayerGames401Response,
   GetTodayDailyChallenge200Response,
   GetUser200Response,
+  JoinWithFriendsGame200Response,
+  JoinWithFriendsGameRequest,
   StartDailyChallengeGameRound200Response,
   StartSinglePlayerGameRound200Response,
   UpdateUser200Response,
@@ -50,6 +54,10 @@ import {
   CreateUser200ResponseToJSON,
   CreateUserRequestFromJSON,
   CreateUserRequestToJSON,
+  CreateWithFriendsGame201ResponseFromJSON,
+  CreateWithFriendsGame201ResponseToJSON,
+  CreateWithFriendsGameGuessRequestFromJSON,
+  CreateWithFriendsGameGuessRequestToJSON,
   GetCurrentUser200ResponseFromJSON,
   GetCurrentUser200ResponseToJSON,
   GetSinglePlayerGames200ResponseInnerFromJSON,
@@ -62,6 +70,10 @@ import {
   GetTodayDailyChallenge200ResponseToJSON,
   GetUser200ResponseFromJSON,
   GetUser200ResponseToJSON,
+  JoinWithFriendsGame200ResponseFromJSON,
+  JoinWithFriendsGame200ResponseToJSON,
+  JoinWithFriendsGameRequestFromJSON,
+  JoinWithFriendsGameRequestToJSON,
   StartDailyChallengeGameRound200ResponseFromJSON,
   StartDailyChallengeGameRound200ResponseToJSON,
   StartSinglePlayerGameRound200ResponseFromJSON,
@@ -88,6 +100,12 @@ export interface CreateUserOperationRequest {
   createUserRequest?: CreateUserRequest
 }
 
+export interface CreateWithFriendsGameGuessOperationRequest {
+  gameId: string
+  roundNumber: number
+  createWithFriendsGameGuessRequest: CreateWithFriendsGameGuessRequest
+}
+
 export interface GetSinglePlayerGameRequest {
   gameId: string
 }
@@ -102,6 +120,10 @@ export interface GetUserRequest {
   userId: string
 }
 
+export interface JoinWithFriendsGameOperationRequest {
+  joinWithFriendsGameRequest: JoinWithFriendsGameRequest
+}
+
 export interface StartDailyChallengeGameRoundRequest {
   gameId: string
   roundNumber: number
@@ -110,6 +132,10 @@ export interface StartDailyChallengeGameRoundRequest {
 export interface StartSinglePlayerGameRoundRequest {
   gameId: string
   roundNumber: number
+}
+
+export interface StartWithFriendsGameRequest {
+  gameId: string
 }
 
 export interface UpdateUserOperationRequest {
@@ -428,6 +454,131 @@ export class DefaultApi extends runtime.BaseAPI {
   }
 
   /**
+   * Create a with-friends game
+   */
+  async createWithFriendsGameRaw(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<CreateWithFriendsGame201Response>> {
+    const queryParameters: any = {}
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken
+      const tokenString = await token('BearerAuth', [])
+
+      if (tokenString) {
+        headerParameters['Authorization'] = `Bearer ${tokenString}`
+      }
+    }
+
+    let urlPath = `/api/v1/with-friends-games`
+
+    const response = await this.request(
+      {
+        path: urlPath,
+        method: 'POST',
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    )
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      CreateWithFriendsGame201ResponseFromJSON(jsonValue),
+    )
+  }
+
+  /**
+   * Create a with-friends game
+   */
+  async createWithFriendsGame(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<CreateWithFriendsGame201Response> {
+    const response = await this.createWithFriendsGameRaw(initOverrides)
+    return await response.value()
+  }
+
+  /**
+   * Submit a with-friends game guess
+   */
+  async createWithFriendsGameGuessRaw(
+    requestParameters: CreateWithFriendsGameGuessOperationRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    if (requestParameters['gameId'] == null) {
+      throw new runtime.RequiredError(
+        'gameId',
+        'Required parameter "gameId" was null or undefined when calling createWithFriendsGameGuess().',
+      )
+    }
+
+    if (requestParameters['roundNumber'] == null) {
+      throw new runtime.RequiredError(
+        'roundNumber',
+        'Required parameter "roundNumber" was null or undefined when calling createWithFriendsGameGuess().',
+      )
+    }
+
+    if (requestParameters['createWithFriendsGameGuessRequest'] == null) {
+      throw new runtime.RequiredError(
+        'createWithFriendsGameGuessRequest',
+        'Required parameter "createWithFriendsGameGuessRequest" was null or undefined when calling createWithFriendsGameGuess().',
+      )
+    }
+
+    const queryParameters: any = {}
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    headerParameters['Content-Type'] = 'application/json'
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken
+      const tokenString = await token('BearerAuth', [])
+
+      if (tokenString) {
+        headerParameters['Authorization'] = `Bearer ${tokenString}`
+      }
+    }
+
+    let urlPath = `/api/v1/with-friends-games/{gameId}/rounds/{roundNumber}/guesses`
+    urlPath = urlPath.replace(
+      `{${'gameId'}}`,
+      encodeURIComponent(String(requestParameters['gameId'])),
+    )
+    urlPath = urlPath.replace(
+      `{${'roundNumber'}}`,
+      encodeURIComponent(String(requestParameters['roundNumber'])),
+    )
+
+    const response = await this.request(
+      {
+        path: urlPath,
+        method: 'POST',
+        headers: headerParameters,
+        query: queryParameters,
+        body: CreateWithFriendsGameGuessRequestToJSON(
+          requestParameters['createWithFriendsGameGuessRequest'],
+        ),
+      },
+      initOverrides,
+    )
+
+    return new runtime.VoidApiResponse(response)
+  }
+
+  /**
+   * Submit a with-friends game guess
+   */
+  async createWithFriendsGameGuess(
+    requestParameters: CreateWithFriendsGameGuessOperationRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.createWithFriendsGameGuessRaw(requestParameters, initOverrides)
+  }
+
+  /**
    * Delete the current user
    */
   async deleteUserRaw(
@@ -739,6 +890,64 @@ export class DefaultApi extends runtime.BaseAPI {
   }
 
   /**
+   * Join a waiting with-friends game
+   */
+  async joinWithFriendsGameRaw(
+    requestParameters: JoinWithFriendsGameOperationRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<JoinWithFriendsGame200Response>> {
+    if (requestParameters['joinWithFriendsGameRequest'] == null) {
+      throw new runtime.RequiredError(
+        'joinWithFriendsGameRequest',
+        'Required parameter "joinWithFriendsGameRequest" was null or undefined when calling joinWithFriendsGame().',
+      )
+    }
+
+    const queryParameters: any = {}
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    headerParameters['Content-Type'] = 'application/json'
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken
+      const tokenString = await token('BearerAuth', [])
+
+      if (tokenString) {
+        headerParameters['Authorization'] = `Bearer ${tokenString}`
+      }
+    }
+
+    let urlPath = `/api/v1/with-friends-games/join`
+
+    const response = await this.request(
+      {
+        path: urlPath,
+        method: 'POST',
+        headers: headerParameters,
+        query: queryParameters,
+        body: JoinWithFriendsGameRequestToJSON(requestParameters['joinWithFriendsGameRequest']),
+      },
+      initOverrides,
+    )
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      JoinWithFriendsGame200ResponseFromJSON(jsonValue),
+    )
+  }
+
+  /**
+   * Join a waiting with-friends game
+   */
+  async joinWithFriendsGame(
+    requestParameters: JoinWithFriendsGameOperationRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<JoinWithFriendsGame200Response> {
+    const response = await this.joinWithFriendsGameRaw(requestParameters, initOverrides)
+    return await response.value()
+  }
+
+  /**
    * Start the next daily challenge round
    */
   async startDailyChallengeGameRoundRaw(
@@ -876,6 +1085,62 @@ export class DefaultApi extends runtime.BaseAPI {
   ): Promise<StartSinglePlayerGameRound200Response> {
     const response = await this.startSinglePlayerGameRoundRaw(requestParameters, initOverrides)
     return await response.value()
+  }
+
+  /**
+   * Start a with-friends game
+   */
+  async startWithFriendsGameRaw(
+    requestParameters: StartWithFriendsGameRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    if (requestParameters['gameId'] == null) {
+      throw new runtime.RequiredError(
+        'gameId',
+        'Required parameter "gameId" was null or undefined when calling startWithFriendsGame().',
+      )
+    }
+
+    const queryParameters: any = {}
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken
+      const tokenString = await token('BearerAuth', [])
+
+      if (tokenString) {
+        headerParameters['Authorization'] = `Bearer ${tokenString}`
+      }
+    }
+
+    let urlPath = `/api/v1/with-friends-games/{gameId}/start`
+    urlPath = urlPath.replace(
+      `{${'gameId'}}`,
+      encodeURIComponent(String(requestParameters['gameId'])),
+    )
+
+    const response = await this.request(
+      {
+        path: urlPath,
+        method: 'POST',
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    )
+
+    return new runtime.VoidApiResponse(response)
+  }
+
+  /**
+   * Start a with-friends game
+   */
+  async startWithFriendsGame(
+    requestParameters: StartWithFriendsGameRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.startWithFriendsGameRaw(requestParameters, initOverrides)
   }
 
   /**

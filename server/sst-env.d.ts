@@ -18,7 +18,35 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Function"
     }
+    "CleanupWithFriendsGames": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
     "CreateDailyChallenge": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "WithFriendsRoundAdvance": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
+    "WithFriendsRoundAdvanceDLQ": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
+    "WithFriendsRoundAdvanceWorker": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "WithFriendsRoundTimeout": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
+    "WithFriendsRoundTimeoutDLQ": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
+    "WithFriendsRoundTimeoutWorker": {
       "name": string
       "type": "sst.aws.Function"
     }

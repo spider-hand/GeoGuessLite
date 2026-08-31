@@ -13,6 +13,14 @@ paths:
     $ref: ./paths/api/v1/single-player-games/round-start.yml
   /api/v1/single-player-games/{gameId}/rounds/{roundNumber}/guesses:
     $ref: ./paths/api/v1/single-player-games/guesses.yml
+  /api/v1/with-friends-games:
+    $ref: ./paths/api/v1/with-friends-games/index.yml
+  /api/v1/with-friends-games/join:
+    $ref: ./paths/api/v1/with-friends-games/join.yml
+  /api/v1/with-friends-games/{gameId}/start:
+    $ref: ./paths/api/v1/with-friends-games/start.yml
+  /api/v1/with-friends-games/{gameId}/rounds/{roundNumber}/guesses:
+    $ref: ./paths/api/v1/with-friends-games/guesses.yml
   /api/v1/daily-challenge-games:
     $ref: ./paths/api/v1/daily-challenge-games/index.yml
   /api/v1/daily-challenge-games/today:
@@ -46,6 +54,10 @@ components:
       $ref: ./components/schemas/create-single-player-game-guess-coordinate.yml
     CreateSinglePlayerGameGuessResponse:
       $ref: ./components/schemas/create-single-player-game-guess-response.yml
+    CreateWithFriendsGameResponse:
+      $ref: ./components/schemas/create-with-friends-game-response.yml
+    CreateWithFriendsGameGuessRequest:
+      $ref: ./components/schemas/create-with-friends-game-guess-request.yml
     CreateUserRequest:
       $ref: ./components/schemas/create-user-request.yml
     CreateUserResponse:
@@ -62,6 +74,10 @@ components:
       $ref: ./components/schemas/get-single-player-games-response.yml
     GetUserResponse:
       $ref: ./components/schemas/get-user-response.yml
+    JoinWithFriendsGameRequest:
+      $ref: ./components/schemas/join-with-friends-game-request.yml
+    JoinWithFriendsGameResponse:
+      $ref: ./components/schemas/join-with-friends-game-response.yml
     UpdateUserRequest:
       $ref: ./components/schemas/update-user-request.yml
     UpdateUserCountry:

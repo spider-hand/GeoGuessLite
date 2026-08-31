@@ -1,0 +1,8 @@
+type: object
+additionalProperties: false
+required:
+  - roomKey
+properties:
+  roomKey:
+    type: string
+    pattern: '^\d{6}$'

@@ -127,6 +127,22 @@ CREATE TABLE public.users (
 
 
 --
+-- Name: with_friends_games; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.with_friends_games (
+    id character varying(64) NOT NULL,
+    room_key character(6) NOT NULL,
+    host_user_id character varying(64),
+    result jsonb,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    completed_at timestamp with time zone,
+    CONSTRAINT with_friends_games_result_check CHECK (((result IS NULL) OR (jsonb_typeof(result) = 'object'::text))),
+    CONSTRAINT with_friends_games_room_key_check CHECK ((room_key ~ '^[0-9]{6}$'::text))
+);
+
+
+--
 -- Name: daily_challenge_rounds daily_challenge_rounds_daily_challenge_id_round_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -199,6 +215,22 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: with_friends_games with_friends_games_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.with_friends_games
+    ADD CONSTRAINT with_friends_games_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: with_friends_games with_friends_games_room_key_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.with_friends_games
+    ADD CONSTRAINT with_friends_games_room_key_key UNIQUE (room_key);
+
+
+--
 -- Name: idx_daily_challenge_rounds_daily_challenge_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -241,6 +273,13 @@ CREATE UNIQUE INDEX idx_single_player_games_user_daily_challenge ON public.singl
 
 
 --
+-- Name: idx_with_friends_games_expiration; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_with_friends_games_expiration ON public.with_friends_games USING btree (COALESCE(completed_at, created_at));
+
+
+--
 -- Name: daily_challenge_rounds daily_challenge_rounds_daily_challenge_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -265,6 +304,14 @@ ALTER TABLE ONLY public.single_player_games
 
 
 --
+-- Name: with_friends_games with_friends_games_host_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.with_friends_games
+    ADD CONSTRAINT with_friends_games_host_user_id_fkey FOREIGN KEY (host_user_id) REFERENCES public.users(id) ON DELETE SET NULL;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -278,5 +325,6 @@ ALTER TABLE ONLY public.single_player_games
 INSERT INTO public.schema_migrations (version) VALUES
     ('20260822173227'),
     ('20260822234712'),
-    ('20260823'),
-    ('20260830');
+    ('20260823154948'),
+    ('20260830200034'),
+    ('20260831213418');
