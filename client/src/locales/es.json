@@ -57,7 +57,8 @@
         },
         "GameMapContainer": {
           "makeGuess": "Adivinar",
-          "submitting": "Enviando…"
+          "submitting": "Enviando…",
+          "submitted": "Respuesta enviada"
         },
         "SinglePlayerRoundResult": {
           "round": "Ronda {round}",
@@ -67,7 +68,9 @@
           "totalScore": "Puntuación total",
           "nextRound": "Siguiente ronda",
           "viewSummary": "Ver resumen",
-          "target": "Ubicación correcta"
+          "target": "Ubicación correcta",
+          "nextRoundStarting": "La siguiente ronda comenzará en breve.",
+          "summaryStarting": "El resumen de la partida se abrirá en breve."
         },
         "SinglePlayerGameSummary": {
           "title": "Resumen de la partida",
@@ -88,14 +91,43 @@
           "target": "Ubicación correcta",
           "home": "Inicio"
         },
+        "WithFriendsParticipantList": {
+          "title": "Jugadores",
+          "count": "{count} / {maximum}",
+          "host": "Anfitrión",
+          "connected": "En línea",
+          "disconnected": "Desconectado"
+        },
+        "WithFriendsRoundResult": {
+          "title": "Resultados de la ronda {round}",
+          "leaderboard": "Clasificación de la ronda",
+          "distance": "Distancia",
+          "roundScore": "Ronda",
+          "totalScore": "Total",
+          "noGuess": "Sin respuesta",
+          "target": "Ubicación correcta"
+        },
+        "WithFriendsGameSummary": {
+          "title": "Resumen de la partida",
+          "roundHistory": "Historial de rondas",
+          "round": "Ronda {round}",
+          "distance": "Distancia",
+          "roundScore": "Ronda",
+          "totalScore": "Total",
+          "noGuess": "Sin respuesta",
+          "target": "Ubicación correcta",
+          "createRoom": "Crear sala",
+          "exit": "Salir"
+        },
         "RoomKeyStrip": {
           "label": "Clave de sala"
         },
         "GameWithFriendsPage": {
-          "createRoom": "Crear sala",
           "exit": "Salir",
-          "starting": "La partida está lista y comenzará en breve.",
-          "waitingForOpponent": "Esperando al oponente..."
+          "startGame": "Iniciar partida",
+          "waitingForOpponent": "Esperando jugadores...",
+          "waitingForHost": "Esperando a que el anfitrión inicie la partida.",
+          "actionError": "Algo salió mal. Inténtalo de nuevo."
         },
         "ResultBadge": {
           "youWin": "Has ganado",

@@ -57,7 +57,8 @@
         },
         "GameMapContainer": {
           "makeGuess": "Make Guess",
-          "submitting": "Submitting…"
+          "submitting": "Submitting…",
+          "submitted": "Guess submitted"
         },
         "SinglePlayerRoundResult": {
           "round": "Round {round}",
@@ -67,7 +68,9 @@
           "totalScore": "Total score",
           "nextRound": "Next Round",
           "viewSummary": "View Summary",
-          "target": "Correct location"
+          "target": "Correct location",
+          "nextRoundStarting": "The next round will start shortly.",
+          "summaryStarting": "The game summary will open shortly."
         },
         "SinglePlayerGameSummary": {
           "title": "Game Summary",
@@ -88,14 +91,43 @@
           "target": "Correct location",
           "home": "Home"
         },
+        "WithFriendsParticipantList": {
+          "title": "Players",
+          "count": "{count} / {maximum}",
+          "host": "Host",
+          "connected": "Online",
+          "disconnected": "Offline"
+        },
+        "WithFriendsRoundResult": {
+          "title": "Round {round} Results",
+          "leaderboard": "Round leaderboard",
+          "distance": "Distance",
+          "roundScore": "Round",
+          "totalScore": "Total",
+          "noGuess": "No guess",
+          "target": "Correct location"
+        },
+        "WithFriendsGameSummary": {
+          "title": "Game Summary",
+          "roundHistory": "Round history",
+          "round": "Round {round}",
+          "distance": "Distance",
+          "roundScore": "Round",
+          "totalScore": "Total",
+          "noGuess": "No guess",
+          "target": "Correct location",
+          "createRoom": "Create Room",
+          "exit": "Exit"
+        },
         "RoomKeyStrip": {
           "label": "Room Key"
         },
         "GameWithFriendsPage": {
-          "createRoom": "Create Room",
           "exit": "Exit",
-          "starting": "The game is ready and will start shortly.",
-          "waitingForOpponent": "Waiting for opponent..."
+          "startGame": "Start Game",
+          "waitingForOpponent": "Waiting for players...",
+          "waitingForHost": "Waiting for the host to start the game.",
+          "actionError": "Something went wrong. Please try again."
         },
         "ResultBadge": {
           "youWin": "You Win",

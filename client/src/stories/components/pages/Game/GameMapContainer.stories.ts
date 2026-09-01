@@ -7,6 +7,7 @@ const meta = {
   component: GameMapContainer,
   tags: ['autodocs'],
   args: {
+    isSubmitted: false,
     isSubmitting: false,
     playerName: 'Taylor Swift',
     selection: null,
@@ -30,4 +31,8 @@ export const Selected: Story = {
 
 export const Submitting: Story = {
   args: { isSubmitting: true, selection: [139.6917, 35.6895] },
+}
+
+export const Submitted: Story = {
+  args: { isSubmitted: true, selection: [139.6917, 35.6895] },
 }

@@ -37,7 +37,7 @@ export default $config({
     const withFriendsRoundAdvanceQueue = new sst.aws.Queue(
       "WithFriendsRoundAdvance",
       {
-        delay: "10 seconds",
+        delay: "15 seconds",
         dlq: { queue: withFriendsRoundAdvanceDlq.arn, retry: 3 },
       },
     );
@@ -47,6 +47,21 @@ export default $config({
     });
     const withFriendsRoundAdvanceSendPermission = sst.aws.permission({
       actions: ["sqs:SendMessage"],
+      resources: [withFriendsRoundAdvanceQueue.arn],
+    });
+    const queueReceiveActions = [
+      "sqs:ChangeMessageVisibility",
+      "sqs:DeleteMessage",
+      "sqs:GetQueueAttributes",
+      "sqs:GetQueueUrl",
+      "sqs:ReceiveMessage",
+    ];
+    const withFriendsRoundTimeoutReceivePermission = sst.aws.permission({
+      actions: queueReceiveActions,
+      resources: [withFriendsRoundTimeoutQueue.arn],
+    });
+    const withFriendsRoundAdvanceReceivePermission = sst.aws.permission({
+      actions: queueReceiveActions,
       resources: [withFriendsRoundAdvanceQueue.arn],
     });
     const cleanupSinglePlayerGames = new sst.aws.Function(
@@ -106,6 +121,7 @@ export default $config({
         },
         permissions: [
           appSecretPermission,
+          withFriendsRoundTimeoutReceivePermission,
           withFriendsRoundAdvanceSendPermission,
         ],
       },
@@ -124,6 +140,7 @@ export default $config({
         },
         permissions: [
           appSecretPermission,
+          withFriendsRoundAdvanceReceivePermission,
           withFriendsRoundTimeoutSendPermission,
         ],
       },

@@ -39,3 +39,6 @@ export const formatDistanceKm = (distanceKm: number | null, locale: string) =>
         unit: 'kilometer',
         unitDisplay: 'short',
       }).format(distanceKm)
+
+export const countryFlagSrc = (country: string) =>
+  `https://flagcdn.com/24x18/${country.toLowerCase()}.png`

@@ -66,6 +66,7 @@ const backgroundColor = computed(() => {
 <style scoped>
 .avatar {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-token-full);
