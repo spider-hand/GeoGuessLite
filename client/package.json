@@ -30,7 +30,6 @@
     "firebase": "^12.6.0",
     "mapbox-gl": "^3.18.0",
     "mapillary-js": "^4.1.2",
-    "pinia": "^3.0.4",
     "vee-validate": "^4.15.1",
     "vue": "^3.5.22",
     "vue-i18n": "^11.4.5",

@@ -1,5 +1,4 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
 import { VueFire, VueFireAuth } from 'vuefire'
 import { VueQueryPlugin } from '@tanstack/vue-query'
 import './main.css'
@@ -11,7 +10,6 @@ import { firebaseApp } from './lib/firebase'
 
 const app = createApp(App)
 
-app.use(createPinia())
 app.use(appI18n)
 app.use(VueQueryPlugin)
 
