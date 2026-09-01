@@ -98,23 +98,23 @@
           "connected": "オンライン",
           "disconnected": "オフライン"
         },
-        "WithFriendsRoundResult": {
-          "title": "ラウンド {round} の結果",
+        "WithFriendsLeaderboard": {
           "leaderboard": "ラウンド順位",
           "distance": "距離",
           "roundScore": "ラウンド",
           "totalScore": "合計",
-          "noGuess": "推測なし",
+          "noGuess": "推測なし"
+        },
+        "WithFriendsRoundResult": {
+          "title": "ラウンド {round} の結果",
+          "nextRoundStarting": "次のラウンドはまもなく開始します。",
+          "summaryStarting": "ゲーム結果はまもなく表示されます。",
           "target": "正解地点"
         },
         "WithFriendsGameSummary": {
           "title": "ゲーム結果",
           "roundHistory": "ラウンド履歴",
           "round": "ラウンド {round}",
-          "distance": "距離",
-          "roundScore": "ラウンド",
-          "totalScore": "合計",
-          "noGuess": "推測なし",
           "target": "正解地点",
           "createRoom": "ルームを作成",
           "exit": "終了"

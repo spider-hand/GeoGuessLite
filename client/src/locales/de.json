@@ -98,23 +98,23 @@
           "connected": "Online",
           "disconnected": "Offline"
         },
-        "WithFriendsRoundResult": {
-          "title": "Ergebnis der Runde {round}",
+        "WithFriendsLeaderboard": {
           "leaderboard": "Rundenrangliste",
           "distance": "Entfernung",
           "roundScore": "Runde",
           "totalScore": "Gesamt",
-          "noGuess": "Kein Tipp",
+          "noGuess": "Kein Tipp"
+        },
+        "WithFriendsRoundResult": {
+          "title": "Ergebnis der Runde {round}",
+          "nextRoundStarting": "Die nächste Runde beginnt in Kürze.",
+          "summaryStarting": "Die Spielübersicht wird in Kürze geöffnet.",
           "target": "Richtiger Ort"
         },
         "WithFriendsGameSummary": {
           "title": "Spielübersicht",
           "roundHistory": "Rundenverlauf",
           "round": "Runde {round}",
-          "distance": "Entfernung",
-          "roundScore": "Runde",
-          "totalScore": "Gesamt",
-          "noGuess": "Kein Tipp",
           "target": "Richtiger Ort",
           "createRoom": "Raum erstellen",
           "exit": "Beenden"

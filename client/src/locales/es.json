@@ -98,23 +98,23 @@
           "connected": "En línea",
           "disconnected": "Desconectado"
         },
-        "WithFriendsRoundResult": {
-          "title": "Resultados de la ronda {round}",
+        "WithFriendsLeaderboard": {
           "leaderboard": "Clasificación de la ronda",
           "distance": "Distancia",
           "roundScore": "Ronda",
           "totalScore": "Total",
-          "noGuess": "Sin respuesta",
+          "noGuess": "Sin respuesta"
+        },
+        "WithFriendsRoundResult": {
+          "title": "Resultados de la ronda {round}",
+          "nextRoundStarting": "La siguiente ronda comenzará en breve.",
+          "summaryStarting": "El resumen de la partida se abrirá en breve.",
           "target": "Ubicación correcta"
         },
         "WithFriendsGameSummary": {
           "title": "Resumen de la partida",
           "roundHistory": "Historial de rondas",
           "round": "Ronda {round}",
-          "distance": "Distancia",
-          "roundScore": "Ronda",
-          "totalScore": "Total",
-          "noGuess": "Sin respuesta",
           "target": "Ubicación correcta",
           "createRoom": "Crear sala",
           "exit": "Salir"

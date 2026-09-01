@@ -5,17 +5,16 @@ import { useI18n } from 'vue-i18n'
 
 import GameMap from '@/components/pages/Game/GameMap.vue'
 import GameStreetViewContainer from '@/components/pages/Game/GameStreetViewContainer.vue'
-import Avatar from '@/components/shared/Avatar.vue'
+import WithFriendsLeaderboard from '@/components/pages/Game/WithFriendsLeaderboard.vue'
 import Button from '@/components/shared/Button.vue'
 import useOnClickOutside from '@/composables/useOnClickOutside'
-import type { GameMapMarker, WithFriendsSummaryPlayer, WithFriendsSummaryRound } from '@/types/game'
-import {
-  calculateCenter,
-  calculateZoomLevel,
-  countryFlagSrc,
-  formatDistanceKm,
-  formatNumber,
-} from '@/utils/game'
+import type {
+  GameMapMarker,
+  WithFriendsLeaderboardPlayer,
+  WithFriendsSummaryPlayer,
+  WithFriendsSummaryRound,
+} from '@/types/game'
+import { calculateCenter, calculateZoomLevel } from '@/utils/game'
 
 defineOptions({ name: 'WithFriendsGameSummary' })
 
@@ -32,7 +31,7 @@ const emit = defineEmits<{
   exit: []
 }>()
 
-const { locale, t } = useI18n()
+const { t } = useI18n()
 const roundSelectorRoot = ref<HTMLElement | null>(null)
 const isRoundMenuOpen = ref(false)
 const rankedPlayers = computed(() =>
@@ -54,6 +53,16 @@ const selectedPlayer = computed(
   () =>
     rankedPlayers.value.find(({ userId }) => userId === selectedUserId.value) ??
     rankedPlayers.value[0],
+)
+const leaderboardPlayers = computed<Array<WithFriendsLeaderboardPlayer>>(() =>
+  rankedPlayers.value.map((player) => {
+    const result = selectedRound.value?.results.find(({ userId }) => userId === player.userId)
+    return {
+      ...player,
+      distanceKm: result?.distanceKm ?? null,
+      roundScore: result?.score ?? 0,
+    }
+  }),
 )
 const selectedResult = computed(() =>
   selectedRound.value?.results.find(({ userId }) => userId === selectedPlayer.value?.userId),
@@ -94,9 +103,6 @@ const markers = computed<Array<GameMapMarker>>(() => {
     },
   ]
 })
-const formatDistance = (distanceKm: number | null | undefined) =>
-  formatDistanceKm(distanceKm ?? null, locale.value) ??
-  t('components.pages.Game.WithFriendsGameSummary.noGuess')
 const selectRound = (roundNumber: number) => {
   selectedRoundNumber.value = roundNumber
   isRoundMenuOpen.value = false
@@ -193,65 +199,12 @@ watch(
         </div>
       </header>
 
-      <div class="with-friends-game-summary__table">
-        <div class="with-friends-game-summary__labels" aria-hidden="true">
-          <span>{{ t('components.pages.Game.WithFriendsGameSummary.distance') }}</span>
-          <span>{{ t('components.pages.Game.WithFriendsGameSummary.roundScore') }}</span>
-          <span>{{ t('components.pages.Game.WithFriendsGameSummary.totalScore') }}</span>
-        </div>
-
-        <ol
-          class="with-friends-game-summary__leaderboard"
-          :aria-label="t('components.pages.Game.WithFriendsGameSummary.title')"
-        >
-          <li v-for="(player, index) in rankedPlayers" :key="player.userId">
-            <button
-              class="with-friends-game-summary__player"
-              :class="{
-                'with-friends-game-summary__player--current': player.userId === props.currentUserId,
-                'with-friends-game-summary__player--selected':
-                  player.userId === selectedPlayer?.userId,
-              }"
-              type="button"
-              :aria-pressed="player.userId === selectedPlayer?.userId"
-              @click="selectedUserId = player.userId"
-            >
-              <span class="with-friends-game-summary__rank">{{ index + 1 }}</span>
-              <span class="with-friends-game-summary__identity">
-                <Avatar :name="player.displayName" size="sm" />
-                <span class="with-friends-game-summary__name">
-                  <span>{{ player.displayName }}</span>
-                  <img
-                    v-if="player.country"
-                    :src="countryFlagSrc(player.country)"
-                    :alt="player.country.toUpperCase()"
-                    width="24"
-                    height="18"
-                  />
-                </span>
-              </span>
-              <span class="with-friends-game-summary__distance">
-                {{
-                  formatDistance(
-                    selectedRound?.results.find(({ userId }) => userId === player.userId)
-                      ?.distanceKm,
-                  )
-                }}
-              </span>
-              <strong>
-                {{
-                  formatNumber(
-                    selectedRound?.results.find(({ userId }) => userId === player.userId)?.score ??
-                      0,
-                    locale,
-                  )
-                }}
-              </strong>
-              <strong>{{ formatNumber(player.totalScore, locale) }}</strong>
-            </button>
-          </li>
-        </ol>
-      </div>
+      <WithFriendsLeaderboard
+        :current-user-id="props.currentUserId"
+        :players="leaderboardPlayers"
+        :selected-user-id="selectedPlayer?.userId ?? ''"
+        @select="selectedUserId = $event"
+      />
 
       <div class="with-friends-game-summary__actions">
         <Button
@@ -333,8 +286,7 @@ watch(
 }
 
 .with-friends-game-summary__round-trigger:focus-visible,
-.with-friends-game-summary__round-item:focus-visible,
-.with-friends-game-summary__player:focus-visible {
+.with-friends-game-summary__round-item:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--info-ring) 50%, transparent);
   outline-offset: 2px;
 }
@@ -379,116 +331,6 @@ watch(
   color: var(--primary);
 }
 
-.with-friends-game-summary__labels,
-.with-friends-game-summary__player {
-  display: grid;
-  grid-template-columns: 28px minmax(120px, 1fr) 86px 72px 72px;
-  align-items: center;
-  gap: var(--spacing-xs);
-}
-
-.with-friends-game-summary__labels {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  padding: 0 var(--spacing-sm) var(--spacing-xs);
-  background-color: var(--surface-card-dark);
-  color: var(--muted-strong);
-  font-size: var(--font-size-caption);
-}
-
-.with-friends-game-summary__labels span:first-child {
-  grid-column: 3;
-}
-
-.with-friends-game-summary__labels span {
-  text-align: right;
-}
-
-.with-friends-game-summary__table {
-  max-height: 400px;
-  overflow: auto;
-}
-
-.with-friends-game-summary__leaderboard {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.with-friends-game-summary__leaderboard li + li {
-  margin-top: var(--spacing-xxs);
-}
-
-.with-friends-game-summary__player {
-  width: 100%;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border: 1px solid transparent;
-  border-radius: var(--radius-token-lg);
-  background: transparent;
-  color: var(--body);
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-.with-friends-game-summary__player:hover,
-.with-friends-game-summary__player--selected {
-  background-color: var(--surface-elevated-dark);
-}
-
-.with-friends-game-summary__player--current {
-  border-color: var(--primary);
-}
-
-.with-friends-game-summary__rank,
-.with-friends-game-summary__player strong {
-  font-family: var(--font-number);
-}
-
-.with-friends-game-summary__rank {
-  color: var(--muted-strong);
-  text-align: center;
-}
-
-.with-friends-game-summary__identity {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  min-width: 0;
-}
-
-.with-friends-game-summary__name {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  min-width: 0;
-}
-
-.with-friends-game-summary__name > span {
-  overflow: hidden;
-  color: var(--on-dark);
-  font-weight: var(--font-weight-semibold);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.with-friends-game-summary__name img {
-  flex: 0 0 auto;
-}
-
-.with-friends-game-summary__distance {
-  color: var(--muted-strong);
-  font-size: var(--font-size-caption);
-  text-align: right;
-  white-space: nowrap;
-}
-
-.with-friends-game-summary__player strong {
-  color: var(--on-dark);
-  text-align: right;
-}
-
 .with-friends-game-summary__actions {
   display: grid;
   gap: var(--spacing-sm);
@@ -510,19 +352,6 @@ watch(
 @media (max-width: 560px) {
   .with-friends-game-summary {
     padding: var(--spacing-md);
-  }
-
-  .with-friends-game-summary__labels,
-  .with-friends-game-summary__player {
-    grid-template-columns: 28px 240px 86px 72px 72px;
-    min-width: 556px;
-  }
-
-  .with-friends-game-summary__name > span {
-    overflow: visible;
-    overflow-wrap: anywhere;
-    text-overflow: clip;
-    white-space: normal;
   }
 
   .with-friends-game-summary__panel {

@@ -4,16 +4,10 @@ import { useI18n } from 'vue-i18n'
 
 import GameMap from '@/components/pages/Game/GameMap.vue'
 import GameStreetViewContainer from '@/components/pages/Game/GameStreetViewContainer.vue'
-import Avatar from '@/components/shared/Avatar.vue'
+import WithFriendsLeaderboard from '@/components/pages/Game/WithFriendsLeaderboard.vue'
 import { ROUNDS } from '@/constants/game'
 import type { GameMapMarker, WithFriendsRoundResultPlayer } from '@/types/game'
-import {
-  calculateCenter,
-  calculateZoomLevel,
-  countryFlagSrc,
-  formatDistanceKm,
-  formatNumber,
-} from '@/utils/game'
+import { calculateCenter, calculateZoomLevel } from '@/utils/game'
 
 defineOptions({ name: 'WithFriendsRoundResult' })
 
@@ -25,7 +19,7 @@ const props = defineProps<{
   target: [number, number]
 }>()
 
-const { locale, t } = useI18n()
+const { t } = useI18n()
 const description = computed(() =>
   props.roundNumber === ROUNDS
     ? t('components.pages.Game.WithFriendsRoundResult.summaryStarting')
@@ -81,10 +75,6 @@ const markers = computed<Array<GameMapMarker>>(() => {
     },
   ]
 })
-const formatDistance = (distanceKm: number | null) =>
-  formatDistanceKm(distanceKm, locale.value) ??
-  t('components.pages.Game.WithFriendsRoundResult.noGuess')
-
 watch(
   [() => props.currentUserId, rankedPlayers],
   ([currentUserId, players]) => {
@@ -122,52 +112,12 @@ watch(
         <p>{{ description }}</p>
       </header>
 
-      <div class="with-friends-round-result__table">
-        <div class="with-friends-round-result__labels" aria-hidden="true">
-          <span>{{ t('components.pages.Game.WithFriendsRoundResult.distance') }}</span>
-          <span>{{ t('components.pages.Game.WithFriendsRoundResult.roundScore') }}</span>
-          <span>{{ t('components.pages.Game.WithFriendsRoundResult.totalScore') }}</span>
-        </div>
-
-        <ol
-          class="with-friends-round-result__leaderboard"
-          :aria-label="t('components.pages.Game.WithFriendsRoundResult.leaderboard')"
-        >
-          <li v-for="(player, index) in rankedPlayers" :key="player.userId">
-            <button
-              class="with-friends-round-result__player"
-              :class="{
-                'with-friends-round-result__player--current': player.userId === props.currentUserId,
-                'with-friends-round-result__player--selected':
-                  player.userId === selectedPlayer?.userId,
-              }"
-              type="button"
-              :aria-pressed="player.userId === selectedPlayer?.userId"
-              @click="selectedUserId = player.userId"
-            >
-              <span class="with-friends-round-result__rank">{{ index + 1 }}</span>
-              <span class="with-friends-round-result__identity">
-                <Avatar :name="player.displayName" size="sm" />
-                <span class="with-friends-round-result__name">
-                  <span>{{ player.displayName }}</span>
-                  <img
-                    v-if="player.country"
-                    :src="countryFlagSrc(player.country)"
-                    :alt="player.country.toUpperCase()"
-                    width="24"
-                    height="18"
-                  />
-                </span>
-              </span>
-              <span class="with-friends-round-result__distance">
-                {{ formatDistance(player.distanceKm) }}
-              </span>
-              <strong>{{ formatNumber(player.roundScore, locale) }}</strong>
-              <strong>{{ formatNumber(player.totalScore, locale) }}</strong>
-            </button>
-          </li>
-        </ol>
-      </div>
+      <WithFriendsLeaderboard
+        :current-user-id="props.currentUserId"
+        :players="rankedPlayers"
+        :selected-user-id="selectedPlayer?.userId ?? ''"
+        @select="selectedUserId = $event"
+      />
     </aside>
   </section>
 </template>
@@ -217,120 +167,6 @@ watch(
   font-size: var(--font-size-body-sm);
 }
 
-.with-friends-round-result__labels,
-.with-friends-round-result__player {
-  display: grid;
-  grid-template-columns: 28px minmax(120px, 1fr) 86px 72px 72px;
-  align-items: center;
-  gap: var(--spacing-xs);
-}
-
-.with-friends-round-result__labels {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  padding: 0 var(--spacing-sm) var(--spacing-xs);
-  background-color: var(--surface-card-dark);
-  color: var(--muted-strong);
-  font-size: var(--font-size-caption);
-}
-
-.with-friends-round-result__labels span:first-child {
-  grid-column: 3;
-}
-
-.with-friends-round-result__labels span {
-  text-align: right;
-}
-
-.with-friends-round-result__table {
-  max-height: 520px;
-  overflow: auto;
-}
-
-.with-friends-round-result__leaderboard {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.with-friends-round-result__leaderboard li + li {
-  margin-top: var(--spacing-xxs);
-}
-
-.with-friends-round-result__player {
-  width: 100%;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border: 1px solid transparent;
-  border-radius: var(--radius-token-lg);
-  background: transparent;
-  color: var(--body);
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-.with-friends-round-result__player:hover,
-.with-friends-round-result__player--selected {
-  background-color: var(--surface-elevated-dark);
-}
-
-.with-friends-round-result__player--current {
-  border-color: var(--primary);
-}
-
-.with-friends-round-result__player:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--info-ring) 50%, transparent);
-}
-
-.with-friends-round-result__rank,
-.with-friends-round-result__player strong {
-  font-family: var(--font-number);
-}
-
-.with-friends-round-result__rank {
-  color: var(--muted-strong);
-  text-align: center;
-}
-
-.with-friends-round-result__identity {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  min-width: 0;
-}
-
-.with-friends-round-result__name {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  min-width: 0;
-}
-
-.with-friends-round-result__name > span {
-  overflow: hidden;
-  color: var(--on-dark);
-  font-weight: var(--font-weight-semibold);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.with-friends-round-result__name img {
-  flex: 0 0 auto;
-}
-
-.with-friends-round-result__distance {
-  color: var(--muted-strong);
-  font-size: var(--font-size-caption);
-  text-align: right;
-  white-space: nowrap;
-}
-
-.with-friends-round-result__player strong {
-  color: var(--on-dark);
-  text-align: right;
-}
-
 @media (max-width: 960px) {
   .with-friends-round-result {
     grid-template-columns: 1fr;
@@ -346,19 +182,6 @@ watch(
 @media (max-width: 560px) {
   .with-friends-round-result {
     padding: var(--spacing-md);
-  }
-
-  .with-friends-round-result__labels,
-  .with-friends-round-result__player {
-    grid-template-columns: 28px 240px 86px 72px 72px;
-    min-width: 556px;
-  }
-
-  .with-friends-round-result__name > span {
-    overflow: visible;
-    overflow-wrap: anywhere;
-    text-overflow: clip;
-    white-space: normal;
   }
 
   .with-friends-round-result__panel {

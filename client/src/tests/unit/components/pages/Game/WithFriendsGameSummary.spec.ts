@@ -7,7 +7,8 @@ import { createAppI18n } from '@/i18n'
 vi.mock('@/components/pages/Game/GameMap.vue', () => ({
   default: {
     props: ['markers'],
-    template: '<div data-testid="summary-map" :data-marker-count="markers.length" />',
+    template:
+      '<div data-testid="summary-map" :data-marker-count="markers.length" :data-first-marker="markers[0]?.label" />',
   },
 }))
 
@@ -64,4 +65,13 @@ it('should render the default state properly', async () => {
   await expect.element(screen.getByRole('button', { name: 'Create Room' })).toBeVisible()
   await expect.element(screen.getByRole('button', { name: 'Exit' })).toBeVisible()
   await expect.element(screen.getByTestId('summary-map')).toHaveAttribute('data-marker-count', '3')
+  expect(
+    Array.from(screen.container.querySelectorAll('ol button'), (button) => button.textContent),
+  ).toEqual([expect.stringContaining('Winning Player'), expect.stringContaining('Current Player')])
+
+  await screen.getByRole('button', { name: /Winning Player/ }).click()
+
+  await expect
+    .element(screen.getByTestId('summary-map'))
+    .toHaveAttribute('data-first-marker', 'Winning Player')
 })

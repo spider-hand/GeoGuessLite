@@ -98,23 +98,23 @@
           "connected": "在线",
           "disconnected": "离线"
         },
-        "WithFriendsRoundResult": {
-          "title": "第 {round} 回合结果",
+        "WithFriendsLeaderboard": {
           "leaderboard": "回合排行榜",
           "distance": "距离",
           "roundScore": "本回合",
           "totalScore": "总分",
-          "noGuess": "未猜测",
+          "noGuess": "未猜测"
+        },
+        "WithFriendsRoundResult": {
+          "title": "第 {round} 回合结果",
+          "nextRoundStarting": "下一回合即将开始。",
+          "summaryStarting": "游戏总结即将显示。",
           "target": "正确位置"
         },
         "WithFriendsGameSummary": {
           "title": "游戏总结",
           "roundHistory": "回合记录",
           "round": "第 {round} 回合",
-          "distance": "距离",
-          "roundScore": "本回合",
-          "totalScore": "总分",
-          "noGuess": "未猜测",
           "target": "正确位置",
           "createRoom": "创建房间",
           "exit": "退出"

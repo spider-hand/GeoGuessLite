@@ -7,7 +7,8 @@ import { createAppI18n } from '@/i18n'
 vi.mock('@/components/pages/Game/GameMap.vue', () => ({
   default: {
     props: ['markers'],
-    template: '<div data-testid="result-map" :data-marker-count="markers.length" />',
+    template:
+      '<div data-testid="result-map" :data-marker-count="markers.length" :data-first-marker="markers[0]?.label" />',
   },
 }))
 
@@ -24,7 +25,7 @@ it('should render the default state properly', async () => {
           distanceKm: 18.4,
           guess: [139.6917, 35.6895],
           roundScore: 4210,
-          totalScore: 4210,
+          totalScore: 4750,
         },
         {
           userId: 'leader',
@@ -48,4 +49,13 @@ it('should render the default state properly', async () => {
   await expect.element(screen.getByText('Current Player')).toBeVisible()
   await expect.element(screen.getByText('18.4 km')).toBeVisible()
   await expect.element(screen.getByTestId('result-map')).toHaveAttribute('data-marker-count', '3')
+  expect(
+    Array.from(screen.container.querySelectorAll('ol button'), (button) => button.textContent),
+  ).toEqual([expect.stringContaining('Round Leader'), expect.stringContaining('Current Player')])
+
+  await screen.getByRole('button', { name: /Round Leader/ }).click()
+
+  await expect
+    .element(screen.getByTestId('result-map'))
+    .toHaveAttribute('data-first-marker', 'Round Leader')
 })
