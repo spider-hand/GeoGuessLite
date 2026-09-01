@@ -74,7 +74,7 @@ def make_state(*, status="waiting", current_round=0, players=None):
         },
     }
     private_rounds = {
-        str(round_number): {
+        f"round-{round_number}": {
             "imageId": f"image-{round_number}",
             "target": {"latitude": 35.0, "longitude": 139.0},
             "guesses": {},
@@ -97,7 +97,8 @@ def make_state(*, status="waiting", current_round=0, players=None):
         public.update(
             {
                 "rounds": {
-                    str(current_round): {
+                    f"round-{current_round}": {
+                        "roundNumber": current_round,
                         "imageId": f"image-{current_round}",
                         "startedAt": 1_700_000_000_000,
                     }
@@ -158,7 +159,14 @@ def test_create_game_retries_room_key_and_keeps_targets_private(monkeypatch):
     assert repository.create.call_args_list[0].args[1] == "111111"
     assert repository.create.call_args_list[1].args[1] == "123456"
     assert game_ref.value["public"]["rounds"] == {}
-    assert game_ref.value["private"]["rounds"]["1"]["target"] == {
+    assert set(game_ref.value["private"]["rounds"]) == {
+        "round-1",
+        "round-2",
+        "round-3",
+        "round-4",
+        "round-5",
+    }
+    assert game_ref.value["private"]["rounds"]["round-1"]["target"] == {
         "latitude": 35.0,
         "longitude": 139.0,
     }
@@ -187,17 +195,18 @@ def test_start_game_exposes_only_the_current_image_and_enqueues_timeout(monkeypa
 
     public = game_ref.value["public"]
     assert public["status"] == "guessing"
-    assert public["rounds"]["1"] == {
+    assert public["rounds"]["round-1"] == {
+        "roundNumber": 1,
         "imageId": "image-1",
         "startedAt": 1788134400000,
     }
-    assert "target" not in public["rounds"]["1"]
+    assert "target" not in public["rounds"]["round-1"]
     enqueue.assert_called_once_with("game-1", 1)
 
 
 def test_last_guess_reveals_results_early_and_enqueues_advance(monkeypatch):
     state = make_state(status="guessing", current_round=1)
-    state["private"]["rounds"]["1"]["guesses"]["host"] = {
+    state["private"]["rounds"]["round-1"]["guesses"]["host"] = {
         "guess": {"latitude": 35.0, "longitude": 139.0},
         "submittedAt": 1,
     }
@@ -214,8 +223,8 @@ def test_last_guess_reveals_results_early_and_enqueues_advance(monkeypatch):
 
     public = game_ref.value["public"]
     assert public["status"] == "results"
-    assert public["rounds"]["1"]["target"] == {"latitude": 35.0, "longitude": 139.0}
-    assert set(public["rounds"]["1"]["results"]) == {"host", "guest"}
+    assert public["rounds"]["round-1"]["target"] == {"latitude": 35.0, "longitude": 139.0}
+    assert set(public["rounds"]["round-1"]["results"]) == {"host", "guest"}
     enqueue.assert_called_once_with("game-1", 1)
 
 
@@ -229,7 +238,7 @@ def test_timeout_gives_missing_players_zero_points(monkeypatch):
 
     service.process_round_timeout("game-1", 1)
 
-    results = game_ref.value["public"]["rounds"]["1"]["results"]
+    results = game_ref.value["public"]["rounds"]["round-1"]["results"]
     assert results["host"] == {"score": 0}
     assert results["guest"] == {"score": 0}
     enqueue.assert_called_once()
@@ -240,7 +249,8 @@ def test_final_round_advance_archives_the_completed_game():
     state = make_state(status="results", current_round=5)
     state["public"]["proceedToNextRoundAt"] = int((now - timedelta(seconds=1)).timestamp() * 1000)
     for round_number in range(1, 6):
-        state["public"]["rounds"][str(round_number)] = {
+        state["public"]["rounds"][f"round-{round_number}"] = {
+            "roundNumber": round_number,
             "imageId": f"image-{round_number}",
             "startedAt": 1,
             "revealedAt": 2,

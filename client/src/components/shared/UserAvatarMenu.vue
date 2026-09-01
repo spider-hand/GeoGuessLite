@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import useAuth from '@/composables/useAuth'
 import useOnClickOutside from '@/composables/useOnClickOutside'
 import Avatar from '@/components/shared/Avatar.vue'
+import { countryFlagSrc } from '@/utils/game'
 
 defineOptions({ name: 'SharedUserAvatarMenu' })
 
@@ -14,7 +15,6 @@ const { t } = useI18n()
 const { isRegisteredUser } = useAuth()
 const root = ref<HTMLElement | null>(null)
 const isOpen = ref(false)
-const countryFlagSrc = (country: string) => `https://flagcdn.com/24x18/${country.toLowerCase()}.png`
 const countryFlagAlt = (country: string) => `${country.toUpperCase()} flag`
 const closeMenu = () => {
   isOpen.value = false

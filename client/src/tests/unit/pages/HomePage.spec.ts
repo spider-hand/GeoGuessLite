@@ -12,6 +12,8 @@ const isRegisteredUser = ref(false)
 const signInAnonymously = vi.fn()
 const signUpWithGoogle = vi.fn()
 const createGameAsync = vi.fn()
+const createWithFriendsGame = vi.fn()
+const joinWithFriendsGame = vi.fn()
 const user = ref({ dailyChallengeStatus: 'available' as const })
 
 vi.mock('@/composables/useAuth', () => ({
@@ -33,6 +35,13 @@ vi.mock('@/composables/useSinglePlayerGameQuery', () => ({
   default: () => ({ createGameAsync }),
 }))
 
+vi.mock('@/composables/useWithFriendsGameApi', () => ({
+  default: () => ({
+    createGame: createWithFriendsGame,
+    joinGame: joinWithFriendsGame,
+  }),
+}))
+
 const createHomeRouter = () =>
   createRouter({
     history: createMemoryHistory(),
@@ -42,7 +51,7 @@ const createHomeRouter = () =>
       { path: '/terms', component: HomePage },
       { path: '/game/single-player/:gameId', name: 'single-player-game', component: HomePage },
       { path: '/game/daily-challenge', name: 'daily-challenge-game', component: HomePage },
-      { path: '/game/with-friends/scaffold', component: HomePage },
+      { path: '/game/with-friends/:gameId', component: HomePage },
       { path: '/game/random-match', component: HomePage },
     ],
   })
@@ -65,6 +74,8 @@ const resetAuthState = () => {
   signInAnonymously.mockReset().mockResolvedValue(undefined)
   signUpWithGoogle.mockReset()
   createGameAsync.mockReset().mockResolvedValue({ id: 'game-123' })
+  createWithFriendsGame.mockReset().mockResolvedValue({ id: 'friends-123', roomKey: '123456' })
+  joinWithFriendsGame.mockReset().mockResolvedValue({ id: 'friends-456' })
   user.value = { dailyChallengeStatus: 'available' }
 }
 
@@ -110,15 +121,14 @@ describe('HomePage', () => {
     expect(router.currentRoute.value.path).toBe('/')
   })
 
-  it('should prompt while authentication is loading', async () => {
+  it('should disable with-friends actions while authentication is loading', async () => {
     resetAuthState()
     isCurrentUserLoaded.value = false
     const { view } = await renderHomePage()
-    const { getByRole, getByText } = view
 
-    await getByRole('button', { name: 'Create Room' }).click()
-
-    await expect.element(getByText('Welcome to GeoGuessLite')).toBeInTheDocument()
+    await expect.element(view.getByRole('button', { name: 'Create Room' })).toBeDisabled()
+    await expect.element(view.getByPlaceholder('6-Digit Key')).toBeDisabled()
+    await expect.element(view.getByRole('button', { name: 'Enter Room' })).toBeDisabled()
   })
 
   it('should disable the daily challenge while the user profile is loading', async () => {
@@ -160,7 +170,7 @@ describe('HomePage', () => {
 
     await getByRole('button', { name: 'Create Room' }).click()
 
-    await expect.poll(() => router.currentRoute.value.path).toBe('/game/with-friends/scaffold')
+    await expect.poll(() => router.currentRoute.value.path).toBe('/game/with-friends/friends-123')
   })
 
   it('should sign up from the prompt', async () => {

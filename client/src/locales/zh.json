@@ -57,7 +57,8 @@
         },
         "GameMapContainer": {
           "makeGuess": "提交猜测",
-          "submitting": "提交中…"
+          "submitting": "提交中…",
+          "submitted": "猜测已提交"
         },
         "SinglePlayerRoundResult": {
           "round": "第 {round} 回合",
@@ -67,7 +68,9 @@
           "totalScore": "总分",
           "nextRound": "下一回合",
           "viewSummary": "查看总结",
-          "target": "正确位置"
+          "target": "正确位置",
+          "nextRoundStarting": "下一回合即将开始。",
+          "summaryStarting": "游戏总结即将显示。"
         },
         "SinglePlayerGameSummary": {
           "title": "游戏总结",
@@ -88,14 +91,43 @@
           "target": "正确位置",
           "home": "主页"
         },
+        "WithFriendsParticipantList": {
+          "title": "玩家",
+          "count": "{count} / {maximum}",
+          "host": "房主",
+          "connected": "在线",
+          "disconnected": "离线"
+        },
+        "WithFriendsRoundResult": {
+          "title": "第 {round} 回合结果",
+          "leaderboard": "回合排行榜",
+          "distance": "距离",
+          "roundScore": "本回合",
+          "totalScore": "总分",
+          "noGuess": "未猜测",
+          "target": "正确位置"
+        },
+        "WithFriendsGameSummary": {
+          "title": "游戏总结",
+          "roundHistory": "回合记录",
+          "round": "第 {round} 回合",
+          "distance": "距离",
+          "roundScore": "本回合",
+          "totalScore": "总分",
+          "noGuess": "未猜测",
+          "target": "正确位置",
+          "createRoom": "创建房间",
+          "exit": "退出"
+        },
         "RoomKeyStrip": {
           "label": "房间密钥"
         },
         "GameWithFriendsPage": {
-          "createRoom": "创建房间",
           "exit": "退出",
-          "starting": "游戏已准备就绪，即将开始。",
-          "waitingForOpponent": "正在等待对手..."
+          "startGame": "开始游戏",
+          "waitingForOpponent": "正在等待玩家...",
+          "waitingForHost": "正在等待房主开始游戏。",
+          "actionError": "出现问题，请重试。"
         },
         "ResultBadge": {
           "youWin": "你赢了",

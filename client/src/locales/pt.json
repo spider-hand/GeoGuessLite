@@ -57,7 +57,8 @@
         },
         "GameMapContainer": {
           "makeGuess": "Adivinhar",
-          "submitting": "Enviando…"
+          "submitting": "Enviando…",
+          "submitted": "Palpite enviado"
         },
         "SinglePlayerRoundResult": {
           "round": "Rodada {round}",
@@ -67,7 +68,9 @@
           "totalScore": "Pontuação total",
           "nextRound": "Próxima rodada",
           "viewSummary": "Ver resumo",
-          "target": "Local correto"
+          "target": "Local correto",
+          "nextRoundStarting": "A próxima rodada começará em breve.",
+          "summaryStarting": "O resumo da partida será exibido em breve."
         },
         "SinglePlayerGameSummary": {
           "title": "Resumo da partida",
@@ -88,14 +91,43 @@
           "target": "Local correto",
           "home": "Início"
         },
+        "WithFriendsParticipantList": {
+          "title": "Jogadores",
+          "count": "{count} / {maximum}",
+          "host": "Anfitrião",
+          "connected": "Online",
+          "disconnected": "Offline"
+        },
+        "WithFriendsRoundResult": {
+          "title": "Resultados da rodada {round}",
+          "leaderboard": "Classificação da rodada",
+          "distance": "Distância",
+          "roundScore": "Rodada",
+          "totalScore": "Total",
+          "noGuess": "Sem palpite",
+          "target": "Local correto"
+        },
+        "WithFriendsGameSummary": {
+          "title": "Resumo da partida",
+          "roundHistory": "Histórico de rodadas",
+          "round": "Rodada {round}",
+          "distance": "Distância",
+          "roundScore": "Rodada",
+          "totalScore": "Total",
+          "noGuess": "Sem palpite",
+          "target": "Local correto",
+          "createRoom": "Criar sala",
+          "exit": "Sair"
+        },
         "RoomKeyStrip": {
           "label": "Chave da sala"
         },
         "GameWithFriendsPage": {
-          "createRoom": "Criar sala",
           "exit": "Sair",
-          "starting": "A partida está pronta e vai começar em instantes.",
-          "waitingForOpponent": "Aguardando oponente..."
+          "startGame": "Iniciar partida",
+          "waitingForOpponent": "Aguardando jogadores...",
+          "waitingForHost": "Aguardando o anfitrião iniciar a partida.",
+          "actionError": "Algo deu errado. Tente novamente."
         },
         "ResultBadge": {
           "youWin": "Você venceu",

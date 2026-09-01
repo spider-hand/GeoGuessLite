@@ -57,7 +57,8 @@
         },
         "GameMapContainer": {
           "makeGuess": "Tipp abgeben",
-          "submitting": "Wird gesendet…"
+          "submitting": "Wird gesendet…",
+          "submitted": "Tipp abgegeben"
         },
         "SinglePlayerRoundResult": {
           "round": "Runde {round}",
@@ -67,7 +68,9 @@
           "totalScore": "Gesamtpunktzahl",
           "nextRound": "Nächste Runde",
           "viewSummary": "Zusammenfassung anzeigen",
-          "target": "Richtiger Ort"
+          "target": "Richtiger Ort",
+          "nextRoundStarting": "Die nächste Runde beginnt in Kürze.",
+          "summaryStarting": "Die Spielübersicht wird in Kürze geöffnet."
         },
         "SinglePlayerGameSummary": {
           "title": "Spielübersicht",
@@ -88,14 +91,43 @@
           "target": "Richtiger Ort",
           "home": "Startseite"
         },
+        "WithFriendsParticipantList": {
+          "title": "Spieler",
+          "count": "{count} / {maximum}",
+          "host": "Host",
+          "connected": "Online",
+          "disconnected": "Offline"
+        },
+        "WithFriendsRoundResult": {
+          "title": "Ergebnis der Runde {round}",
+          "leaderboard": "Rundenrangliste",
+          "distance": "Entfernung",
+          "roundScore": "Runde",
+          "totalScore": "Gesamt",
+          "noGuess": "Kein Tipp",
+          "target": "Richtiger Ort"
+        },
+        "WithFriendsGameSummary": {
+          "title": "Spielübersicht",
+          "roundHistory": "Rundenverlauf",
+          "round": "Runde {round}",
+          "distance": "Entfernung",
+          "roundScore": "Runde",
+          "totalScore": "Gesamt",
+          "noGuess": "Kein Tipp",
+          "target": "Richtiger Ort",
+          "createRoom": "Raum erstellen",
+          "exit": "Beenden"
+        },
         "RoomKeyStrip": {
           "label": "Raumcode"
         },
         "GameWithFriendsPage": {
-          "createRoom": "Raum erstellen",
           "exit": "Beenden",
-          "starting": "Das Spiel ist bereit und startet in Kürze.",
-          "waitingForOpponent": "Warten auf den Gegner..."
+          "startGame": "Spiel starten",
+          "waitingForOpponent": "Warten auf Spieler...",
+          "waitingForHost": "Warten darauf, dass der Host das Spiel startet.",
+          "actionError": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
         },
         "ResultBadge": {
           "youWin": "Du gewinnst",

@@ -9,6 +9,7 @@ import type { GameMapMarker } from '@/types/game'
 defineOptions({ name: 'GameMapContainer' })
 
 const props = defineProps<{
+  isSubmitted: boolean
   isSubmitting: boolean
   playerName: string
   selection: [number, number] | null
@@ -27,9 +28,14 @@ const markers = computed<Array<GameMapMarker>>(() =>
     ? [{ coordinates: props.selection, label: props.playerName, markerType: 'player' }]
     : [],
 )
+const submitLabel = computed(() => {
+  if (props.isSubmitted) return t('components.pages.Game.GameMapContainer.submitted')
+  if (props.isSubmitting) return t('components.pages.Game.GameMapContainer.submitting')
+  return t('components.pages.Game.GameMapContainer.makeGuess')
+})
 
 const submit = () => {
-  if (props.selection && !props.isSubmitting) emit('submit')
+  if (props.selection && !props.isSubmitting && !props.isSubmitted) emit('submit')
 }
 </script>
 
@@ -44,12 +50,12 @@ const submit = () => {
     @open="isMapModalOpen = true"
     @select="emit('select', $event)"
   >
-    <Button :disabled="props.selection === null" :loading="props.isSubmitting" @click="submit">
-      {{
-        props.isSubmitting
-          ? t('components.pages.Game.GameMapContainer.submitting')
-          : t('components.pages.Game.GameMapContainer.makeGuess')
-      }}
+    <Button
+      :disabled="props.selection === null || props.isSubmitted"
+      :loading="props.isSubmitting"
+      @click="submit"
+    >
+      {{ submitLabel }}
     </Button>
   </GameMapModal>
 </template>

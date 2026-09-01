@@ -28,10 +28,14 @@ from src.features.with_friends_games.queue import enqueue_round_advance, enqueue
 from src.features.with_friends_games.repository import WithFriendsGamesRepository
 
 
+def _round_key(round_number: int) -> str:
+    return f"round-{round_number}"
+
+
 class WithFriendsGamesService:
     MAX_PLAYERS = 100
     ROUND_TIMEOUT_MS = 60_000
-    RESULT_INTERVAL_MS = 10_000
+    RESULT_INTERVAL_MS = 15_000
 
     def __init__(
         self,
@@ -126,7 +130,7 @@ class WithFriendsGamesService:
             },
             "private": {
                 "rounds": {
-                    str(round_number): {
+                    _round_key(round_number): {
                         "imageId": image_id,
                         "target": {"latitude": latitude, "longitude": longitude},
                         "guesses": {},
@@ -224,7 +228,7 @@ class WithFriendsGamesService:
                 )
             for player in connected_players.values():
                 player["guessStatus"] = "guessing"
-            private_round = state["private"]["rounds"]["1"]
+            private_round = state["private"]["rounds"][_round_key(1)]
             public.update(
                 {
                     "status": "guessing",
@@ -232,7 +236,11 @@ class WithFriendsGamesService:
                     "guessingEndsAt": now_ms + self.ROUND_TIMEOUT_MS,
                     "players": connected_players,
                     "rounds": {
-                        "1": {"imageId": private_round["imageId"], "startedAt": now_ms}
+                        _round_key(1): {
+                            "roundNumber": 1,
+                            "imageId": private_round["imageId"],
+                            "startedAt": now_ms,
+                        }
                     },
                     "updatedAt": now_ms,
                 }
@@ -246,7 +254,7 @@ class WithFriendsGamesService:
 
     def _reveal_round(self, state: dict[str, object], round_number: int, now_ms: int) -> None:
         public = state["public"]
-        private_round = state["private"]["rounds"][str(round_number)]
+        private_round = state["private"]["rounds"][_round_key(round_number)]
         target = private_round["target"]
         guesses = private_round.get("guesses", {})
         results: dict[str, dict[str, object]] = {}
@@ -265,7 +273,7 @@ class WithFriendsGamesService:
             player["guessStatus"] = "revealed"
             results[player_id] = result
 
-        public_round = public["rounds"][str(round_number)]
+        public_round = public["rounds"][_round_key(round_number)]
         public_round.update(
             {
                 "target": target,
@@ -314,7 +322,7 @@ class WithFriendsGamesService:
                 raise ApiError(HTTPStatus.FORBIDDEN, "participant_required", "You are not a participant.")
             if not 1 <= round_number <= GAME_ROUND_COUNT:
                 raise ApiError(HTTPStatus.CONFLICT, "invalid_game_state", "The round is invalid.")
-            private_round = state["private"]["rounds"][str(round_number)]
+            private_round = state["private"]["rounds"][_round_key(round_number)]
             guesses = private_round.get("guesses", {})
             if user_id in guesses:
                 return state
@@ -371,7 +379,7 @@ class WithFriendsGamesService:
         players = sorted(public["players"].values(), key=lambda player: player["joinedAt"])
         rounds = []
         for round_number in range(1, GAME_ROUND_COUNT + 1):
-            public_round = public["rounds"][str(round_number)]
+            public_round = public["rounds"][_round_key(round_number)]
             rounds.append(
                 {
                     "roundNumber": round_number,
@@ -426,10 +434,11 @@ class WithFriendsGamesService:
                 return state
 
             next_round_number = round_number + 1
-            private_round = state["private"]["rounds"][str(next_round_number)]
+            private_round = state["private"]["rounds"][_round_key(next_round_number)]
             for player in public["players"].values():
                 player["guessStatus"] = "guessing"
-            public["rounds"][str(next_round_number)] = {
+            public["rounds"][_round_key(next_round_number)] = {
+                "roundNumber": next_round_number,
                 "imageId": private_round["imageId"],
                 "startedAt": now_ms,
             }

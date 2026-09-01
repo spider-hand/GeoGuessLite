@@ -57,7 +57,8 @@
         },
         "GameMapContainer": {
           "makeGuess": "推測する",
-          "submitting": "送信中…"
+          "submitting": "送信中…",
+          "submitted": "推測を送信しました"
         },
         "SinglePlayerRoundResult": {
           "round": "ラウンド {round}",
@@ -67,7 +68,9 @@
           "totalScore": "合計スコア",
           "nextRound": "次のラウンド",
           "viewSummary": "結果を見る",
-          "target": "正解地点"
+          "target": "正解地点",
+          "nextRoundStarting": "次のラウンドはまもなく開始します。",
+          "summaryStarting": "ゲーム結果はまもなく表示されます。"
         },
         "SinglePlayerGameSummary": {
           "title": "ゲーム結果",
@@ -88,14 +91,43 @@
           "target": "正解地点",
           "home": "ホーム"
         },
+        "WithFriendsParticipantList": {
+          "title": "プレイヤー",
+          "count": "{count} / {maximum}",
+          "host": "ホスト",
+          "connected": "オンライン",
+          "disconnected": "オフライン"
+        },
+        "WithFriendsRoundResult": {
+          "title": "ラウンド {round} の結果",
+          "leaderboard": "ラウンド順位",
+          "distance": "距離",
+          "roundScore": "ラウンド",
+          "totalScore": "合計",
+          "noGuess": "推測なし",
+          "target": "正解地点"
+        },
+        "WithFriendsGameSummary": {
+          "title": "ゲーム結果",
+          "roundHistory": "ラウンド履歴",
+          "round": "ラウンド {round}",
+          "distance": "距離",
+          "roundScore": "ラウンド",
+          "totalScore": "合計",
+          "noGuess": "推測なし",
+          "target": "正解地点",
+          "createRoom": "ルームを作成",
+          "exit": "終了"
+        },
         "RoomKeyStrip": {
           "label": "ルームキー"
         },
         "GameWithFriendsPage": {
-          "createRoom": "ルームを作成",
           "exit": "終了",
-          "starting": "ゲームの準備ができました。まもなく開始します。",
-          "waitingForOpponent": "対戦相手を待っています..."
+          "startGame": "ゲームを開始",
+          "waitingForOpponent": "プレイヤーを待っています...",
+          "waitingForHost": "ホストがゲームを開始するのを待っています。",
+          "actionError": "問題が発生しました。もう一度お試しください。"
         },
         "ResultBadge": {
           "youWin": "あなたの勝ち",

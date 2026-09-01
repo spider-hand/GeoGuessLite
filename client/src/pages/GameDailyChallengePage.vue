@@ -249,6 +249,7 @@ onMounted(loadGame)
         </Button>
       </div>
       <GameMapContainer
+        :is-submitted="false"
         :is-submitting="isSubmittingGuess"
         :player-name="username"
         :selection="selection"

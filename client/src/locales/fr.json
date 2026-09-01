@@ -57,7 +57,8 @@
         },
         "GameMapContainer": {
           "makeGuess": "Valider",
-          "submitting": "Envoi…"
+          "submitting": "Envoi…",
+          "submitted": "Réponse envoyée"
         },
         "SinglePlayerRoundResult": {
           "round": "Manche {round}",
@@ -67,7 +68,9 @@
           "totalScore": "Score total",
           "nextRound": "Manche suivante",
           "viewSummary": "Voir le récapitulatif",
-          "target": "Emplacement correct"
+          "target": "Emplacement correct",
+          "nextRoundStarting": "La prochaine manche commencera bientôt.",
+          "summaryStarting": "Le récapitulatif de la partie s’affichera bientôt."
         },
         "SinglePlayerGameSummary": {
           "title": "Récapitulatif de la partie",
@@ -88,14 +91,43 @@
           "target": "Emplacement correct",
           "home": "Accueil"
         },
+        "WithFriendsParticipantList": {
+          "title": "Joueurs",
+          "count": "{count} / {maximum}",
+          "host": "Hôte",
+          "connected": "En ligne",
+          "disconnected": "Hors ligne"
+        },
+        "WithFriendsRoundResult": {
+          "title": "Résultats de la manche {round}",
+          "leaderboard": "Classement de la manche",
+          "distance": "Distance",
+          "roundScore": "Manche",
+          "totalScore": "Total",
+          "noGuess": "Aucune réponse",
+          "target": "Emplacement correct"
+        },
+        "WithFriendsGameSummary": {
+          "title": "Récapitulatif de la partie",
+          "roundHistory": "Historique des manches",
+          "round": "Manche {round}",
+          "distance": "Distance",
+          "roundScore": "Manche",
+          "totalScore": "Total",
+          "noGuess": "Aucune réponse",
+          "target": "Emplacement correct",
+          "createRoom": "Créer une salle",
+          "exit": "Quitter"
+        },
         "RoomKeyStrip": {
           "label": "Code de salle"
         },
         "GameWithFriendsPage": {
-          "createRoom": "Créer une salle",
           "exit": "Quitter",
-          "starting": "La partie est prête et va commencer sous peu.",
-          "waitingForOpponent": "En attente de l'adversaire..."
+          "startGame": "Démarrer la partie",
+          "waitingForOpponent": "En attente de joueurs...",
+          "waitingForHost": "En attente du démarrage par l'hôte.",
+          "actionError": "Une erreur est survenue. Veuillez réessayer."
         },
         "ResultBadge": {
           "youWin": "Vous gagnez",

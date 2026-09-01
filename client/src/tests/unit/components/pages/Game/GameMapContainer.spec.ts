@@ -14,7 +14,7 @@ vi.mock('@/components/pages/Game/GameMapModal.vue', () => ({
 
 it('should render the default state properly', async () => {
   const screen = await render(GameMapContainer, {
-    props: { isSubmitting: false, playerName: 'Guest', selection: null },
+    props: { isSubmitted: false, isSubmitting: false, playerName: 'Guest', selection: null },
     global: { plugins: [createAppI18n()] },
   })
 

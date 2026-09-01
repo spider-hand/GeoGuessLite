@@ -12,6 +12,7 @@ import NavigationFooter from '@/components/shared/NavigationFooter.vue'
 import NavigationHeader from '@/components/shared/NavigationHeader.vue'
 import SignUpPromptModal from '@/components/shared/SignUpPromptModal.vue'
 import useSinglePlayerGameQuery from '@/composables/useSinglePlayerGameQuery'
+import useWithFriendsGameApi from '@/composables/useWithFriendsGameApi'
 import type { DailyChallengeStatus } from '@/types/game'
 
 const router = useRouter()
@@ -24,6 +25,7 @@ const {
   user,
 } = useAuth()
 const { createGameAsync } = useSinglePlayerGameQuery(null)
+const { createGame: createWithFriendsGame, joinGame: joinWithFriendsGame } = useWithFriendsGameApi()
 const isStartingSinglePlayer = ref(false)
 const isStartingDailyChallenge = ref(false)
 const isCreatingFriendsRoom = ref(false)
@@ -37,7 +39,7 @@ const isStartingGame = computed(
     isCreatingFriendsRoom.value ||
     isEnteringFriendsRoom.value,
 )
-const isDailyChallengeDisabled = computed(
+const isRegisteredGameDisabled = computed(
   () => isStartingGame.value || !isCurrentUserLoaded.value || isLoadingUser.value,
 )
 const dailyChallengeStatus = computed<DailyChallengeStatus>(
@@ -68,7 +70,11 @@ const closeSignUpPrompt = () => {
   isSignUpPromptOpen.value = false
 }
 const ensureRegisteredUser = () => {
-  if (!isCurrentUserLoaded.value || !isRegisteredUser.value) {
+  if (!isCurrentUserLoaded.value || isLoadingUser.value) {
+    return false
+  }
+
+  if (!isRegisteredUser.value) {
     openSignUpPrompt()
     return false
   }
@@ -80,15 +86,32 @@ const handleCreateFriendsRoom = async () => {
     return
   }
 
-  await router.push('/game/with-friends/scaffold')
+  isCreatingFriendsRoom.value = true
+
+  try {
+    const game = await createWithFriendsGame()
+    await router.push(`/game/with-friends/${game.id}`)
+  } catch (error) {
+    console.error(error)
+  } finally {
+    isCreatingFriendsRoom.value = false
+  }
 }
 const handleEnterFriendsRoom = async (roomKey: string) => {
   if (isStartingGame.value || !ensureRegisteredUser()) {
     return
   }
 
-  void roomKey
-  await router.push('/game/with-friends/scaffold')
+  isEnteringFriendsRoom.value = true
+
+  try {
+    const game = await joinWithFriendsGame(roomKey)
+    await router.push(`/game/with-friends/${game.id}`)
+  } catch (error) {
+    console.error(error)
+  } finally {
+    isEnteringFriendsRoom.value = false
+  }
 }
 const handleJoinRandomMatch = async () => {
   if (isStartingGame.value) {
@@ -143,14 +166,14 @@ const handleSignUp = async () => {
           @start-single-player="handleStartSinglePlayer"
         />
         <PlayWithFriendsCard
-          :disabled="isStartingGame"
+          :disabled="isRegisteredGameDisabled"
           :is-creating-room="isCreatingFriendsRoom"
           :is-entering-room="isEnteringFriendsRoom"
           @create-friends-room="handleCreateFriendsRoom"
           @enter-friends-room="handleEnterFriendsRoom"
         />
         <DailyChallengeCard
-          :disabled="isDailyChallengeDisabled"
+          :disabled="isRegisteredGameDisabled"
           :is-starting-challenge="isStartingDailyChallenge"
           :status="dailyChallengeStatus"
           @start-daily-challenge="handleStartDailyChallenge"
