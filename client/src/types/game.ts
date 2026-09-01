@@ -29,11 +29,14 @@ export type WithFriendsParticipant = WithFriendsPlayer & {
   isHost: boolean
 }
 
-export type WithFriendsRoundResultPlayer = WithFriendsPlayer & {
+export type WithFriendsLeaderboardPlayer = WithFriendsPlayer & {
   distanceKm: number | null
-  guess: [number, number] | null
   roundScore: number
   totalScore: number
+}
+
+export type WithFriendsRoundResultPlayer = WithFriendsLeaderboardPlayer & {
+  guess: [number, number] | null
 }
 
 export type WithFriendsSummaryPlayer = WithFriendsPlayer & {

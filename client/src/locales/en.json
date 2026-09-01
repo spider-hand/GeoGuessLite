@@ -98,23 +98,23 @@
           "connected": "Online",
           "disconnected": "Offline"
         },
-        "WithFriendsRoundResult": {
-          "title": "Round {round} Results",
+        "WithFriendsLeaderboard": {
           "leaderboard": "Round leaderboard",
           "distance": "Distance",
           "roundScore": "Round",
           "totalScore": "Total",
-          "noGuess": "No guess",
+          "noGuess": "No guess"
+        },
+        "WithFriendsRoundResult": {
+          "title": "Round {round} Results",
+          "nextRoundStarting": "The next round will start shortly.",
+          "summaryStarting": "The game summary will open shortly.",
           "target": "Correct location"
         },
         "WithFriendsGameSummary": {
           "title": "Game Summary",
           "roundHistory": "Round history",
           "round": "Round {round}",
-          "distance": "Distance",
-          "roundScore": "Round",
-          "totalScore": "Total",
-          "noGuess": "No guess",
           "target": "Correct location",
           "createRoom": "Create Room",
           "exit": "Exit"
