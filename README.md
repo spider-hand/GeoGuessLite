@@ -10,12 +10,11 @@
 
 - [Client](./client/README.md)
 - [Server](./server/README.md)
-- [Functions](./functions/README.md)
 
 ## Tech Stack
 
 - Frontend: Vue
-- Backend: AWS Lambda, Firebase Functions
+- Backend: AWS Lambda
 - Authentication: Firebase Authentication
 - DB: Firebase Realtime Database, PostgreSQL
 - Hosting: Cloudflare
