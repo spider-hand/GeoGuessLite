@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ChevronDown } from '@lucide/vue'
-import { computed, ref, watch } from 'vue'
+import confetti from 'canvas-confetti'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import GameMap from '@/components/pages/Game/GameMap.vue'
@@ -107,6 +108,17 @@ const selectRound = (roundNumber: number) => {
   selectedRoundNumber.value = roundNumber
   isRoundMenuOpen.value = false
 }
+
+onMounted(() => {
+  if (rankedPlayers.value[0]?.userId !== props.currentUserId) return
+
+  confetti({
+    particleCount: 150,
+    spread: 90,
+    origin: { y: 0.6 },
+    disableForReducedMotion: true,
+  })
+})
 
 useOnClickOutside({
   root: roundSelectorRoot,

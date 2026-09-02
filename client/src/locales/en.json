@@ -108,7 +108,7 @@
         "WithFriendsRoundResult": {
           "title": "Round {round} Results",
           "nextRoundStarting": "The next round will start shortly.",
-          "summaryStarting": "The game summary will open shortly.",
+          "viewSummary": "View Summary",
           "target": "Correct location"
         },
         "WithFriendsGameSummary": {
@@ -125,6 +125,7 @@
         "GameWithFriendsPage": {
           "exit": "Exit",
           "startGame": "Start Game",
+          "starting": "The game is ready and will start shortly.",
           "waitingForOpponent": "Waiting for players...",
           "waitingForHost": "Waiting for the host to start the game.",
           "actionError": "Something went wrong. Please try again."

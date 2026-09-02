@@ -108,7 +108,7 @@
         "WithFriendsRoundResult": {
           "title": "ラウンド {round} の結果",
           "nextRoundStarting": "次のラウンドはまもなく開始します。",
-          "summaryStarting": "ゲーム結果はまもなく表示されます。",
+          "viewSummary": "結果を見る",
           "target": "正解地点"
         },
         "WithFriendsGameSummary": {
@@ -125,6 +125,7 @@
         "GameWithFriendsPage": {
           "exit": "終了",
           "startGame": "ゲームを開始",
+          "starting": "ゲームの準備ができました。まもなく開始します。",
           "waitingForOpponent": "プレイヤーを待っています...",
           "waitingForHost": "ホストがゲームを開始するのを待っています。",
           "actionError": "問題が発生しました。もう一度お試しください。"

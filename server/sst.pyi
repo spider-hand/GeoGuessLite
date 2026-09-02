@@ -22,6 +22,15 @@ class Resource:
     class CreateDailyChallenge:
         name: str
         type: str
+    class WithFriendsGameStart:
+        type: str
+        url: str
+    class WithFriendsGameStartDLQ:
+        type: str
+        url: str
+    class WithFriendsGameStartWorker:
+        name: str
+        type: str
     class WithFriendsRoundAdvance:
         type: str
         url: str

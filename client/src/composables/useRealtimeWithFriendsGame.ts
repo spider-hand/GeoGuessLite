@@ -33,7 +33,7 @@ type RealtimeWithFriendsGameSnapshot = {
   id: string
   roomKey: string
   hostUserId: string
-  status: 'waiting' | 'guessing' | 'results' | 'completed'
+  status: 'waiting' | 'starting' | 'guessing' | 'results' | 'completed'
   currentRound: number
   players?: Record<string, RealtimeWithFriendsGamePlayer>
   rounds?: Record<string, RealtimeWithFriendsGameRound>

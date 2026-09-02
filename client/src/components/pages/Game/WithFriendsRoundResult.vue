@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import GameMap from '@/components/pages/Game/GameMap.vue'
 import GameStreetViewContainer from '@/components/pages/Game/GameStreetViewContainer.vue'
 import WithFriendsLeaderboard from '@/components/pages/Game/WithFriendsLeaderboard.vue'
+import Button from '@/components/shared/Button.vue'
 import { ROUNDS } from '@/constants/game'
 import type { GameMapMarker, WithFriendsRoundResultPlayer } from '@/types/game'
 import { calculateCenter, calculateZoomLevel } from '@/utils/game'
@@ -19,12 +20,11 @@ const props = defineProps<{
   target: [number, number]
 }>()
 
+const emit = defineEmits<{
+  viewSummary: []
+}>()
+
 const { t } = useI18n()
-const description = computed(() =>
-  props.roundNumber === ROUNDS
-    ? t('components.pages.Game.WithFriendsRoundResult.summaryStarting')
-    : t('components.pages.Game.WithFriendsRoundResult.nextRoundStarting'),
-)
 const rankedPlayers = computed(() =>
   props.players
     .map((player, index) => ({ player, index }))
@@ -109,7 +109,9 @@ watch(
             })
           }}
         </h1>
-        <p>{{ description }}</p>
+        <p v-if="props.roundNumber !== ROUNDS">
+          {{ t('components.pages.Game.WithFriendsRoundResult.nextRoundStarting') }}
+        </p>
       </header>
 
       <WithFriendsLeaderboard
@@ -118,6 +120,13 @@ watch(
         :selected-user-id="selectedPlayer?.userId ?? ''"
         @select="selectedUserId = $event"
       />
+      <Button
+        v-if="props.roundNumber === ROUNDS"
+        class="with-friends-round-result__summary-button"
+        @click="emit('viewSummary')"
+      >
+        {{ t('components.pages.Game.WithFriendsRoundResult.viewSummary') }}
+      </Button>
     </aside>
   </section>
 </template>
@@ -165,6 +174,11 @@ watch(
   margin: var(--spacing-xs) 0 0;
   color: var(--muted-strong);
   font-size: var(--font-size-body-sm);
+}
+
+.with-friends-round-result__summary-button {
+  width: 100%;
+  margin-top: var(--spacing-lg);
 }
 
 @media (max-width: 960px) {

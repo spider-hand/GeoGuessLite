@@ -21,6 +21,16 @@ export default $config({
       actions: ["secretsmanager:GetSecretValue"],
       resources: [appSecretArn],
     });
+    const withFriendsGameStartDlq = new sst.aws.Queue(
+      "WithFriendsGameStartDLQ",
+    );
+    const withFriendsGameStartQueue = new sst.aws.Queue(
+      "WithFriendsGameStart",
+      {
+        delay: "5 seconds",
+        dlq: { queue: withFriendsGameStartDlq.arn, retry: 3 },
+      },
+    );
     const withFriendsRoundTimeoutDlq = new sst.aws.Queue(
       "WithFriendsRoundTimeoutDLQ",
     );
@@ -41,6 +51,10 @@ export default $config({
         dlq: { queue: withFriendsRoundAdvanceDlq.arn, retry: 3 },
       },
     );
+    const withFriendsGameStartSendPermission = sst.aws.permission({
+      actions: ["sqs:SendMessage"],
+      resources: [withFriendsGameStartQueue.arn],
+    });
     const withFriendsRoundTimeoutSendPermission = sst.aws.permission({
       actions: ["sqs:SendMessage"],
       resources: [withFriendsRoundTimeoutQueue.arn],
@@ -56,6 +70,10 @@ export default $config({
       "sqs:GetQueueUrl",
       "sqs:ReceiveMessage",
     ];
+    const withFriendsGameStartReceivePermission = sst.aws.permission({
+      actions: queueReceiveActions,
+      resources: [withFriendsGameStartQueue.arn],
+    });
     const withFriendsRoundTimeoutReceivePermission = sst.aws.permission({
       actions: queueReceiveActions,
       resources: [withFriendsRoundTimeoutQueue.arn],
@@ -105,6 +123,25 @@ export default $config({
           "src/jobs/cleanup_expired_with_friends_games.cleanup_expired_with_friends_games",
         environment: { ENVIRONMENT: $app.stage },
         permissions: [appSecretPermission],
+      },
+    );
+    const withFriendsGameStartWorker = new sst.aws.Function(
+      "WithFriendsGameStartWorker",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/jobs/process_with_friends_game_start.process_with_friends_game_start",
+        environment: {
+          ENVIRONMENT: $app.stage,
+          WITH_FRIENDS_ROUND_TIMEOUT_QUEUE_URL:
+            withFriendsRoundTimeoutQueue.url,
+        },
+        permissions: [
+          appSecretPermission,
+          withFriendsGameStartReceivePermission,
+          withFriendsRoundTimeoutSendPermission,
+        ],
       },
     );
     const withFriendsRoundTimeoutWorker = new sst.aws.Function(
@@ -274,13 +311,9 @@ export default $config({
           "src/api/v1/with_friends_games/handler.start_with_friends_game",
         environment: {
           ENVIRONMENT: $app.stage,
-          WITH_FRIENDS_ROUND_TIMEOUT_QUEUE_URL:
-            withFriendsRoundTimeoutQueue.url,
+          WITH_FRIENDS_GAME_START_QUEUE_URL: withFriendsGameStartQueue.url,
         },
-        permissions: [
-          appSecretPermission,
-          withFriendsRoundTimeoutSendPermission,
-        ],
+        permissions: [appSecretPermission, withFriendsGameStartSendPermission],
       },
       { auth: { lambda: firebaseAuthorizer.id } },
     );
@@ -433,6 +466,7 @@ export default $config({
       schedule: "cron(0 2 * * ? *)",
       function: cleanupWithFriendsGames,
     });
+    withFriendsGameStartQueue.subscribe(withFriendsGameStartWorker);
     withFriendsRoundTimeoutQueue.subscribe(withFriendsRoundTimeoutWorker);
     withFriendsRoundAdvanceQueue.subscribe(withFriendsRoundAdvanceWorker);
   },

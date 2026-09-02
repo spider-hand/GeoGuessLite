@@ -12,34 +12,36 @@ vi.mock('@/components/pages/Game/GameMap.vue', () => ({
   },
 }))
 
+const defaultProps = {
+  currentUserId: 'current-user',
+  imageId: '524779645570864',
+  players: [
+    {
+      userId: 'current-user',
+      displayName: 'Current Player',
+      country: 'JP',
+      distanceKm: 18.4,
+      guess: [139.6917, 35.6895] as [number, number],
+      roundScore: 4210,
+      totalScore: 4750,
+    },
+    {
+      userId: 'leader',
+      displayName: 'Round Leader',
+      country: 'US',
+      distanceKm: 5.8,
+      guess: [139.74, 35.68] as [number, number],
+      roundScore: 4750,
+      totalScore: 4750,
+    },
+  ],
+  roundNumber: 1,
+  target: [139.7671, 35.6812] as [number, number],
+}
+
 it('should render the default state properly', async () => {
   const screen = await render(WithFriendsRoundResult, {
-    props: {
-      currentUserId: 'current-user',
-      imageId: '524779645570864',
-      players: [
-        {
-          userId: 'current-user',
-          displayName: 'Current Player',
-          country: 'JP',
-          distanceKm: 18.4,
-          guess: [139.6917, 35.6895],
-          roundScore: 4210,
-          totalScore: 4750,
-        },
-        {
-          userId: 'leader',
-          displayName: 'Round Leader',
-          country: 'US',
-          distanceKm: 5.8,
-          guess: [139.74, 35.68],
-          roundScore: 4750,
-          totalScore: 4750,
-        },
-      ],
-      roundNumber: 1,
-      target: [139.7671, 35.6812],
-    },
+    props: defaultProps,
     global: { plugins: [createAppI18n()] },
   })
 
@@ -48,6 +50,8 @@ it('should render the default state properly', async () => {
   await expect.element(screen.getByText('Round Leader')).toBeVisible()
   await expect.element(screen.getByText('Current Player')).toBeVisible()
   await expect.element(screen.getByText('18.4 km')).toBeVisible()
+  await expect.element(screen.getByText('The next round will start shortly.')).toBeVisible()
+  expect(screen.container.textContent).not.toContain('View Summary')
   await expect.element(screen.getByTestId('result-map')).toHaveAttribute('data-marker-count', '3')
   expect(
     Array.from(screen.container.querySelectorAll('ol button'), (button) => button.textContent),
@@ -58,4 +62,16 @@ it('should render the default state properly', async () => {
   await expect
     .element(screen.getByTestId('result-map'))
     .toHaveAttribute('data-first-marker', 'Round Leader')
+})
+
+it('should emit view summary from the final round', async () => {
+  const screen = await render(WithFriendsRoundResult, {
+    props: { ...defaultProps, roundNumber: 5 },
+    global: { plugins: [createAppI18n()] },
+  })
+
+  expect(screen.container.textContent).not.toContain('The next round will start shortly.')
+  await screen.getByRole('button', { name: 'View Summary' }).click()
+
+  expect(screen.emitted('viewSummary')).toEqual([[]])
 })

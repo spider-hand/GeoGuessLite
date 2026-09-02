@@ -26,6 +26,18 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Function"
     }
+    "WithFriendsGameStart": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
+    "WithFriendsGameStartDLQ": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
+    "WithFriendsGameStartWorker": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
     "WithFriendsRoundAdvance": {
       "type": "sst.aws.Queue"
       "url": string

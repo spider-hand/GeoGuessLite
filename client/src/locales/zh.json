@@ -108,7 +108,7 @@
         "WithFriendsRoundResult": {
           "title": "第 {round} 回合结果",
           "nextRoundStarting": "下一回合即将开始。",
-          "summaryStarting": "游戏总结即将显示。",
+          "viewSummary": "查看总结",
           "target": "正确位置"
         },
         "WithFriendsGameSummary": {
@@ -125,6 +125,7 @@
         "GameWithFriendsPage": {
           "exit": "退出",
           "startGame": "开始游戏",
+          "starting": "游戏已准备就绪，即将开始。",
           "waitingForOpponent": "正在等待玩家...",
           "waitingForHost": "正在等待房主开始游戏。",
           "actionError": "出现问题，请重试。"

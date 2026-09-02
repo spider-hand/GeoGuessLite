@@ -112,6 +112,18 @@ def make_state(*, status="waiting", current_round=0, players=None):
     return {"public": public, "private": {"rounds": private_rounds}}
 
 
+def add_revealed_rounds(state, through_round):
+    for round_number in range(1, through_round + 1):
+        state["public"]["rounds"][f"round-{round_number}"] = {
+            "roundNumber": round_number,
+            "imageId": f"image-{round_number}",
+            "startedAt": 1,
+            "revealedAt": 2,
+            "target": {"latitude": 35.0, "longitude": 139.0},
+            "results": {"host": {"score": 0}, "guest": {"score": 0}},
+        }
+
+
 def make_service(state, now=None):
     repository = MagicMock()
     repository.get_by_id.return_value = make_game()
@@ -186,12 +198,37 @@ def test_join_game_rejects_the_101st_player():
     assert error.value.code == "with_friends_game_full"
 
 
-def test_start_game_exposes_only_the_current_image_and_enqueues_timeout(monkeypatch):
-    service, _, game_ref = make_service(make_state())
+def test_start_game_locks_connected_players_and_enqueues_delayed_start(monkeypatch):
+    state = make_state()
+    state["public"]["players"]["disconnected"] = {
+        "userId": "disconnected",
+        "displayName": "Disconnected",
+        "isConnected": False,
+        "isHost": False,
+        "guessStatus": "waiting",
+        "totalScore": 0,
+        "joinedAt": 3,
+    }
+    service, _, game_ref = make_service(state)
+    enqueue = MagicMock()
+    monkeypatch.setattr("src.features.with_friends_games.service.enqueue_game_start", enqueue)
+
+    service.start_game("host", "game-1")
+
+    public = game_ref.value["public"]
+    assert public["status"] == "starting"
+    assert public["currentRound"] == 0
+    assert set(public["players"]) == {"host", "guest"}
+    assert public["rounds"] == {}
+    enqueue.assert_called_once_with("game-1")
+
+
+def test_process_game_start_exposes_only_the_current_image_and_enqueues_timeout(monkeypatch):
+    service, _, game_ref = make_service(make_state(status="starting"))
     enqueue = MagicMock()
     monkeypatch.setattr("src.features.with_friends_games.service.enqueue_round_timeout", enqueue)
 
-    service.start_game("host", "game-1")
+    service.process_game_start("game-1")
 
     public = game_ref.value["public"]
     assert public["status"] == "guessing"
@@ -202,6 +239,20 @@ def test_start_game_exposes_only_the_current_image_and_enqueues_timeout(monkeypa
     }
     assert "target" not in public["rounds"]["round-1"]
     enqueue.assert_called_once_with("game-1", 1)
+
+
+@pytest.mark.parametrize("status", ["waiting", "guessing", "results", "completed"])
+def test_process_game_start_ignores_stale_or_duplicate_messages(monkeypatch, status):
+    current_round = 0 if status == "waiting" else 1
+    service, _, game_ref = make_service(make_state(status=status, current_round=current_round))
+    original_state = copy.deepcopy(game_ref.value)
+    enqueue = MagicMock()
+    monkeypatch.setattr("src.features.with_friends_games.service.enqueue_round_timeout", enqueue)
+
+    service.process_game_start("game-1")
+
+    assert game_ref.value == original_state
+    enqueue.assert_not_called()
 
 
 def test_last_guess_reveals_results_early_and_enqueues_advance(monkeypatch):
@@ -244,19 +295,57 @@ def test_timeout_gives_missing_players_zero_points(monkeypatch):
     enqueue.assert_called_once()
 
 
+def test_final_guess_completes_and_archives_without_enqueuing_advance(monkeypatch):
+    state = make_state(status="guessing", current_round=5)
+    add_revealed_rounds(state, 4)
+    state["private"]["rounds"]["round-5"]["guesses"]["host"] = {
+        "guess": {"latitude": 35.0, "longitude": 139.0},
+        "submittedAt": 1,
+    }
+    service, repository, game_ref = make_service(state)
+    enqueue = MagicMock()
+    monkeypatch.setattr("src.features.with_friends_games.service.enqueue_round_advance", enqueue)
+
+    service.create_guess(
+        "guest",
+        "game-1",
+        5,
+        {"guess": {"latitude": 36.0, "longitude": 140.0}},
+    )
+
+    public = game_ref.value["public"]
+    assert public["status"] == "completed"
+    assert public["completedAt"] == 1788134400000
+    assert "proceedToNextRoundAt" not in public
+    assert set(public["rounds"]["round-5"]["results"]) == {"host", "guest"}
+    repository.finish.assert_called_once()
+    enqueue.assert_not_called()
+
+
+def test_final_round_timeout_completes_and_archives_without_enqueuing_advance(monkeypatch):
+    now = datetime(2026, 8, 31, tzinfo=UTC)
+    state = make_state(status="guessing", current_round=5)
+    add_revealed_rounds(state, 4)
+    state["public"]["guessingEndsAt"] = int((now - timedelta(seconds=1)).timestamp() * 1000)
+    service, repository, game_ref = make_service(state, now)
+    enqueue = MagicMock()
+    monkeypatch.setattr("src.features.with_friends_games.service.enqueue_round_advance", enqueue)
+
+    service.process_round_timeout("game-1", 5)
+
+    public = game_ref.value["public"]
+    assert public["status"] == "completed"
+    assert public["rounds"]["round-5"]["results"]["host"] == {"score": 0}
+    assert public["rounds"]["round-5"]["results"]["guest"] == {"score": 0}
+    repository.finish.assert_called_once()
+    enqueue.assert_not_called()
+
+
 def test_final_round_advance_archives_the_completed_game():
     now = datetime(2026, 8, 31, tzinfo=UTC)
     state = make_state(status="results", current_round=5)
     state["public"]["proceedToNextRoundAt"] = int((now - timedelta(seconds=1)).timestamp() * 1000)
-    for round_number in range(1, 6):
-        state["public"]["rounds"][f"round-{round_number}"] = {
-            "roundNumber": round_number,
-            "imageId": f"image-{round_number}",
-            "startedAt": 1,
-            "revealedAt": 2,
-            "target": {"latitude": 35.0, "longitude": 139.0},
-            "results": {"host": {"score": 0}, "guest": {"score": 0}},
-        }
+    add_revealed_rounds(state, 5)
     service, repository, game_ref = make_service(state, now)
 
     service.process_round_advance("game-1", 5)

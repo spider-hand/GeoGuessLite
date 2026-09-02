@@ -24,7 +24,11 @@ from src.features.with_friends_games.models import (
     JoinWithFriendsGameInput,
     WithFriendsGameRecord,
 )
-from src.features.with_friends_games.queue import enqueue_round_advance, enqueue_round_timeout
+from src.features.with_friends_games.queue import (
+    enqueue_game_start,
+    enqueue_round_advance,
+    enqueue_round_timeout,
+)
 from src.features.with_friends_games.repository import WithFriendsGamesRepository
 
 
@@ -200,8 +204,10 @@ class WithFriendsGamesService:
         if game.host_user_id != user_id:
             raise ApiError(HTTPStatus.FORBIDDEN, "host_required", "Only the host can start this game.")
         now_ms = self._now_ms()
+        should_enqueue_start = False
 
         def apply_start(current: dict[str, object] | None):
+            nonlocal should_enqueue_start
             if current is None:
                 raise ApiError(
                     HTTPStatus.NOT_FOUND,
@@ -210,6 +216,9 @@ class WithFriendsGamesService:
                 )
             state = copy.deepcopy(current)
             public = state["public"]
+            if public["status"] == "starting":
+                should_enqueue_start = True
+                return state
             if public["status"] == "guessing" and public["currentRound"] == 1:
                 return state
             if public["status"] != "waiting":
@@ -226,7 +235,37 @@ class WithFriendsGamesService:
                     "opponent_required",
                     "At least one connected opponent is required.",
                 )
-            for player in connected_players.values():
+            public.update(
+                {
+                    "status": "starting",
+                    "players": connected_players,
+                    "updatedAt": now_ms,
+                }
+            )
+            should_enqueue_start = True
+            return state
+
+        self._game_ref(game_id).transaction(apply_start)
+        if should_enqueue_start:
+            enqueue_game_start(game_id)
+
+    def process_game_start(self, game_id: str) -> None:
+        game = self.repository.get_by_id(game_id)
+        if game is None or game.result is not None:
+            return
+        now_ms = self._now_ms()
+        should_enqueue_timeout = False
+
+        def apply_start(current: dict[str, object] | None):
+            nonlocal should_enqueue_timeout
+            if current is None:
+                return current
+            state = copy.deepcopy(current)
+            public = state["public"]
+            if public["status"] != "starting":
+                return state
+
+            for player in public["players"].values():
                 player["guessStatus"] = "guessing"
             private_round = state["private"]["rounds"][_round_key(1)]
             public.update(
@@ -234,7 +273,6 @@ class WithFriendsGamesService:
                     "status": "guessing",
                     "currentRound": 1,
                     "guessingEndsAt": now_ms + self.ROUND_TIMEOUT_MS,
-                    "players": connected_players,
                     "rounds": {
                         _round_key(1): {
                             "roundNumber": 1,
@@ -245,11 +283,11 @@ class WithFriendsGamesService:
                     "updatedAt": now_ms,
                 }
             )
+            should_enqueue_timeout = True
             return state
 
-        state = self._game_ref(game_id).transaction(apply_start)
-        public = state["public"]
-        if public["status"] == "guessing" and public["currentRound"] == 1:
+        self._game_ref(game_id).transaction(apply_start)
+        if should_enqueue_timeout:
             enqueue_round_timeout(game_id, 1)
 
     def _reveal_round(self, state: dict[str, object], round_number: int, now_ms: int) -> None:
@@ -281,13 +319,22 @@ class WithFriendsGamesService:
                 "revealedAt": now_ms,
             }
         )
-        public.update(
-            {
-                "status": "results",
-                "proceedToNextRoundAt": now_ms + self.RESULT_INTERVAL_MS,
-                "updatedAt": now_ms,
-            }
-        )
+        if round_number == GAME_ROUND_COUNT:
+            public.update(
+                {
+                    "status": "completed",
+                    "completedAt": now_ms,
+                    "updatedAt": now_ms,
+                }
+            )
+        else:
+            public.update(
+                {
+                    "status": "results",
+                    "proceedToNextRoundAt": now_ms + self.RESULT_INTERVAL_MS,
+                    "updatedAt": now_ms,
+                }
+            )
         public.pop("guessingEndsAt", None)
 
     def create_guess(
@@ -343,8 +390,10 @@ class WithFriendsGamesService:
 
         state = self._game_ref(game_id).transaction(apply_guess)
         public = state["public"]
-        # Schedule the next round while players view the results.
-        if public["status"] == "results" and public["currentRound"] == round_number:
+        if public["status"] == "completed":
+            self._archive_completed_game(game_id, state)
+        elif public["status"] == "results" and public["currentRound"] == round_number:
+            # Schedule the next round while players view the results.
             enqueue_round_advance(game_id, round_number)
 
     def process_round_timeout(self, game_id: str, round_number: int) -> None:
@@ -370,8 +419,10 @@ class WithFriendsGamesService:
         if state is None:
             return
         public = state["public"]
-        # Schedule the next round while players view the results.
-        if public["status"] == "results" and public["currentRound"] == round_number:
+        if public["status"] == "completed":
+            self._archive_completed_game(game_id, state)
+        elif public["status"] == "results" and public["currentRound"] == round_number:
+            # Schedule the next round while players view the results.
             enqueue_round_advance(game_id, round_number)
 
     def _build_archive(self, state: dict[str, object]) -> dict[str, object]:
@@ -402,6 +453,10 @@ class WithFriendsGamesService:
             ],
             "rounds": rounds,
         }
+
+    def _archive_completed_game(self, game_id: str, state: dict[str, object]) -> None:
+        completed_at = datetime.fromtimestamp(state["public"]["completedAt"] / 1000, UTC)
+        self.repository.finish(game_id, self._build_archive(state), completed_at)
 
     def process_round_advance(self, game_id: str, round_number: int) -> None:
         game = self.repository.get_by_id(game_id)
@@ -458,8 +513,7 @@ class WithFriendsGamesService:
             return
         public = state["public"]
         if public["status"] == "completed":
-            completed_at = datetime.fromtimestamp(public["completedAt"] / 1000, UTC)
-            self.repository.finish(game_id, self._build_archive(state), completed_at)
+            self._archive_completed_game(game_id, state)
             return
         # Schedule the guessing timeout when the next round starts.
         if public["status"] == "guessing" and public["currentRound"] == round_number + 1:
