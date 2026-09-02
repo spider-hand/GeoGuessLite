@@ -49,6 +49,14 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {}
 
+export const Winner: Story = {
+  args: {
+    players: players.map((player) =>
+      player.userId === 'current-user' ? { ...player, totalScore: 23_000 } : player,
+    ),
+  },
+}
+
 export const Guest: Story = {
   args: { canCreateRoom: false },
 }

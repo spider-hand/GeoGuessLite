@@ -61,6 +61,12 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {}
 
+export const FinalRound: Story = {
+  args: {
+    roundNumber: 5,
+  },
+}
+
 export const WithMissingGuess: Story = {
   args: {
     players: players.map((player, index) =>

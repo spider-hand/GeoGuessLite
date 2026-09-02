@@ -108,7 +108,7 @@
         "WithFriendsRoundResult": {
           "title": "Resultados de la ronda {round}",
           "nextRoundStarting": "La siguiente ronda comenzará en breve.",
-          "summaryStarting": "El resumen de la partida se abrirá en breve.",
+          "viewSummary": "Ver resumen",
           "target": "Ubicación correcta"
         },
         "WithFriendsGameSummary": {
@@ -125,6 +125,7 @@
         "GameWithFriendsPage": {
           "exit": "Salir",
           "startGame": "Iniciar partida",
+          "starting": "La partida está lista y comenzará en breve.",
           "waitingForOpponent": "Esperando jugadores...",
           "waitingForHost": "Esperando a que el anfitrión inicie la partida.",
           "actionError": "Algo salió mal. Inténtalo de nuevo."

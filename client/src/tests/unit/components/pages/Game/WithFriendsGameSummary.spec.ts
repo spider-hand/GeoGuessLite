@@ -1,8 +1,12 @@
-import { expect, it, vi } from 'vitest'
+import { beforeEach, expect, it, vi } from 'vitest'
 import { render } from 'vitest-browser-vue'
 
 import WithFriendsGameSummary from '@/components/pages/Game/WithFriendsGameSummary.vue'
 import { createAppI18n } from '@/i18n'
+
+const { mockConfetti } = vi.hoisted(() => ({ mockConfetti: vi.fn() }))
+
+vi.mock('canvas-confetti', () => ({ default: mockConfetti }))
 
 vi.mock('@/components/pages/Game/GameMap.vue', () => ({
   default: {
@@ -12,48 +16,54 @@ vi.mock('@/components/pages/Game/GameMap.vue', () => ({
   },
 }))
 
-it('should render the default state properly', async () => {
-  const screen = await render(WithFriendsGameSummary, {
-    props: {
-      canCreateRoom: true,
-      currentUserId: 'current-user',
-      isCreatingRoom: false,
-      players: [
+const defaultProps = {
+  canCreateRoom: true,
+  currentUserId: 'current-user',
+  isCreatingRoom: false,
+  players: [
+    {
+      userId: 'current-user',
+      displayName: 'Current Player',
+      country: 'JP',
+      totalScore: 18_450,
+    },
+    {
+      userId: 'winner',
+      displayName: 'Winning Player',
+      country: 'US',
+      totalScore: 22_110,
+    },
+  ],
+  rounds: [
+    {
+      imageId: '524779645570864',
+      roundNumber: 1,
+      target: [139.7671, 35.6812] as [number, number],
+      results: [
         {
           userId: 'current-user',
-          displayName: 'Current Player',
-          country: 'JP',
-          totalScore: 18_450,
+          distanceKm: 18.4,
+          guess: [139.6917, 35.6895] as [number, number],
+          score: 4210,
         },
         {
           userId: 'winner',
-          displayName: 'Winning Player',
-          country: 'US',
-          totalScore: 22_110,
-        },
-      ],
-      rounds: [
-        {
-          imageId: '524779645570864',
-          roundNumber: 1,
-          target: [139.7671, 35.6812],
-          results: [
-            {
-              userId: 'current-user',
-              distanceKm: 18.4,
-              guess: [139.6917, 35.6895],
-              score: 4210,
-            },
-            {
-              userId: 'winner',
-              distanceKm: 5.8,
-              guess: [139.74, 35.68],
-              score: 4750,
-            },
-          ],
+          distanceKm: 5.8,
+          guess: [139.74, 35.68] as [number, number],
+          score: 4750,
         },
       ],
     },
+  ],
+}
+
+beforeEach(() => {
+  mockConfetti.mockClear()
+})
+
+it('should render the default state properly', async () => {
+  const screen = await render(WithFriendsGameSummary, {
+    props: defaultProps,
     global: { plugins: [createAppI18n()] },
   })
 
@@ -74,4 +84,24 @@ it('should render the default state properly', async () => {
   await expect
     .element(screen.getByTestId('summary-map'))
     .toHaveAttribute('data-first-marker', 'Winning Player')
+  expect(mockConfetti).not.toHaveBeenCalled()
+})
+
+it('should trigger confetti when the current player is ranked first', async () => {
+  await render(WithFriendsGameSummary, {
+    props: {
+      ...defaultProps,
+      players: defaultProps.players.map((player) =>
+        player.userId === 'current-user' ? { ...player, totalScore: 23_000 } : player,
+      ),
+    },
+    global: { plugins: [createAppI18n()] },
+  })
+
+  expect(mockConfetti).toHaveBeenCalledExactlyOnceWith({
+    particleCount: 150,
+    spread: 90,
+    origin: { y: 0.6 },
+    disableForReducedMotion: true,
+  })
 })

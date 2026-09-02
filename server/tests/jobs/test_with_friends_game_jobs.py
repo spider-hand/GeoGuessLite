@@ -3,9 +3,17 @@ from unittest.mock import MagicMock, patch
 
 from src.jobs import (
     cleanup_expired_with_friends_games,
+    process_with_friends_game_start,
     process_with_friends_round_advance,
     process_with_friends_round_timeout,
 )
+
+
+def test_process_with_friends_game_start_delegates_queue_message():
+    event = {"Records": [{"body": json.dumps({"gameId": "game-1"})}]}
+    with patch.object(process_with_friends_game_start._service, "process_game_start") as process:
+        process_with_friends_game_start.process_with_friends_game_start(event, MagicMock())
+    process.assert_called_once_with("game-1")
 
 
 def test_process_with_friends_round_timeout_delegates_queue_message():

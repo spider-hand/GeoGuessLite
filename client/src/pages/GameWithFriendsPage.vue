@@ -41,6 +41,7 @@ const selection = ref<[number, number] | null>(null)
 const isStartingGame = ref(false)
 const isSubmittingGuess = ref(false)
 const isCreatingRoom = ref(false)
+const isSummaryVisible = ref(false)
 const operationError = ref<Error | null>(null)
 const submittedRoundNumber = ref<number | null>(null)
 
@@ -137,17 +138,22 @@ watch(
   { immediate: true },
 )
 
-watch(
-  () => game.value?.currentRound,
-  () => {
-    selection.value = null
-    submittedRoundNumber.value = null
-    operationError.value = null
-  },
-)
+watch([gameId, () => game.value?.currentRound], () => {
+  selection.value = null
+  submittedRoundNumber.value = null
+  isSummaryVisible.value = false
+  operationError.value = null
+})
 
 const handleStart = async () => {
-  if (!gameId.value || !isHost.value || !canStartGame.value || isStartingGame.value) return
+  if (
+    !gameId.value ||
+    game.value?.status !== 'waiting' ||
+    !isHost.value ||
+    !canStartGame.value ||
+    isStartingGame.value
+  )
+    return
   isStartingGame.value = true
   operationError.value = null
   try {
@@ -203,6 +209,9 @@ const handleCreateRoom = async () => {
 }
 
 const handleExit = () => router.push('/')
+const handleViewSummary = () => {
+  isSummaryVisible.value = true
+}
 </script>
 
 <template>
@@ -213,11 +222,17 @@ const handleExit = () => router.push('/')
       <LoaderCircle class="with-friends-page__loader" :size="32" aria-hidden="true" />
     </section>
 
-    <section v-else-if="game.status === 'waiting'" class="with-friends-page__lobby">
+    <section
+      v-else-if="game.status === 'waiting' || game.status === 'starting'"
+      class="with-friends-page__lobby"
+    >
       <div class="with-friends-page__lobby-header">
         <div>
           <h1>{{ t('components.pages.Game.GameWithFriendsPage.waitingForOpponent') }}</h1>
-          <p v-if="!isHost">
+          <p v-if="game.status === 'starting'">
+            {{ t('components.pages.Game.GameWithFriendsPage.starting') }}
+          </p>
+          <p v-else-if="!isHost">
             {{ t('components.pages.Game.GameWithFriendsPage.waitingForHost') }}
           </p>
         </div>
@@ -230,7 +245,7 @@ const handleExit = () => router.push('/')
       <div class="with-friends-page__actions">
         <Button
           v-if="isHost"
-          :disabled="!canStartGame"
+          :disabled="!canStartGame || game.status === 'starting'"
           :loading="isStartingGame"
           @click="handleStart"
         >
@@ -267,16 +282,21 @@ const handleExit = () => router.push('/')
     </section>
 
     <WithFriendsRoundResult
-      v-else-if="game.status === 'results' && currentRound?.target"
+      v-else-if="
+        (game.status === 'results' || game.status === 'completed') &&
+        !isSummaryVisible &&
+        currentRound?.target
+      "
       :current-user-id="resolvedCurrentUserId"
       :image-id="currentRound.imageId"
       :players="currentRoundResultPlayers"
       :round-number="game.currentRound"
       :target="[currentRound.target.longitude, currentRound.target.latitude]"
+      @view-summary="handleViewSummary"
     />
 
     <WithFriendsGameSummary
-      v-else-if="game.status === 'completed'"
+      v-else-if="game.status === 'completed' && isSummaryVisible"
       :can-create-room="isHost"
       :current-user-id="resolvedCurrentUserId"
       :is-creating-room="isCreatingRoom"
