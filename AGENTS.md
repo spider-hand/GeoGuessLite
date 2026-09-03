@@ -33,6 +33,8 @@ Key paths are below:
 - Always include one default-state test when it helps establish the baseline render; name it `should render the default state properly`
 - Do not create test cases for behavior that is neither user-visible nor exposed as a public outcome such as an emitted event, navigation, or child props owned by the current unit
 - Do not create test cases for something that doesn't have visible output, except for checking emitted events
+- Before adding a new test case for a subsequent change, first inspect the existing coverage and consider whether the behavior can be incorporated into an existing test
+- Always write client-side test descriptions in terms of externally observable behavior or outcomes, not implementation details
 - Always use `it.each(...)` for repeated scenarios of the same behavior across multiple meaningful inputs
 - Do not assert child component internals from parent or page tests unless the parent is explicitly responsible for that output
 - Do not manually modify files under `client/src/services/`

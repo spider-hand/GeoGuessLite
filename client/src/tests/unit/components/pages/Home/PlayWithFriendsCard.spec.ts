@@ -22,7 +22,7 @@ describe('PlayWithFriendsCard', () => {
     await expect.element(screen.getByRole('button', { name: 'Enter Room' })).toBeDisabled()
   })
 
-  it('should emit the create room action', async () => {
+  it('should emit the create-room action', async () => {
     const screen = await render(PlayWithFriendsCard, {
       props: defaultProps,
       global: { plugins: [createAppI18n()] },
@@ -33,7 +33,7 @@ describe('PlayWithFriendsCard', () => {
     expect(screen.emitted('createFriendsRoom')).toHaveLength(1)
   })
 
-  it('should emit the normalized room key when entering a room', async () => {
+  it('should normalize a room key and emit it when submitted', async () => {
     const screen = await render(PlayWithFriendsCard, {
       props: defaultProps,
       global: { plugins: [createAppI18n()] },
@@ -74,15 +74,18 @@ describe('PlayWithFriendsCard', () => {
   it.each([
     ['creating a room', { isCreatingRoom: true, isEnteringRoom: false }, 'Create Room'],
     ['entering a room', { isCreatingRoom: false, isEnteringRoom: true }, 'Enter Room'],
-  ])('should show the loading state when %s', async (_, loadingProps, buttonName) => {
-    const screen = await render(PlayWithFriendsCard, {
-      props: { ...defaultProps, ...loadingProps },
-      global: { plugins: [createAppI18n()] },
-    })
+  ])(
+    'should expose the active room operation as loading when %s',
+    async (_, loadingProps, buttonName) => {
+      const screen = await render(PlayWithFriendsCard, {
+        props: { ...defaultProps, ...loadingProps },
+        global: { plugins: [createAppI18n()] },
+      })
 
-    const button = screen.getByRole('button', { name: buttonName })
+      const button = screen.getByRole('button', { name: buttonName })
 
-    await expect.element(button).toHaveAttribute('aria-busy', 'true')
-    await expect.element(button).toBeDisabled()
-  })
+      await expect.element(button).toHaveAttribute('aria-busy', 'true')
+      await expect.element(button).toBeDisabled()
+    },
+  )
 })

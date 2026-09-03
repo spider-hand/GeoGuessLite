@@ -19,12 +19,15 @@ describe('RandomMatchCard', () => {
   it.each([
     [1, '1 player online'],
     [1234, '1,234 players online'],
-  ])('should format the online player count for %s players', async (onlinePlayers, label) => {
-    const screen = await render(RandomMatchCard, {
-      props: { disabled: false, onlinePlayers },
-      global: { plugins: [createAppI18n()] },
-    })
+  ])(
+    'should format singular and plural online-player counts for %s players',
+    async (onlinePlayers, label) => {
+      const screen = await render(RandomMatchCard, {
+        props: { disabled: false, onlinePlayers },
+        global: { plugins: [createAppI18n()] },
+      })
 
-    await expect.element(screen.getByText(label)).toBeVisible()
-  })
+      await expect.element(screen.getByText(label)).toBeVisible()
+    },
+  )
 })

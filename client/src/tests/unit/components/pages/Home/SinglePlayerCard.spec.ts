@@ -26,12 +26,19 @@ describe('SinglePlayerCard', () => {
     expect(screen.emitted('startSinglePlayer')).toHaveLength(1)
   })
 
-  it('should disable the start action when disabled', async () => {
+  it.each<[string, { disabled: boolean; isStartingGame: boolean }]>([
+    ['unavailable', { disabled: true, isStartingGame: false }],
+    ['starting', { disabled: false, isStartingGame: true }],
+  ])('should disable the start action when %s', async (_, props) => {
     const screen = await render(SinglePlayerCard, {
-      props: { disabled: true, isStartingGame: false },
+      props,
       global: { plugins: [createAppI18n()] },
     })
 
-    await expect.element(screen.getByRole('button', { name: 'Start Game' })).toBeDisabled()
+    const button = screen.getByRole('button', { name: 'Start Game' })
+    await expect.element(button).toBeDisabled()
+    expect(screen.container.querySelector('button')?.getAttribute('aria-busy')).toBe(
+      String(props.isStartingGame),
+    )
   })
 })
