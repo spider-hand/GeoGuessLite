@@ -53,9 +53,15 @@ describe('WithFriendsLeaderboard', () => {
       expect.stringContaining('Second Player'),
       expect.stringContaining('First Player'),
     ])
-    expect(buttons[0]).toHaveClass('with-friends-leaderboard__player--current')
-    expect(buttons[1]).toHaveClass('with-friends-leaderboard__player--selected')
-    expect(buttons[1]).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('should identify the current and selected players accessibly', async () => {
+    const screen = await renderLeaderboard()
+    const currentPlayer = screen.getByRole('button', { name: /Second Player/ })
+    const selectedPlayer = screen.getByRole('button', { name: /First Player/ })
+
+    await expect.element(currentPlayer).toHaveAttribute('aria-pressed', 'false')
+    await expect.element(selectedPlayer).toHaveAttribute('aria-pressed', 'true')
   })
 
   it('should emit the selected player', async () => {

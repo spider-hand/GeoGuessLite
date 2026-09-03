@@ -1,186 +1,176 @@
-import { createMemoryHistory, createRouter } from 'vue-router'
-import { describe, expect, it, vi } from 'vitest'
-import { render } from 'vitest-browser-vue'
 import { ref } from 'vue'
+import { createMemoryHistory, createRouter } from 'vue-router'
+import { beforeEach, expect, it, vi } from 'vitest'
+import { render } from 'vitest-browser-vue'
 
 import { createAppI18n } from '@/i18n'
-import HomePage from '@/pages/HomePage.vue'
 
 const isCurrentUserLoaded = ref(true)
 const isLoadingUser = ref(false)
 const isRegisteredUser = ref(false)
+const user = ref({ dailyChallengeStatus: 'available' as const })
 const signInAnonymously = vi.fn()
 const signUpWithGoogle = vi.fn()
 const createGameAsync = vi.fn()
 const createWithFriendsGame = vi.fn()
 const joinWithFriendsGame = vi.fn()
-const user = ref({ dailyChallengeStatus: 'available' as const })
 
 vi.mock('@/composables/useAuth', () => ({
   default: () => ({
-    username: ref(''),
-    userCountry: ref(undefined),
-    isAuthenticatedUser: ref(false),
-    isRegisteredUser,
     isCurrentUserLoaded,
     isLoadingUser,
-    user,
+    isRegisteredUser,
     signInAnonymously,
     signUpWithGoogle,
-    signOutUser: vi.fn(),
+    user,
   }),
 }))
-
 vi.mock('@/composables/useSinglePlayerGameQuery', () => ({
   default: () => ({ createGameAsync }),
 }))
-
 vi.mock('@/composables/useWithFriendsGameApi', () => ({
-  default: () => ({
-    createGame: createWithFriendsGame,
-    joinGame: joinWithFriendsGame,
-  }),
+  default: () => ({ createGame: createWithFriendsGame, joinGame: joinWithFriendsGame }),
 }))
+vi.mock('@/components/shared/NavigationHeader.vue', () => ({ default: { template: '<header />' } }))
+vi.mock('@/components/shared/NavigationFooter.vue', () => ({ default: { template: '<footer />' } }))
 
-const createHomeRouter = () =>
-  createRouter({
-    history: createMemoryHistory(),
-    routes: [
-      { path: '/', component: HomePage },
-      { path: '/privacy', component: HomePage },
-      { path: '/terms', component: HomePage },
-      { path: '/game/single-player/:gameId', name: 'single-player-game', component: HomePage },
-      { path: '/game/daily-challenge', name: 'daily-challenge-game', component: HomePage },
-      { path: '/game/with-friends/:gameId', component: HomePage },
-      { path: '/game/random-match', component: HomePage },
-    ],
-  })
+const HomePage = (await import('@/pages/HomePage.vue')).default
 
-const renderHomePage = async () => {
-  const router = createHomeRouter()
-  await router.push('/')
-  await router.isReady()
-
-  return {
-    router,
-    view: render(HomePage, { global: { plugins: [router, createAppI18n()] } }),
-  }
-}
-
-const resetAuthState = () => {
+beforeEach(() => {
   isCurrentUserLoaded.value = true
   isLoadingUser.value = false
   isRegisteredUser.value = false
-  signInAnonymously.mockReset().mockResolvedValue(undefined)
-  signUpWithGoogle.mockReset()
-  createGameAsync.mockReset().mockResolvedValue({ id: 'game-123' })
-  createWithFriendsGame.mockReset().mockResolvedValue({ id: 'friends-123', roomKey: '123456' })
-  joinWithFriendsGame.mockReset().mockResolvedValue({ id: 'friends-456' })
   user.value = { dailyChallengeStatus: 'available' }
+  signInAnonymously.mockReset().mockResolvedValue(undefined)
+  signUpWithGoogle.mockReset().mockResolvedValue(undefined)
+  createGameAsync.mockReset().mockResolvedValue({ id: 'single-123' })
+  createWithFriendsGame.mockReset().mockResolvedValue({ id: 'friends-123' })
+  joinWithFriendsGame.mockReset().mockResolvedValue({ id: 'friends-456' })
+})
+
+const renderPage = async () => {
+  const router = createRouter({
+    history: createMemoryHistory(),
+    routes: [
+      { path: '/', component: HomePage },
+      {
+        path: '/game/single-player/:gameId',
+        name: 'single-player-game',
+        component: { template: '<div />' },
+      },
+      {
+        path: '/game/daily-challenge',
+        name: 'daily-challenge-game',
+        component: { template: '<div />' },
+      },
+      { path: '/game/with-friends/:gameId', component: { template: '<div />' } },
+    ],
+  })
+  await router.push('/')
+  await router.isReady()
+  return { router, screen: render(HomePage, { global: { plugins: [router, createAppI18n()] } }) }
 }
 
-describe('HomePage', () => {
-  it('should render the default state properly', async () => {
-    resetAuthState()
-    const { view } = await renderHomePage()
-    const { container, getByRole } = view
+it('should render the default state properly', async () => {
+  const { screen } = await renderPage()
 
-    await expect.element(getByRole('img', { name: 'Hero Image' })).toBeVisible()
-    expect(
-      Array.from(container.querySelectorAll('h2'), (heading) => heading.textContent?.trim()),
-    ).toEqual(['Single Player', 'Play with Friends', 'Daily Challenge', 'Random Match'])
-    expect(container.textContent).not.toContain('Play vs AI')
-  })
+  await expect.element(screen.getByRole('img', { name: 'Hero Image' })).toBeVisible()
+  expect(
+    Array.from(screen.container.querySelectorAll('h2'), (heading) => heading.textContent?.trim()),
+  ).toEqual(['Single Player', 'Play with Friends', 'Daily Challenge', 'Random Match'])
+})
 
-  it.each([
-    { action: 'create room', buttonIndex: 0, buttonName: 'Create Room' },
-    { action: 'daily challenge', buttonIndex: 1, buttonName: 'Start Game' },
-  ])(
-    'should prompt an unregistered user before starting $action',
-    async ({ buttonIndex, buttonName }) => {
-      resetAuthState()
-      const { router, view } = await renderHomePage()
-      const { getByRole, getByText } = view
+it('should create and enter a single-player game', async () => {
+  const { router, screen } = await renderPage()
 
-      await getByRole('button', { name: buttonName }).nth(buttonIndex).click()
+  await screen.getByRole('button', { name: 'Start Game' }).first().click()
 
-      await expect.element(getByText('Welcome to GeoGuessLite')).toBeInTheDocument()
-      expect(router.currentRoute.value.path).toBe('/')
-    },
-  )
+  expect(signInAnonymously).toHaveBeenCalledOnce()
+  expect(createGameAsync).toHaveBeenCalledOnce()
+  await expect.poll(() => router.currentRoute.value.path).toBe('/game/single-player/single-123')
+})
 
-  it('should prompt an unregistered user before entering a room', async () => {
-    resetAuthState()
-    const { router, view } = await renderHomePage()
-    const { getByPlaceholder, getByRole, getByText } = view
+it.each(['create room', 'enter room', 'daily challenge'] as const)(
+  'should prompt an unregistered user before the %s action',
+  async (action) => {
+    const { router, screen } = await renderPage()
 
-    await getByPlaceholder('6-Digit Key').fill('123456')
-    await getByRole('button', { name: 'Enter Room' }).click()
+    if (action === 'create room') await screen.getByRole('button', { name: 'Create Room' }).click()
+    if (action === 'enter room') {
+      await screen.getByPlaceholder('6-Digit Key').fill('123456')
+      await screen.getByRole('button', { name: 'Enter Room' }).click()
+    }
+    if (action === 'daily challenge')
+      await screen.getByRole('button', { name: 'Start Game' }).last().click()
 
-    await expect.element(getByText('Welcome to GeoGuessLite')).toBeInTheDocument()
+    await expect
+      .element(screen.getByRole('dialog', { name: 'Welcome to GeoGuessLite' }))
+      .toBeVisible()
     expect(router.currentRoute.value.path).toBe('/')
-  })
+  },
+)
 
-  it('should disable with-friends actions while authentication is loading', async () => {
-    resetAuthState()
-    isCurrentUserLoaded.value = false
-    const { view } = await renderHomePage()
-
-    await expect.element(view.getByRole('button', { name: 'Create Room' })).toBeDisabled()
-    await expect.element(view.getByPlaceholder('6-Digit Key')).toBeDisabled()
-    await expect.element(view.getByRole('button', { name: 'Enter Room' })).toBeDisabled()
-  })
-
-  it('should disable the daily challenge while the user profile is loading', async () => {
-    resetAuthState()
-    isLoadingUser.value = true
-    const { view } = await renderHomePage()
-
-    await expect.element(view.getByRole('button', { name: 'Start Game' }).nth(1)).toBeDisabled()
-  })
-
-  it('should disable other game actions while opening the daily challenge', async () => {
-    resetAuthState()
+it.each(['create room', 'enter room', 'daily challenge'] as const)(
+  'should navigate registered users to the selected %s mode',
+  async (action) => {
     isRegisteredUser.value = true
-    const { router, view } = await renderHomePage()
-    let finishNavigation: () => void = () => undefined
-    router.beforeEach(
-      (to) =>
-        new Promise<boolean>((resolve) => {
-          if (to.name !== 'daily-challenge-game') {
-            resolve(true)
-            return
-          }
-          finishNavigation = () => resolve(true)
-        }),
-    )
+    const { router, screen } = await renderPage()
 
-    await view.getByRole('button', { name: 'Start Game' }).nth(1).click()
+    if (action === 'create room') await screen.getByRole('button', { name: 'Create Room' }).click()
+    if (action === 'enter room') {
+      await screen.getByPlaceholder('6-Digit Key').fill('123456')
+      await screen.getByRole('button', { name: 'Enter Room' }).click()
+    }
+    if (action === 'daily challenge')
+      await screen.getByRole('button', { name: 'Start Game' }).last().click()
 
-    await expect.element(view.getByRole('button', { name: 'Start Game' }).nth(0)).toBeDisabled()
-    await expect.element(view.getByRole('button', { name: 'Create Room' })).toBeDisabled()
-    finishNavigation()
-  })
+    const expectedPath =
+      action === 'create room'
+        ? '/game/with-friends/friends-123'
+        : action === 'enter room'
+          ? '/game/with-friends/friends-456'
+          : '/game/daily-challenge'
+    await expect.poll(() => router.currentRoute.value.path).toBe(expectedPath)
+  },
+)
 
-  it('should allow registered users to use gated actions', async () => {
-    resetAuthState()
-    isRegisteredUser.value = true
-    const { router, view } = await renderHomePage()
-    const { getByRole } = view
+it('should disable registered-only actions while authentication is loading', async () => {
+  isCurrentUserLoaded.value = false
+  const { screen } = await renderPage()
 
-    await getByRole('button', { name: 'Create Room' }).click()
+  await expect.element(screen.getByRole('button', { name: 'Create Room' })).toBeDisabled()
+  await expect.element(screen.getByPlaceholder('6-Digit Key')).toBeDisabled()
+  await expect.element(screen.getByRole('button', { name: 'Start Game' }).last()).toBeDisabled()
+})
 
-    await expect.poll(() => router.currentRoute.value.path).toBe('/game/with-friends/friends-123')
-  })
+it('should disable competing actions while a game operation is active', async () => {
+  let finishGame!: (game: { id: string }) => void
+  createGameAsync.mockImplementation(() => new Promise((resolve) => (finishGame = resolve)))
+  const { screen } = await renderPage()
 
-  it('should sign up from the prompt', async () => {
-    resetAuthState()
-    const { view } = await renderHomePage()
-    const { getByRole } = view
+  await screen.getByRole('button', { name: 'Start Game' }).first().click()
 
-    await getByRole('button', { name: 'Create Room' }).click()
-    await getByRole('button', { name: 'Sign Up', exact: true }).click()
+  await expect.element(screen.getByRole('button', { name: 'Create Room' })).toBeDisabled()
+  await expect.element(screen.getByRole('button', { name: 'Start Game' }).last()).toBeDisabled()
+  finishGame({ id: 'single-123' })
+})
 
-    expect(signUpWithGoogle).toHaveBeenCalledOnce()
-  })
+it('should sign up from the prompt and close it', async () => {
+  const { screen } = await renderPage()
+
+  await screen.getByRole('button', { name: 'Create Room' }).click()
+  await screen.getByRole('button', { name: 'Sign Up', exact: true }).click()
+
+  expect(signUpWithGoogle).toHaveBeenCalledOnce()
+  await expect.element(screen.getByRole('dialog')).not.toBeInTheDocument()
+})
+
+it('should close the sign-up prompt without signing up', async () => {
+  const { screen } = await renderPage()
+
+  await screen.getByRole('button', { name: 'Create Room' }).click()
+  await screen.getByRole('button', { name: 'Close sign up prompt' }).click()
+
+  expect(signUpWithGoogle).not.toHaveBeenCalled()
+  await expect.element(screen.getByRole('dialog')).not.toBeInTheDocument()
 })

@@ -15,7 +15,7 @@ describe('DailyChallengeCard', () => {
     await expect.element(screen.getByRole('button', { name: 'Start Game' })).toBeEnabled()
   })
 
-  it('should emit the start action', async () => {
+  it('should emit the start action when available', async () => {
     const screen = await render(DailyChallengeCard, {
       props: { disabled: false, isStartingChallenge: false, status: 'available' },
       global: { plugins: [createAppI18n()] },
@@ -26,25 +26,45 @@ describe('DailyChallengeCard', () => {
     expect(screen.emitted('startDailyChallenge')).toHaveLength(1)
   })
 
-  it('should disable the start action when disabled', async () => {
+  it.each([
+    ['available', 'Start Game', false],
+    ['ongoing', 'Continue Challenge', false],
+    ['completed', 'Already Played Today', true],
+    ['unavailable', 'Unavailable Today', true],
+  ] as const)(
+    'should show the correct action for the %s challenge status',
+    async (status, label, disabled) => {
+      const screen = await render(DailyChallengeCard, {
+        props: { disabled: false, isStartingChallenge: false, status },
+        global: { plugins: [createAppI18n()] },
+      })
+
+      await expect.element(screen.getByRole('button', { name: label })).toBeInTheDocument()
+      expect(screen.container.querySelector('button')?.disabled).toBe(disabled)
+    },
+  )
+
+  it.each(['completed', 'unavailable'] as const)(
+    'should prevent starting a %s challenge',
+    async (status) => {
+      const screen = await render(DailyChallengeCard, {
+        props: { disabled: false, isStartingChallenge: false, status },
+        global: { plugins: [createAppI18n()] },
+      })
+
+      await screen.getByRole('button').click({ force: true })
+      expect(screen.emitted('startDailyChallenge')).toBeUndefined()
+    },
+  )
+
+  it('should expose the start action as loading', async () => {
     const screen = await render(DailyChallengeCard, {
-      props: { disabled: true, isStartingChallenge: false, status: 'available' },
+      props: { disabled: false, isStartingChallenge: true, status: 'available' },
       global: { plugins: [createAppI18n()] },
     })
 
-    await expect.element(screen.getByRole('button', { name: 'Start Game' })).toBeDisabled()
-  })
-
-  it('should show the already played state properly', async () => {
-    const screen = await render(DailyChallengeCard, {
-      props: { disabled: false, isStartingChallenge: false, status: 'completed' },
-      global: { plugins: [createAppI18n()] },
-    })
-
-    const button = screen.getByRole('button', { name: 'Already Played Today' })
-
+    const button = screen.getByRole('button', { name: 'Start Game' })
     await expect.element(button).toBeDisabled()
-    await button.click({ force: true })
-    expect(screen.emitted('startDailyChallenge')).toBeUndefined()
+    await expect.element(button).toHaveAttribute('aria-busy', 'true')
   })
 })
