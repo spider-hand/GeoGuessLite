@@ -8,3 +8,9 @@ pre-commit:
 
     prettier:
       run: cd client && pnpm format:check
+
+    client-tests:
+      run: cd client && pnpm test:browser --run
+
+    server-tests:
+      run: cd server && uv run pytest
