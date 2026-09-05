@@ -17,8 +17,17 @@ def test_calculate_distance_returns_zero_for_the_same_location():
     assert calculate_distance((35.0, 139.0), (35.0, 139.0)) == 0
 
 
+def test_calculate_distance_returns_a_quarter_of_earths_circumference_at_the_equator():
+    # A 90° longitude difference at the equator is π × 6,371 km ÷ 2 = 10,007.54 km.
+    assert calculate_distance((0, 0), (0, 90)) == 10007.54
+
+
 def test_calculate_score_returns_perfect_score_for_nearby_guess():
     assert calculate_score(0.02) == 5000
+
+
+def test_calculate_score_returns_the_maximum_at_the_perfect_score_threshold():
+    assert calculate_score(0.025) == 5000
 
 
 def test_calculate_score_decreases_with_distance():
