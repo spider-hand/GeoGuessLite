@@ -36,7 +36,8 @@ Refer to the server setup guide for AWS SSO authentication and profile configura
 
 ## Credits
 
-Featured by [Mapillary](https://www.mapillary.com/) as a community project.
+- Flag images are downloaded from [Flagpedia](https://flagpedia.net/).
+- Featured by [Mapillary](https://www.mapillary.com/) as a community project.
 
 <p align="center">
   <img src="./docs/assets/mapillary-logo.png" alt="Mapillary" width="360" />
