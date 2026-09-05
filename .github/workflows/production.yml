@@ -1,0 +1,57 @@
+name: Production
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  client:
+    uses: ./.github/workflows/client.yml
+
+  server:
+    uses: ./.github/workflows/server.yml
+
+  deploy:
+    name: Migrate and deploy production
+    needs: [client, server]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.32.1
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - uses: astral-sh/setup-uv@v8.1.0
+        with:
+          python-version: "3.14"
+      - run: pnpm install --frozen-lockfile
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v6.1.0
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: us-east-1
+      # Lambda uses Neon's pooled URL, but migrations and dbmate's pg_dump require
+      # session-dependent behavior, so they must use the direct URL.
+      # Otherwise, Lambda can receive a pooled session with an empty search_path during deployment,
+      # which causes the functions not to be able to access the tables in the public schema.
+      - name: Apply production database migrations
+        run: |
+          secret_json="$(aws secretsmanager get-secret-value --secret-id geoguesslite-prod --query SecretString --output text)"
+          database_direct_url="$(jq -er '.neon_db_direct_uri | select(type == "string" and length > 0)' <<<"$secret_json")"
+          echo "::add-mask::$database_direct_url"
+          DATABASE_URL="$database_direct_url" pnpm db:migrate
+      - name: Deploy SST resources
+        run: pnpm deploy:prod

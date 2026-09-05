@@ -1,41 +1,36 @@
+name: Server
+
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "server/**"
+  pull_request:
+    branches: [main]
+  workflow_call:
+
+permissions:
+  contents: read
+
 jobs:
-  deploy-sam:
+  server:
+    name: Validate server
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
     defaults:
       run:
-        working-directory: ./server
+        working-directory: server
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
         with:
-          python-version: "3.14"
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
-      - name: Install dependencies
-        run: uv sync
-      - name: Run tests
-        run: uv run pytest
-      - name: Set up AWS SAM CLI
-        uses: aws-actions/setup-sam@v2
+          version: 10.32.1
+      - uses: actions/setup-node@v6
         with:
-          use-installer: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Configure AWS credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v5.1.1
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - uses: astral-sh/setup-uv@v8.1.0
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws-region: us-east-1
-      - run: sam build --use-container
-      # Prevent prompts and failure when the stack is unchanged
-      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=prod SecretArn=${{ secrets.AWS_SECRET_ARN }}
+          enable-cache: true
+          cache-dependency-glob: server/uv.lock
+      - run: pnpm install --frozen-lockfile
+      - run: uv python install 3.14
+      - run: uv sync --locked --all-groups
+      - run: uv run ruff check .
+      - run: uv run pytest
