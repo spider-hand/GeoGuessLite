@@ -11,6 +11,7 @@ defineOptions({
 
 const props = defineProps<{
   disabled: boolean
+  isLoadingUser: boolean
   isStartingChallenge: boolean
   status: DailyChallengeStatus
 }>()
@@ -46,7 +47,7 @@ const buttonLabel = () => {
     <Button
       class="daily-challenge-card__start-button"
       :disabled="props.disabled || props.status === 'completed' || props.status === 'unavailable'"
-      :loading="props.isStartingChallenge"
+      :loading="props.isLoadingUser || props.isStartingChallenge"
       @click="emit('startDailyChallenge')"
     >
       {{ buttonLabel() }}

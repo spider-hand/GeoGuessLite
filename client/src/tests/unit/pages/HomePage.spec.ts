@@ -136,11 +136,18 @@ it.each(['create room', 'enter room', 'daily challenge'] as const)(
 
 it('should disable registered-only actions while authentication is loading', async () => {
   isCurrentUserLoaded.value = false
+  isLoadingUser.value = true
   const { screen } = await renderPage()
 
   await expect.element(screen.getByRole('button', { name: 'Create Room' })).toBeDisabled()
+  await expect
+    .element(screen.getByRole('button', { name: 'Create Room' }))
+    .toHaveAttribute('aria-busy', 'true')
   await expect.element(screen.getByPlaceholder('6-Digit Key')).toBeDisabled()
   await expect.element(screen.getByRole('button', { name: 'Start Game' }).last()).toBeDisabled()
+  await expect
+    .element(screen.getByRole('button', { name: 'Start Game' }).last())
+    .toHaveAttribute('aria-busy', 'true')
 })
 
 it('should disable competing actions while a game operation is active', async () => {

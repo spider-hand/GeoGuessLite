@@ -167,6 +167,7 @@ const handleSignUp = async () => {
         />
         <PlayWithFriendsCard
           :disabled="isRegisteredGameDisabled"
+          :is-loading-user="isLoadingUser"
           :is-creating-room="isCreatingFriendsRoom"
           :is-entering-room="isEnteringFriendsRoom"
           @create-friends-room="handleCreateFriendsRoom"
@@ -174,6 +175,7 @@ const handleSignUp = async () => {
         />
         <DailyChallengeCard
           :disabled="isRegisteredGameDisabled"
+          :is-loading-user="isLoadingUser"
           :is-starting-challenge="isStartingDailyChallenge"
           :status="dailyChallengeStatus"
           @start-daily-challenge="handleStartDailyChallenge"

@@ -8,6 +8,7 @@ const meta = {
   tags: ['autodocs'],
   args: {
     disabled: false,
+    isLoadingUser: false,
     isStartingChallenge: false,
     status: 'available',
   },
@@ -35,4 +36,11 @@ export const Unavailable: Story = {
 
 export const Starting: Story = {
   args: { isStartingChallenge: true },
+}
+
+export const LoadingUser: Story = {
+  args: {
+    disabled: true,
+    isLoadingUser: true,
+  },
 }

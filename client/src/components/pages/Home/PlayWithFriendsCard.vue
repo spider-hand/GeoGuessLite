@@ -12,6 +12,7 @@ defineOptions({
 
 const props = defineProps<{
   disabled: boolean
+  isLoadingUser: boolean
   isCreatingRoom: boolean
   isEnteringRoom: boolean
 }>()
@@ -87,7 +88,7 @@ const submitEnterFriendsRoom = async () => {
     <Button
       class="play-with-friends-card__create-button"
       :disabled="props.disabled"
-      :loading="props.isCreatingRoom"
+      :loading="props.isLoadingUser || props.isCreatingRoom"
       @click="emitCreateFriendsRoom"
     >
       {{ t('components.pages.Home.PlayWithFriendsCard.createRoom') }}
@@ -127,7 +128,7 @@ const submitEnterFriendsRoom = async () => {
       <Button
         class="play-with-friends-card__enter-button"
         :disabled="isEnterRoomDisabled"
-        :loading="props.isEnteringRoom"
+        :loading="props.isLoadingUser || props.isEnteringRoom"
         type="submit"
       >
         {{ t('components.pages.Home.PlayWithFriendsCard.enterRoom') }}

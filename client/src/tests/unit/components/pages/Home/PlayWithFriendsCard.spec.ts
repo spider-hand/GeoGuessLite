@@ -6,6 +6,7 @@ import { createAppI18n } from '@/i18n'
 
 const defaultProps = {
   disabled: false,
+  isLoadingUser: false,
   isCreatingRoom: false,
   isEnteringRoom: false,
 }
@@ -69,6 +70,19 @@ describe('PlayWithFriendsCard', () => {
     await expect.element(screen.getByRole('button', { name: 'Create Room' })).toBeDisabled()
     await expect.element(screen.getByPlaceholder('6-Digit Key')).toBeDisabled()
     await expect.element(screen.getByRole('button', { name: 'Enter Room' })).toBeDisabled()
+  })
+
+  it('should expose room actions as loading while user information loads', async () => {
+    const screen = await render(PlayWithFriendsCard, {
+      props: { ...defaultProps, disabled: true, isLoadingUser: true },
+      global: { plugins: [createAppI18n()] },
+    })
+
+    for (const buttonName of ['Create Room', 'Enter Room']) {
+      await expect
+        .element(screen.getByRole('button', { name: buttonName }))
+        .toHaveAttribute('aria-busy', 'true')
+    }
   })
 
   it.each([
