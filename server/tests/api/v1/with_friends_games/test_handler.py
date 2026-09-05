@@ -68,6 +68,7 @@ def test_get_with_friends_games_returns_recent_history(mocker):
             rank=2,
             playerCount=3,
             totalScore=15000,
+            totalDistanceKm=42.5,
             completedAt="2026-09-05T00:00:00Z",
         )
     ]

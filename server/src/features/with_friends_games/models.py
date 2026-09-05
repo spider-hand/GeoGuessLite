@@ -44,4 +44,5 @@ class WithFriendsGameHistoryRecord(BaseModel):
     rank: int
     player_count: int = Field(alias="playerCount")
     total_score: int = Field(alias="totalScore")
+    total_distance_km: float | None = Field(alias="totalDistanceKm")
     completed_at: datetime = Field(alias="completedAt")

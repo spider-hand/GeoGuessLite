@@ -63,6 +63,12 @@ export interface GetWithFriendsGames200ResponseInner {
   totalScore: number
   /**
    *
+   * @type {number}
+   * @memberof GetWithFriendsGames200ResponseInner
+   */
+  totalDistanceKm: number | null
+  /**
+   *
    * @type {Date}
    * @memberof GetWithFriendsGames200ResponseInner
    */
@@ -82,6 +88,7 @@ export function instanceOfGetWithFriendsGames200ResponseInner(
   if (!('rank' in value) || value['rank'] === undefined) return false
   if (!('playerCount' in value) || value['playerCount'] === undefined) return false
   if (!('totalScore' in value) || value['totalScore'] === undefined) return false
+  if (!('totalDistanceKm' in value) || value['totalDistanceKm'] === undefined) return false
   if (!('completedAt' in value) || value['completedAt'] === undefined) return false
   return true
 }
@@ -107,6 +114,7 @@ export function GetWithFriendsGames200ResponseInnerFromJSONTyped(
     rank: json['rank'],
     playerCount: json['playerCount'],
     totalScore: json['totalScore'],
+    totalDistanceKm: json['totalDistanceKm'],
     completedAt: new Date(json['completedAt']),
   }
 }
@@ -133,6 +141,7 @@ export function GetWithFriendsGames200ResponseInnerToJSONTyped(
     rank: value['rank'],
     playerCount: value['playerCount'],
     totalScore: value['totalScore'],
+    totalDistanceKm: value['totalDistanceKm'],
     completedAt: value['completedAt'].toISOString(),
   }
 }

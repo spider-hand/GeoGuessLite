@@ -35,6 +35,7 @@ class DailyChallengeGameSummary(BaseModel):
     id: str
     date: date
     total_score: int = Field(alias="totalScore")
+    total_distance_km: float | None = Field(alias="totalDistanceKm")
     completed_at: datetime = Field(alias="completedAt")
 
 

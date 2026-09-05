@@ -100,6 +100,10 @@ class DailyChallengesRepository:
             cursor.execute(
                 f"""
                 SELECT g.id, dc.date, COALESCE(SUM(r.score), 0) AS total_score,
+                       CASE
+                           WHEN COUNT(r.distance_km) = COUNT(*) THEN SUM(r.distance_km)
+                           ELSE NULL
+                       END AS total_distance_km,
                        g.completed_at
                 FROM single_player_games g
                 JOIN daily_challenges dc ON dc.id = g.daily_challenge_id

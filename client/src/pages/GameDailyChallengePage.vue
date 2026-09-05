@@ -2,7 +2,7 @@
 import { LoaderCircle } from '@lucide/vue'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import CountdownTimer from '@/components/pages/Game/CountdownTimer.vue'
 import DailyChallengeGameSummary from '@/components/pages/Game/DailyChallengeGameSummary.vue'
@@ -20,6 +20,7 @@ import type { SinglePlayerSummaryRound } from '@/types/game'
 defineOptions({ name: 'GameDailyChallengePage' })
 
 const { t } = useI18n()
+const route = useRoute()
 const router = useRouter()
 const { username } = useAuth()
 const selection = ref<[number, number] | null>(null)
@@ -28,6 +29,9 @@ const isSummaryVisible = ref(false)
 const isAlreadyPlayed = ref(false)
 const didExpire = ref(false)
 const operationError = ref<Error | null>(null)
+const routeGameId =
+  typeof route.params.gameId === 'string' && route.params.gameId ? route.params.gameId : null
+const isHistoricalGame = routeGameId !== null
 const {
   createGameAsync,
   game,
@@ -38,7 +42,7 @@ const {
   refetchGame,
   startRoundAsync,
   submitGuessAsync,
-} = useDailyChallengeGameQuery()
+} = useDailyChallengeGameQuery(routeGameId)
 
 const currentRound = computed(() =>
   game.value?.rounds.find(({ roundNumber }) => roundNumber === game.value?.currentRound),
@@ -95,7 +99,11 @@ const loadGame = async () => {
       if (!loadedGame) throw queryResult.error ?? new Error('Unable to load daily challenge')
     }
 
-    isAlreadyPlayed.value = loadedGame.status === 'completed'
+    isAlreadyPlayed.value = !isHistoricalGame && loadedGame.status === 'completed'
+    if (isHistoricalGame) {
+      isSummaryVisible.value = true
+      return
+    }
     if (loadedGame.status === 'ongoing' && loadedGame.currentRound === 0) {
       await startRound(loadedGame.id, 1)
     }

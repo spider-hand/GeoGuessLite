@@ -172,14 +172,39 @@
       },
       "User": {
         "profile": "プロフィール",
+        "singlePlayerGames": "シングルプレイ",
         "aiGames": "AI対戦",
         "friendsGames": "フレンド対戦",
+        "dailyChallenge": "デイリーチャレンジ",
+        "loading": "読み込み中…",
+        "loadError": "このセクションを読み込めませんでした。",
+        "recentGames": "最近のゲーム",
+        "noRecentGames": "完了したゲームはまだありません。",
+        "viewGame": "ゲームを見る",
+        "distanceUnavailable": "—",
+        "rankOf": "{count}人中",
+        "rankOrdinal": {
+          "one": "{rank}位",
+          "two": "{rank}位",
+          "few": "{rank}位",
+          "other": "{rank}位"
+        },
         "name": "名前",
         "editProfile": "プロフィールを編集",
         "cancel": "キャンセル",
         "saveChanges": "変更を保存",
         "deleteAccount": "アカウントを削除",
         "saveError": "プロフィールを保存できませんでした。",
+        "nameRequiredError": "名前は必須です。",
+        "SinglePlayerGamesSection": {
+          "gamesPlayed": "プレイ回数",
+          "bestScore": "ベストスコア",
+          "averageScore": "平均スコア"
+        },
+        "DailyChallengeSection": {
+          "leaderboard": "ランキング",
+          "noLeaderboardEntries": "この日の完了済みデータはありません。"
+        },
         "CountrySelect": {
           "country": "国",
           "search": "国を検索",
@@ -218,6 +243,7 @@
           "title": "アカウントを削除",
           "description": "アカウントは完全に削除されます。",
           "confirmationPlaceholder": "続行するには Delete と入力",
+          "confirmationError": "続行するには Delete と入力",
           "close": "アカウント削除ダイアログを閉じる",
           "cancel": "キャンセル",
           "delete": "削除",

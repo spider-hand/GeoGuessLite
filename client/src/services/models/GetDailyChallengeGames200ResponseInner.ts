@@ -39,6 +39,12 @@ export interface GetDailyChallengeGames200ResponseInner {
   totalScore: number
   /**
    *
+   * @type {number}
+   * @memberof GetDailyChallengeGames200ResponseInner
+   */
+  totalDistanceKm: number | null
+  /**
+   *
    * @type {Date}
    * @memberof GetDailyChallengeGames200ResponseInner
    */
@@ -54,6 +60,7 @@ export function instanceOfGetDailyChallengeGames200ResponseInner(
   if (!('id' in value) || value['id'] === undefined) return false
   if (!('date' in value) || value['date'] === undefined) return false
   if (!('totalScore' in value) || value['totalScore'] === undefined) return false
+  if (!('totalDistanceKm' in value) || value['totalDistanceKm'] === undefined) return false
   if (!('completedAt' in value) || value['completedAt'] === undefined) return false
   return true
 }
@@ -75,6 +82,7 @@ export function GetDailyChallengeGames200ResponseInnerFromJSONTyped(
     id: json['id'],
     date: new Date(json['date']),
     totalScore: json['totalScore'],
+    totalDistanceKm: json['totalDistanceKm'],
     completedAt: new Date(json['completedAt']),
   }
 }
@@ -97,6 +105,7 @@ export function GetDailyChallengeGames200ResponseInnerToJSONTyped(
     id: value['id'],
     date: value['date'].toISOString().substring(0, 10),
     totalScore: value['totalScore'],
+    totalDistanceKm: value['totalDistanceKm'],
     completedAt: value['completedAt'].toISOString(),
   }
 }

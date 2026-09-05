@@ -8,6 +8,7 @@ from src.features.single_player_games.models import (
     SinglePlayerGame,
     SinglePlayerGameRound,
     SinglePlayerGameRoundResult,
+    SinglePlayerGameSummary,
 )
 from tests.factories.http_events import make_api_gateway_event
 
@@ -66,6 +67,33 @@ def test_get_single_player_game_omits_active_result_and_completed_at(mocker):
     assert "completedAt" not in body
     assert "result" not in body["rounds"][0]
     assert "target" not in body["rounds"][0]
+
+
+def test_get_single_player_games_returns_recent_history(mocker):
+    service = mocker.patch.object(handler, "_service")
+    service.list_games.return_value = [
+        SinglePlayerGameSummary(
+            id="game-123",
+            totalScore=12345,
+            totalDistanceKm=42.5,
+            createdAt=NOW,
+            completedAt=NOW,
+        )
+    ]
+    event = make_api_gateway_event()
+    event["queryStringParameters"] = {
+        "limit": "10",
+        "sort_by": "completed_at",
+        "order_by": "desc",
+    }
+
+    response = handler.get_single_player_games(event, MagicMock())
+
+    assert response["statusCode"] == 200
+    assert json.loads(response["body"])[0]["totalDistanceKm"] == 42.5
+    service.list_games.assert_called_once_with(
+        "user-123", 10, "completed_at", "desc"
+    )
 
 
 def test_start_single_player_game_round_parses_path_parameters(mocker):

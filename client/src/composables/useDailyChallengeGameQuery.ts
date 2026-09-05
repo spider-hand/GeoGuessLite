@@ -10,7 +10,6 @@ import {
 } from '@/services'
 import type { DailyChallengeAvailability } from '@/types/game'
 
-const queryKey = ['daily-challenge-game', 'today'] as const
 type DailyChallengeState = {
   date: Date
   status: 'available' | 'ongoing' | 'completed'
@@ -29,15 +28,26 @@ const replaceRound = (
   ].sort((left, right) => left.roundNumber - right.roundNumber),
 })
 
-const useDailyChallengeGameQuery = (enabled: MaybeRefOrGetter<boolean> = true) => {
+const useDailyChallengeGameQuery = (
+  gameId: MaybeRefOrGetter<string | null> = null,
+  enabled: MaybeRefOrGetter<boolean> = true,
+) => {
   const { apiConfig } = useApi()
   const gamesApi = new DefaultApi(apiConfig)
   const queryClient = useQueryClient()
+  const normalizedGameId = computed(() => toValue(gameId))
   const isEnabled = computed(() => toValue(enabled))
+  const queryKey = computed(
+    () => ['daily-challenge-game', normalizedGameId.value ?? 'today'] as const,
+  )
   const todayQuery = useQuery<DailyChallengeState>({
     queryKey,
     enabled: isEnabled,
     queryFn: async () => {
+      if (normalizedGameId.value) {
+        const game = await gamesApi.getDailyChallengeGame({ gameId: normalizedGameId.value })
+        return { date: game.createdAt, status: 'completed', game }
+      }
       const today = await gamesApi.getTodayDailyChallenge()
       return {
         ...today,
@@ -50,7 +60,7 @@ const useDailyChallengeGameQuery = (enabled: MaybeRefOrGetter<boolean> = true) =
   const setGame = (
     update: (game: CreateDailyChallengeGame200Response) => CreateDailyChallengeGame200Response,
   ) => {
-    queryClient.setQueryData<DailyChallengeState>(queryKey, (today) => {
+    queryClient.setQueryData<DailyChallengeState>(queryKey.value, (today) => {
       if (!today?.game) return today
       const game = update(today.game)
       return { ...today, status: game.status, game }
@@ -60,7 +70,7 @@ const useDailyChallengeGameQuery = (enabled: MaybeRefOrGetter<boolean> = true) =
   const createGameMutation = useMutation({
     mutationFn: () => gamesApi.createDailyChallengeGame(),
     onSuccess: async (game) => {
-      queryClient.setQueryData<DailyChallengeState>(queryKey, (today) => ({
+      queryClient.setQueryData<DailyChallengeState>(queryKey.value, (today) => ({
         date: today?.date ?? new Date(),
         status: game.status,
         game,

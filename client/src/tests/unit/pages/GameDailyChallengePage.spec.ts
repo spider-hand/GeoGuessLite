@@ -36,20 +36,24 @@ const createGameAsync = vi.fn()
 const refetchGame = vi.fn()
 const startRoundAsync = vi.fn()
 const submitGuessAsync = vi.fn()
+const queryGameId = vi.fn()
 
 vi.mock('@/composables/useAuth', () => ({ default: () => ({ username: ref('Taylor') }) }))
 vi.mock('@/composables/useDailyChallengeGameQuery', () => ({
-  default: () => ({
-    game,
-    gameError,
-    isLoadingGame,
-    isStartingRound,
-    isSubmittingGuess,
-    createGameAsync,
-    refetchGame,
-    startRoundAsync,
-    submitGuessAsync,
-  }),
+  default: (gameId: string | null) => {
+    queryGameId(gameId)
+    return {
+      game,
+      gameError,
+      isLoadingGame,
+      isStartingRound,
+      isSubmittingGuess,
+      createGameAsync,
+      refetchGame,
+      startRoundAsync,
+      submitGuessAsync,
+    }
+  },
 }))
 vi.mock('@/components/shared/NavigationHeader.vue', () => ({ default: { template: '<header />' } }))
 vi.mock('@/components/shared/NavigationFooter.vue', () => ({ default: { template: '<footer />' } }))
@@ -97,9 +101,10 @@ beforeEach(() => {
   refetchGame.mockReset().mockResolvedValue({ data: game.value, error: null })
   startRoundAsync.mockReset().mockResolvedValue(round(2))
   submitGuessAsync.mockReset().mockResolvedValue(round(1, true))
+  queryGameId.mockReset()
 })
 
-const renderPage = async () => {
+const renderPage = async (path = '/game/daily-challenge') => {
   const router = createRouter({
     history: createMemoryHistory(),
     routes: [
@@ -109,9 +114,14 @@ const renderPage = async () => {
         name: 'daily-challenge-game',
         component: GameDailyChallengePage,
       },
+      {
+        path: '/game/daily-challenge/:gameId',
+        name: 'daily-challenge-history',
+        component: GameDailyChallengePage,
+      },
     ],
   })
-  await router.push('/game/daily-challenge')
+  await router.push(path)
   await router.isReady()
   return {
     router,
@@ -211,4 +221,15 @@ it('should show the challenge summary after the final result', async () => {
   await screen.getByRole('button', { name: 'Continue result' }).click()
 
   await expect.element(screen.getByRole('heading', { name: 'Challenge summary' })).toBeVisible()
+})
+
+it('should show a historical challenge summary without starting a game', async () => {
+  game.value = { ...ongoingGame(5, true), status: 'completed' }
+
+  const { screen } = await renderPage('/game/daily-challenge/daily-1')
+
+  await expect.element(screen.getByRole('heading', { name: 'Challenge summary' })).toBeVisible()
+  expect(queryGameId).toHaveBeenCalledWith('daily-1')
+  expect(createGameAsync).not.toHaveBeenCalled()
+  expect(startRoundAsync).not.toHaveBeenCalled()
 })

@@ -33,6 +33,12 @@ export interface GetSinglePlayerGames200ResponseInner {
   totalScore: number
   /**
    *
+   * @type {number}
+   * @memberof GetSinglePlayerGames200ResponseInner
+   */
+  totalDistanceKm: number | null
+  /**
+   *
    * @type {Date}
    * @memberof GetSinglePlayerGames200ResponseInner
    */
@@ -53,6 +59,7 @@ export function instanceOfGetSinglePlayerGames200ResponseInner(
 ): value is GetSinglePlayerGames200ResponseInner {
   if (!('id' in value) || value['id'] === undefined) return false
   if (!('totalScore' in value) || value['totalScore'] === undefined) return false
+  if (!('totalDistanceKm' in value) || value['totalDistanceKm'] === undefined) return false
   if (!('createdAt' in value) || value['createdAt'] === undefined) return false
   if (!('completedAt' in value) || value['completedAt'] === undefined) return false
   return true
@@ -74,6 +81,7 @@ export function GetSinglePlayerGames200ResponseInnerFromJSONTyped(
   return {
     id: json['id'],
     totalScore: json['totalScore'],
+    totalDistanceKm: json['totalDistanceKm'],
     createdAt: new Date(json['createdAt']),
     completedAt: new Date(json['completedAt']),
   }
@@ -96,6 +104,7 @@ export function GetSinglePlayerGames200ResponseInnerToJSONTyped(
   return {
     id: value['id'],
     totalScore: value['totalScore'],
+    totalDistanceKm: value['totalDistanceKm'],
     createdAt: value['createdAt'].toISOString(),
     completedAt: value['completedAt'].toISOString(),
   }

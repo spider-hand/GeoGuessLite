@@ -86,5 +86,6 @@ class SinglePlayerGameSummary(BaseModel):
 
     id: str
     total_score: int = Field(alias="totalScore")
+    total_distance_km: float | None = Field(alias="totalDistanceKm")
     created_at: datetime = Field(alias="createdAt")
     completed_at: datetime = Field(alias="completedAt")

@@ -172,14 +172,39 @@
       },
       "User": {
         "profile": "Perfil",
+        "singlePlayerGames": "Partidas individuales",
         "aiGames": "Partidas contra IA",
         "friendsGames": "Partidas entre amigos",
+        "dailyChallenge": "Desafío diario",
+        "loading": "Cargando…",
+        "loadError": "No se pudo cargar esta sección.",
+        "recentGames": "Partidas recientes",
+        "noRecentGames": "Aún no hay partidas completadas.",
+        "viewGame": "Ver partida",
+        "distanceUnavailable": "—",
+        "rankOf": "de {count}",
+        "rankOrdinal": {
+          "one": "{rank}.º",
+          "two": "{rank}.º",
+          "few": "{rank}.º",
+          "other": "{rank}.º"
+        },
         "name": "Nombre",
         "editProfile": "Editar perfil",
         "cancel": "Cancelar",
         "saveChanges": "Guardar cambios",
         "deleteAccount": "Eliminar cuenta",
         "saveError": "No se pudo guardar tu perfil.",
+        "nameRequiredError": "El nombre es obligatorio.",
+        "SinglePlayerGamesSection": {
+          "gamesPlayed": "Partidas jugadas",
+          "bestScore": "Mejor puntuación",
+          "averageScore": "Puntuación media"
+        },
+        "DailyChallengeSection": {
+          "leaderboard": "Clasificación",
+          "noLeaderboardEntries": "No hay resultados completados para esta fecha."
+        },
         "CountrySelect": {
           "country": "País",
           "search": "Buscar países",
@@ -218,6 +243,7 @@
           "title": "Eliminar cuenta",
           "description": "Esto eliminará tu cuenta permanentemente.",
           "confirmationPlaceholder": "Escribe Delete para continuar",
+          "confirmationError": "Escribe Delete para continuar",
           "close": "Cerrar diálogo de eliminación de cuenta",
           "cancel": "Cancelar",
           "delete": "Eliminar",

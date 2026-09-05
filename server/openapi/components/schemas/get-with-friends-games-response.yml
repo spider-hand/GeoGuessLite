@@ -3,7 +3,7 @@ items:
   type: object
   additionalProperties: false
   required:
-    [id, hostUserId, hostDisplayName, hostCountry, rank, playerCount, totalScore, completedAt]
+    [id, hostUserId, hostDisplayName, hostCountry, rank, playerCount, totalScore, totalDistanceKm, completedAt]
   properties:
     id:
       type: string
@@ -24,6 +24,9 @@ items:
       type: integer
       minimum: 0
       maximum: 25000
+    totalDistanceKm:
+      type: [number, "null"]
+      minimum: 0
     completedAt:
       type: string
       format: date-time

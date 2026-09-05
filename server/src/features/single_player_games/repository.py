@@ -174,6 +174,10 @@ class SinglePlayerGamesRepository:
             cursor.execute(
                 f"""
                 SELECT g.id, COALESCE(SUM(r.score), 0) AS total_score,
+                       CASE
+                           WHEN COUNT(r.distance_km) = COUNT(*) THEN SUM(r.distance_km)
+                           ELSE NULL
+                       END AS total_distance_km,
                        g.created_at, g.completed_at
                 FROM single_player_games g
                 JOIN single_player_game_rounds r ON r.game_id = g.id
@@ -191,6 +195,7 @@ class SinglePlayerGamesRepository:
                     {
                         "id": row["id"],
                         "totalScore": row["total_score"],
+                        "totalDistanceKm": row["total_distance_km"],
                         "createdAt": row["created_at"],
                         "completedAt": row["completed_at"],
                     }

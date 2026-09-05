@@ -172,14 +172,39 @@
       },
       "User": {
         "profile": "Profil",
+        "singlePlayerGames": "Einzelspieler",
         "aiGames": "KI-Spiele",
         "friendsGames": "Freundesspiele",
+        "dailyChallenge": "Tägliche Herausforderung",
+        "loading": "Wird geladen…",
+        "loadError": "Dieser Bereich konnte nicht geladen werden.",
+        "recentGames": "Letzte Spiele",
+        "noRecentGames": "Noch keine abgeschlossenen Spiele.",
+        "viewGame": "Spiel ansehen",
+        "distanceUnavailable": "—",
+        "rankOf": "von {count}",
+        "rankOrdinal": {
+          "one": "{rank}.",
+          "two": "{rank}.",
+          "few": "{rank}.",
+          "other": "{rank}."
+        },
         "name": "Name",
         "editProfile": "Profil bearbeiten",
         "cancel": "Abbrechen",
         "saveChanges": "Änderungen speichern",
         "deleteAccount": "Konto löschen",
         "saveError": "Profil konnte nicht gespeichert werden.",
+        "nameRequiredError": "Name ist erforderlich.",
+        "SinglePlayerGamesSection": {
+          "gamesPlayed": "Gespielte Spiele",
+          "bestScore": "Beste Punktzahl",
+          "averageScore": "Durchschnitt"
+        },
+        "DailyChallengeSection": {
+          "leaderboard": "Bestenliste",
+          "noLeaderboardEntries": "Keine abgeschlossenen Einträge für dieses Datum."
+        },
         "CountrySelect": {
           "country": "Land",
           "search": "Länder suchen",
@@ -218,6 +243,7 @@
           "title": "Konto löschen",
           "description": "Dadurch wird dein Konto dauerhaft gelöscht.",
           "confirmationPlaceholder": "Zum Fortfahren Delete eingeben",
+          "confirmationError": "Zum Fortfahren Delete eingeben",
           "close": "Dialog zum Löschen des Kontos schließen",
           "cancel": "Abbrechen",
           "delete": "Löschen",
