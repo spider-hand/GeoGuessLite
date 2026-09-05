@@ -43,6 +43,11 @@ const router = createRouter({
       component: GameDailyChallengePage,
     },
     {
+      path: '/game/daily-challenge/:gameId',
+      name: 'daily-challenge-history',
+      component: GameDailyChallengePage,
+    },
+    {
       path: '/game/with-friends/:gameId',
       component: GameWithFriendsPage,
     },

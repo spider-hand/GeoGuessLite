@@ -5,6 +5,7 @@ items:
   required:
     - id
     - totalScore
+    - totalDistanceKm
     - createdAt
     - completedAt
   properties:
@@ -14,6 +15,9 @@ items:
       type: integer
       minimum: 0
       maximum: 25000
+    totalDistanceKm:
+      type: [number, "null"]
+      minimum: 0
     createdAt:
       type: string
       format: date-time

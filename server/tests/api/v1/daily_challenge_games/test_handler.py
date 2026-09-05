@@ -56,7 +56,11 @@ def test_get_daily_challenge_games_returns_recent_history(mocker):
     service = mocker.patch.object(handler, "_service")
     service.list_games.return_value = [
         DailyChallengeGameSummary(
-            id="game-123", date=date(2026, 8, 30), totalScore=12345, completedAt=NOW
+            id="game-123",
+            date=date(2026, 8, 30),
+            totalScore=12345,
+            totalDistanceKm=42.5,
+            completedAt=NOW,
         )
     ]
 
@@ -70,6 +74,7 @@ def test_get_daily_challenge_games_returns_recent_history(mocker):
 
     assert response["statusCode"] == 200
     assert json.loads(response["body"])[0]["totalScore"] == 12345
+    assert json.loads(response["body"])[0]["totalDistanceKm"] == 42.5
     service.list_games.assert_called_once_with("user-123", 5, "created_at", "asc")
 
 

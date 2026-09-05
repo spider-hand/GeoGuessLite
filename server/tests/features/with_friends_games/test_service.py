@@ -391,7 +391,22 @@ def test_list_games_maps_archived_host_and_player_placement():
                     "totalScore": 15000,
                 },
             ],
-            "rounds": [],
+            "rounds": [
+                {
+                    "results": [
+                        {"userId": "host", "distanceKm": 12.0},
+                        {"userId": "guest", "distanceKm": 8.5},
+                        {"userId": "other", "distanceKm": 4.0},
+                    ]
+                },
+                {
+                    "results": [
+                        {"userId": "host", "distanceKm": 6.0},
+                        {"userId": "guest", "distanceKm": 1.5},
+                        {"userId": "other", "distanceKm": 2.0},
+                    ]
+                },
+            ],
         }
     )
     game.completed_at = datetime(2026, 8, 31, tzinfo=UTC)
@@ -407,8 +422,34 @@ def test_list_games_maps_archived_host_and_player_placement():
         "rank": 2,
         "playerCount": 3,
         "totalScore": 15000,
+        "totalDistanceKm": 10.0,
         "completedAt": datetime(2026, 8, 31, tzinfo=UTC),
     }
     repository.list_completed_for_user.assert_called_once_with(
         "guest", 5, "created_at", "asc"
     )
+
+
+def test_list_games_omits_total_distance_when_a_round_has_no_guess():
+    service, repository, _ = make_service(make_state())
+    game = make_game(
+        {
+            "players": [
+                {
+                    "userId": "guest",
+                    "displayName": "Guest",
+                    "totalScore": 1000,
+                }
+            ],
+            "rounds": [
+                {"results": [{"userId": "guest", "distanceKm": 8.5}]},
+                {"results": [{"userId": "guest", "distanceKm": None}]},
+            ],
+        }
+    )
+    game.completed_at = datetime(2026, 8, 31, tzinfo=UTC)
+    repository.list_completed_for_user.return_value = [game]
+
+    result = service.list_games("guest", 10, "completed_at", "desc")
+
+    assert result[0].total_distance_km is None

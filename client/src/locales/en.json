@@ -172,8 +172,23 @@
       },
       "User": {
         "profile": "Profile",
+        "singlePlayerGames": "Single Player Games",
         "aiGames": "AI Games",
         "friendsGames": "Friends Games",
+        "dailyChallenge": "Daily Challenge",
+        "loading": "Loading…",
+        "loadError": "Unable to load this section.",
+        "recentGames": "Recent Games",
+        "noRecentGames": "No completed games yet.",
+        "viewGame": "View game",
+        "distanceUnavailable": "—",
+        "rankOf": "of {count}",
+        "rankOrdinal": {
+          "one": "{rank}st",
+          "two": "{rank}nd",
+          "few": "{rank}rd",
+          "other": "{rank}th"
+        },
         "name": "Name",
         "editProfile": "Edit Profile",
         "cancel": "Cancel",
@@ -181,6 +196,15 @@
         "deleteAccount": "Delete Account",
         "saveError": "Unable to save your profile. Please try again.",
         "nameRequiredError": "Name is required.",
+        "SinglePlayerGamesSection": {
+          "gamesPlayed": "Games Played",
+          "bestScore": "Best Score",
+          "averageScore": "Average Score"
+        },
+        "DailyChallengeSection": {
+          "leaderboard": "Leaderboard",
+          "noLeaderboardEntries": "No completed entries for this date."
+        },
         "DeleteAccountModal": {
           "title": "Delete Account",
           "description": "This permanently deletes your account.",

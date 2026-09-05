@@ -172,14 +172,39 @@
       },
       "User": {
         "profile": "个人资料",
+        "singlePlayerGames": "单人游戏",
         "aiGames": "人机对战",
         "friendsGames": "好友对战",
+        "dailyChallenge": "每日挑战",
+        "loading": "正在加载…",
+        "loadError": "无法加载此部分。",
+        "recentGames": "最近游戏",
+        "noRecentGames": "尚无已完成的游戏。",
+        "viewGame": "查看游戏",
+        "distanceUnavailable": "—",
+        "rankOf": "共{count}人",
+        "rankOrdinal": {
+          "one": "第{rank}名",
+          "two": "第{rank}名",
+          "few": "第{rank}名",
+          "other": "第{rank}名"
+        },
         "name": "名称",
         "editProfile": "编辑个人资料",
         "cancel": "取消",
         "saveChanges": "保存更改",
         "deleteAccount": "删除账户",
         "saveError": "无法保存个人资料。",
+        "nameRequiredError": "名称为必填项。",
+        "SinglePlayerGamesSection": {
+          "gamesPlayed": "游戏次数",
+          "bestScore": "最高分",
+          "averageScore": "平均分"
+        },
+        "DailyChallengeSection": {
+          "leaderboard": "排行榜",
+          "noLeaderboardEntries": "此日期暂无已完成记录。"
+        },
         "CountrySelect": {
           "country": "国家",
           "search": "搜索国家",
@@ -218,6 +243,7 @@
           "title": "删除账户",
           "description": "这将永久删除您的账户。",
           "confirmationPlaceholder": "输入 Delete 以继续",
+          "confirmationError": "输入 Delete 以继续",
           "close": "关闭删除账户对话框",
           "cancel": "取消",
           "delete": "删除",

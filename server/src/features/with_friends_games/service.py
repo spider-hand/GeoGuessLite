@@ -77,6 +77,22 @@ class WithFriendsGamesService:
                 if player["userId"] == user_id
             )
             current_player = ranked_players[player_index]
+            player_distances = [
+                next(
+                    (
+                        result.get("distanceKm")
+                        for result in round_data.get("results", [])
+                        if result.get("userId") == user_id
+                    ),
+                    None,
+                )
+                for round_data in game.result.get("rounds", [])
+            ]
+            total_distance_km = (
+                sum(player_distances)
+                if player_distances and all(distance is not None for distance in player_distances)
+                else None
+            )
             history.append(
                 WithFriendsGameHistoryRecord.model_validate(
                     {
@@ -87,6 +103,7 @@ class WithFriendsGamesService:
                         "rank": player_index + 1,
                         "playerCount": len(players),
                         "totalScore": current_player["totalScore"],
+                        "totalDistanceKm": total_distance_km,
                         "completedAt": game.completed_at,
                     }
                 )
