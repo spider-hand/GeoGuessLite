@@ -25,11 +25,13 @@ import type {
   CreateWithFriendsGame201Response,
   CreateWithFriendsGameGuessRequest,
   GetCurrentUser200Response,
+  GetDailyChallengeGames200ResponseInner,
+  GetDailyChallengeLeaderboard200ResponseInner,
   GetSinglePlayerGames200ResponseInner,
   GetSinglePlayerGames400Response,
   GetSinglePlayerGames401Response,
   GetTodayDailyChallenge200Response,
-  GetUser200Response,
+  GetWithFriendsGames200ResponseInner,
   JoinWithFriendsGame200Response,
   JoinWithFriendsGameRequest,
   StartDailyChallengeGameRound200Response,
@@ -60,6 +62,10 @@ import {
   CreateWithFriendsGameGuessRequestToJSON,
   GetCurrentUser200ResponseFromJSON,
   GetCurrentUser200ResponseToJSON,
+  GetDailyChallengeGames200ResponseInnerFromJSON,
+  GetDailyChallengeGames200ResponseInnerToJSON,
+  GetDailyChallengeLeaderboard200ResponseInnerFromJSON,
+  GetDailyChallengeLeaderboard200ResponseInnerToJSON,
   GetSinglePlayerGames200ResponseInnerFromJSON,
   GetSinglePlayerGames200ResponseInnerToJSON,
   GetSinglePlayerGames400ResponseFromJSON,
@@ -68,8 +74,8 @@ import {
   GetSinglePlayerGames401ResponseToJSON,
   GetTodayDailyChallenge200ResponseFromJSON,
   GetTodayDailyChallenge200ResponseToJSON,
-  GetUser200ResponseFromJSON,
-  GetUser200ResponseToJSON,
+  GetWithFriendsGames200ResponseInnerFromJSON,
+  GetWithFriendsGames200ResponseInnerToJSON,
   JoinWithFriendsGame200ResponseFromJSON,
   JoinWithFriendsGame200ResponseToJSON,
   JoinWithFriendsGameRequestFromJSON,
@@ -104,6 +110,14 @@ export interface CreateWithFriendsGameGuessOperationRequest {
   gameId: string
   roundNumber: number
   createWithFriendsGameGuessRequest: CreateWithFriendsGameGuessRequest
+}
+
+export interface GetDailyChallengeGameRequest {
+  gameId: string
+}
+
+export interface GetDailyChallengeLeaderboardRequest {
+  date: Date
 }
 
 export interface GetSinglePlayerGameRequest {
@@ -666,6 +680,170 @@ export class DefaultApi extends runtime.BaseAPI {
   }
 
   /**
+   * Get an owned completed daily challenge game
+   */
+  async getDailyChallengeGameRaw(
+    requestParameters: GetDailyChallengeGameRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<CreateDailyChallengeGame200Response>> {
+    if (requestParameters['gameId'] == null) {
+      throw new runtime.RequiredError(
+        'gameId',
+        'Required parameter "gameId" was null or undefined when calling getDailyChallengeGame().',
+      )
+    }
+
+    const queryParameters: any = {}
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken
+      const tokenString = await token('BearerAuth', [])
+
+      if (tokenString) {
+        headerParameters['Authorization'] = `Bearer ${tokenString}`
+      }
+    }
+
+    let urlPath = `/api/v1/daily-challenge-games/{gameId}`
+    urlPath = urlPath.replace(
+      `{${'gameId'}}`,
+      encodeURIComponent(String(requestParameters['gameId'])),
+    )
+
+    const response = await this.request(
+      {
+        path: urlPath,
+        method: 'GET',
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    )
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      CreateDailyChallengeGame200ResponseFromJSON(jsonValue),
+    )
+  }
+
+  /**
+   * Get an owned completed daily challenge game
+   */
+  async getDailyChallengeGame(
+    requestParameters: GetDailyChallengeGameRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<CreateDailyChallengeGame200Response> {
+    const response = await this.getDailyChallengeGameRaw(requestParameters, initOverrides)
+    return await response.value()
+  }
+
+  /**
+   * List the current user\'s recent completed daily challenges
+   */
+  async getDailyChallengeGamesRaw(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<Array<GetDailyChallengeGames200ResponseInner>>> {
+    const queryParameters: any = {}
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken
+      const tokenString = await token('BearerAuth', [])
+
+      if (tokenString) {
+        headerParameters['Authorization'] = `Bearer ${tokenString}`
+      }
+    }
+
+    let urlPath = `/api/v1/daily-challenge-games`
+
+    const response = await this.request(
+      {
+        path: urlPath,
+        method: 'GET',
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    )
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      jsonValue.map(GetDailyChallengeGames200ResponseInnerFromJSON),
+    )
+  }
+
+  /**
+   * List the current user\'s recent completed daily challenges
+   */
+  async getDailyChallengeGames(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<Array<GetDailyChallengeGames200ResponseInner>> {
+    const response = await this.getDailyChallengeGamesRaw(initOverrides)
+    return await response.value()
+  }
+
+  /**
+   * Get the leaderboard for a recent daily challenge
+   */
+  async getDailyChallengeLeaderboardRaw(
+    requestParameters: GetDailyChallengeLeaderboardRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<Array<GetDailyChallengeLeaderboard200ResponseInner>>> {
+    if (requestParameters['date'] == null) {
+      throw new runtime.RequiredError(
+        'date',
+        'Required parameter "date" was null or undefined when calling getDailyChallengeLeaderboard().',
+      )
+    }
+
+    const queryParameters: any = {}
+
+    if (requestParameters['date'] != null) {
+      queryParameters['date'] = (requestParameters['date'] as any).toISOString().substring(0, 10)
+    }
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken
+      const tokenString = await token('BearerAuth', [])
+
+      if (tokenString) {
+        headerParameters['Authorization'] = `Bearer ${tokenString}`
+      }
+    }
+
+    let urlPath = `/api/v1/daily-challenge-games/leaderboard`
+
+    const response = await this.request(
+      {
+        path: urlPath,
+        method: 'GET',
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    )
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      jsonValue.map(GetDailyChallengeLeaderboard200ResponseInnerFromJSON),
+    )
+  }
+
+  /**
+   * Get the leaderboard for a recent daily challenge
+   */
+  async getDailyChallengeLeaderboard(
+    requestParameters: GetDailyChallengeLeaderboardRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<Array<GetDailyChallengeLeaderboard200ResponseInner>> {
+    const response = await this.getDailyChallengeLeaderboardRaw(requestParameters, initOverrides)
+    return await response.value()
+  }
+
+  /**
    * Get an owned single-player game
    */
   async getSinglePlayerGameRaw(
@@ -836,7 +1014,7 @@ export class DefaultApi extends runtime.BaseAPI {
   async getUserRaw(
     requestParameters: GetUserRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<GetUser200Response>> {
+  ): Promise<runtime.ApiResponse<UpdateUser200Response>> {
     if (requestParameters['userId'] == null) {
       throw new runtime.RequiredError(
         'userId',
@@ -874,7 +1052,7 @@ export class DefaultApi extends runtime.BaseAPI {
     )
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      GetUser200ResponseFromJSON(jsonValue),
+      UpdateUser200ResponseFromJSON(jsonValue),
     )
   }
 
@@ -884,8 +1062,54 @@ export class DefaultApi extends runtime.BaseAPI {
   async getUser(
     requestParameters: GetUserRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<GetUser200Response> {
+  ): Promise<UpdateUser200Response> {
     const response = await this.getUserRaw(requestParameters, initOverrides)
+    return await response.value()
+  }
+
+  /**
+   * List the current user\'s recent completed with-friends games
+   */
+  async getWithFriendsGamesRaw(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<Array<GetWithFriendsGames200ResponseInner>>> {
+    const queryParameters: any = {}
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken
+      const tokenString = await token('BearerAuth', [])
+
+      if (tokenString) {
+        headerParameters['Authorization'] = `Bearer ${tokenString}`
+      }
+    }
+
+    let urlPath = `/api/v1/with-friends-games`
+
+    const response = await this.request(
+      {
+        path: urlPath,
+        method: 'GET',
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    )
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      jsonValue.map(GetWithFriendsGames200ResponseInnerFromJSON),
+    )
+  }
+
+  /**
+   * List the current user\'s recent completed with-friends games
+   */
+  async getWithFriendsGames(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<Array<GetWithFriendsGames200ResponseInner>> {
+    const response = await this.getWithFriendsGamesRaw(initOverrides)
     return await response.value()
   }
 

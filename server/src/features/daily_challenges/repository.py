@@ -2,7 +2,11 @@ from datetime import date
 from typing import Any
 
 from src.core.db import get_connection
-from src.features.daily_challenges.models import DailyChallengeRecord
+from src.features.daily_challenges.models import (
+    DailyChallengeGameSummary,
+    DailyChallengeLeaderboardEntry,
+    DailyChallengeRecord,
+)
 
 
 def _map_challenge(rows: list[dict[str, Any]]) -> DailyChallengeRecord | None:
@@ -85,3 +89,59 @@ class DailyChallengesRepository:
         with get_connection() as connection, connection.cursor() as cursor:
             cursor.execute("DELETE FROM daily_challenges WHERE date < %s", (cutoff,))
             return cursor.rowcount
+
+    def list_completed_for_user(
+        self, user_id: str, limit: int, sort_by: str, order_by: str
+    ) -> list[DailyChallengeGameSummary]:
+        sort_column = {"created_at": "g.created_at", "completed_at": "g.completed_at"}[
+            sort_by
+        ]
+        with get_connection() as connection, connection.cursor() as cursor:
+            cursor.execute(
+                f"""
+                SELECT g.id, dc.date, COALESCE(SUM(r.score), 0) AS total_score,
+                       g.completed_at
+                FROM single_player_games g
+                JOIN daily_challenges dc ON dc.id = g.daily_challenge_id
+                JOIN single_player_game_rounds r ON r.game_id = g.id
+                WHERE g.user_id = %s
+                  AND g.game_mode = 'daily_challenge'
+                  AND g.completed_at IS NOT NULL
+                GROUP BY g.id, dc.date
+                ORDER BY {sort_column} {order_by.upper()}
+                LIMIT %s
+                """,
+                (user_id, limit),
+            )
+            return [DailyChallengeGameSummary.model_validate(row) for row in cursor.fetchall()]
+
+    def get_leaderboard(
+        self, challenge_date: date, limit: int
+    ) -> list[DailyChallengeLeaderboardEntry]:
+        with get_connection() as connection, connection.cursor() as cursor:
+            cursor.execute(
+                """
+                WITH scores AS (
+                    SELECT g.id, g.user_id, u.display_name, u.country,
+                           g.completed_at, COALESCE(SUM(r.score), 0)::INTEGER AS total_score
+                    FROM single_player_games g
+                    JOIN daily_challenges dc ON dc.id = g.daily_challenge_id
+                    JOIN single_player_game_rounds r ON r.game_id = g.id
+                    JOIN users u ON u.id = g.user_id
+                    WHERE dc.date = %s
+                      AND g.game_mode = 'daily_challenge'
+                      AND g.completed_at IS NOT NULL
+                    GROUP BY g.id, g.user_id, u.display_name, u.country
+                ), ranked AS (
+                    SELECT RANK() OVER (ORDER BY total_score DESC) AS rank,
+                           user_id, display_name, country, total_score, completed_at
+                    FROM scores
+                )
+                SELECT rank, user_id, display_name, country, total_score
+                FROM ranked
+                ORDER BY rank, completed_at, user_id
+                LIMIT %s
+                """,
+                (challenge_date, limit),
+            )
+            return [DailyChallengeLeaderboardEntry.model_validate(row) for row in cursor.fetchall()]

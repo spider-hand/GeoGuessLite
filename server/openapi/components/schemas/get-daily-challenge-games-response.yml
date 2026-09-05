@@ -1,0 +1,18 @@
+type: array
+items:
+  type: object
+  additionalProperties: false
+  required: [id, date, totalScore, completedAt]
+  properties:
+    id:
+      type: string
+    date:
+      type: string
+      format: date
+    totalScore:
+      type: integer
+      minimum: 0
+      maximum: 25000
+    completedAt:
+      type: string
+      format: date-time

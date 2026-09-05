@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -27,3 +27,22 @@ class TodayDailyChallenge(BaseModel):
     date: date
     status: Literal["available", "ongoing", "completed"]
     game: SinglePlayerGame | None = None
+
+
+class DailyChallengeGameSummary(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    id: str
+    date: date
+    total_score: int = Field(alias="totalScore")
+    completed_at: datetime = Field(alias="completedAt")
+
+
+class DailyChallengeLeaderboardEntry(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    rank: int
+    user_id: str = Field(alias="userId")
+    display_name: str = Field(alias="displayName")
+    country: str | None = None
+    total_score: int = Field(alias="totalScore")

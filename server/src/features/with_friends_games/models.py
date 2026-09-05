@@ -32,3 +32,16 @@ class CreateWithFriendsGameGuessInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     guess: Coordinates
+
+
+class WithFriendsGameHistoryRecord(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    id: str
+    host_user_id: str = Field(alias="hostUserId")
+    host_display_name: str = Field(alias="hostDisplayName")
+    host_country: str | None = Field(default=None, alias="hostCountry")
+    rank: int
+    player_count: int = Field(alias="playerCount")
+    total_score: int = Field(alias="totalScore")
+    completed_at: datetime = Field(alias="completedAt")

@@ -36,7 +36,7 @@ export interface UpdateUser200Response {
    * @type {string}
    * @memberof UpdateUser200Response
    */
-  country: string
+  country: string | null
   /**
    *
    * @type {Date}

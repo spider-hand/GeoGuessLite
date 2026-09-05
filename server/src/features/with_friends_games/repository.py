@@ -4,7 +4,9 @@ from typing import Any
 from psycopg.types.json import Jsonb
 
 from src.core.db import get_connection
-from src.features.with_friends_games.models import WithFriendsGameRecord
+from src.features.with_friends_games.models import (
+    WithFriendsGameRecord,
+)
 
 
 def _map_game(row: dict[str, Any]) -> WithFriendsGameRecord:
@@ -84,3 +86,29 @@ class WithFriendsGamesRepository:
         with get_connection() as connection, connection.cursor() as cursor:
             cursor.execute("DELETE FROM with_friends_games WHERE id = ANY(%s)", (game_ids,))
             return cursor.rowcount
+
+    def list_completed_for_user(
+        self, user_id: str, limit: int, sort_by: str, order_by: str
+    ) -> list[WithFriendsGameRecord]:
+        sort_column = {
+            "created_at": "game.created_at",
+            "completed_at": "game.completed_at",
+        }[sort_by]
+        with get_connection() as connection, connection.cursor() as cursor:
+            cursor.execute(
+                f"""
+                SELECT id, room_key, host_user_id, result, created_at, completed_at
+                FROM with_friends_games game
+                WHERE result IS NOT NULL
+                  AND completed_at IS NOT NULL
+                  AND EXISTS (
+                      SELECT 1
+                      FROM jsonb_array_elements(game.result->'players') player
+                      WHERE player->>'userId' = %s
+                  )
+                ORDER BY {sort_column} {order_by.upper()}
+                LIMIT %s
+                """,
+                (user_id, limit),
+            )
+            return [_map_game(row) for row in cursor.fetchall()]

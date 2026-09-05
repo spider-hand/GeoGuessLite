@@ -366,3 +366,49 @@ def test_cleanup_deletes_realtime_state_before_postgres():
     assert service.delete_expired_games() == 1
     assert root_ref.updates == [{"withFriendsGames/game-1": None}]
     repository.delete.assert_called_once_with(["game-1"])
+
+
+def test_list_games_maps_archived_host_and_player_placement():
+    service, repository, _ = make_service(make_state())
+    game = make_game(
+        {
+            "players": [
+                {
+                    "userId": "host",
+                    "displayName": "Archived Host",
+                    "country": "JP",
+                    "totalScore": 20000,
+                },
+                {
+                    "userId": "guest",
+                    "displayName": "Guest",
+                    "country": "US",
+                    "totalScore": 15000,
+                },
+                {
+                    "userId": "other",
+                    "displayName": "Other",
+                    "totalScore": 15000,
+                },
+            ],
+            "rounds": [],
+        }
+    )
+    game.completed_at = datetime(2026, 8, 31, tzinfo=UTC)
+    repository.list_completed_for_user.return_value = [game]
+
+    result = service.list_games("guest", 5, "created_at", "asc")
+
+    assert result[0].model_dump(by_alias=True) == {
+        "id": "game-1",
+        "hostUserId": "host",
+        "hostDisplayName": "Archived Host",
+        "hostCountry": "JP",
+        "rank": 2,
+        "playerCount": 3,
+        "totalScore": 15000,
+        "completedAt": datetime(2026, 8, 31, tzinfo=UTC),
+    }
+    repository.list_completed_for_user.assert_called_once_with(
+        "guest", 5, "created_at", "asc"
+    )
