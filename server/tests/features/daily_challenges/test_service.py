@@ -144,3 +144,56 @@ def test_delete_expired_keeps_today_and_the_previous_twenty_nine_dates():
 
     assert deleted == 3
     challenges.delete_before.assert_called_once_with(NOW.date() - timedelta(days=29))
+
+
+def test_list_games_passes_the_requested_list_options():
+    challenges = MagicMock()
+    challenges.list_completed_for_user.return_value = ["game"]
+    service = make_service(challenges, MagicMock())
+
+    assert service.list_games("user-123", 5, "created_at", "asc") == ["game"]
+    challenges.list_completed_for_user.assert_called_once_with(
+        "user-123", 5, "created_at", "asc"
+    )
+
+
+def test_get_game_returns_only_a_completed_daily_challenge():
+    challenges = MagicMock()
+    games = MagicMock()
+    completed = make_game(completed=True)
+    games.get_by_id.return_value = completed
+
+    game = make_service(challenges, games).get_game("user-123", "game-123")
+
+    assert game.status == "completed"
+
+
+def test_get_game_rejects_an_ongoing_daily_challenge():
+    games = MagicMock()
+    games.get_by_id.return_value = make_game()
+
+    with pytest.raises(ApiError) as error:
+        make_service(MagicMock(), games).get_game("user-123", "game-123")
+
+    assert error.value.code == "daily_challenge_game_not_found"
+
+
+@pytest.mark.parametrize("offset", [-7, 1])
+def test_get_leaderboard_rejects_dates_outside_the_last_seven_days(offset):
+    with pytest.raises(ApiError) as error:
+        make_service(MagicMock(), MagicMock()).get_leaderboard(NOW.date() + timedelta(days=offset))
+
+    assert error.value.code == "invalid_challenge_date"
+
+
+@pytest.mark.parametrize("offset", [-6, 0])
+def test_get_leaderboard_accepts_the_seven_day_boundaries(offset):
+    challenges = MagicMock()
+    challenges.get_leaderboard.return_value = ["entry"]
+
+    result = make_service(challenges, MagicMock()).get_leaderboard(
+        NOW.date() + timedelta(days=offset)
+    )
+
+    assert result == ["entry"]
+    challenges.get_leaderboard.assert_called_once_with(NOW.date() + timedelta(days=offset), 10)

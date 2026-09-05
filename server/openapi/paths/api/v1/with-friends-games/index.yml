@@ -1,3 +1,47 @@
+get:
+  operationId: getWithFriendsGames
+  summary: List the current user's recent completed with-friends games
+  security:
+    - BearerAuth: []
+  parameters:
+    - name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    - name: sort_by
+      in: query
+      schema:
+        type: string
+        enum: [created_at, completed_at]
+        default: completed_at
+    - name: order_by
+      in: query
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: desc
+  responses:
+    "200":
+      description: Recent completed with-friends games
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/get-with-friends-games-response.yml
+    "400":
+      description: Invalid query parameters
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "401":
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
 post:
   operationId: createWithFriendsGame
   summary: Create a with-friends game

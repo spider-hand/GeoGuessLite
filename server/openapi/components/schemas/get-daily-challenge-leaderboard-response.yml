@@ -1,0 +1,21 @@
+type: array
+maxItems: 10
+items:
+  type: object
+  additionalProperties: false
+  required: [rank, userId, displayName, country, totalScore]
+  properties:
+    rank:
+      type: integer
+      minimum: 1
+    userId:
+      type: string
+    displayName:
+      type: string
+    country:
+      type: [string, "null"]
+      pattern: ^[A-Z]{2}$
+    totalScore:
+      type: integer
+      minimum: 0
+      maximum: 25000

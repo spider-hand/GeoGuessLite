@@ -1,0 +1,29 @@
+type: array
+items:
+  type: object
+  additionalProperties: false
+  required:
+    [id, hostUserId, hostDisplayName, hostCountry, rank, playerCount, totalScore, completedAt]
+  properties:
+    id:
+      type: string
+    hostUserId:
+      type: string
+    hostDisplayName:
+      type: string
+    hostCountry:
+      type: [string, "null"]
+      pattern: ^[A-Z]{2}$
+    rank:
+      type: integer
+      minimum: 1
+    playerCount:
+      type: integer
+      minimum: 2
+    totalScore:
+      type: integer
+      minimum: 0
+      maximum: 25000
+    completedAt:
+      type: string
+      format: date-time

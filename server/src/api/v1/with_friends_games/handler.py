@@ -13,11 +13,31 @@ from src.core.http import (
     handle_api_error,
     json_response,
     parse_json_body,
+    parse_list_query_parameters,
 )
 from src.core.logger import dynamic_inject_lambda_context
 from src.features.with_friends_games import WithFriendsGamesService
 
 _service = WithFriendsGamesService()
+
+
+@dynamic_inject_lambda_context
+@event_parser(model=CustomApiGatewayEvent)
+def get_with_friends_games(event: CustomApiGatewayEvent, context: LambdaContext):
+    try:
+        limit, sort_by, order_by = parse_list_query_parameters(
+            event,
+            allowed_sort_by=("created_at", "completed_at"),
+            default_sort_by="completed_at",
+        )
+        games = _service.list_games(get_authorized_uid(event), limit, sort_by, order_by)
+        return json_response(
+            HTTPStatus.OK,
+            [game.model_dump(by_alias=True, mode="json") for game in games],
+            CORS_HEADERS,
+        )
+    except Exception as error:
+        return handle_api_error(error, CORS_HEADERS)
 
 
 @dynamic_inject_lambda_context

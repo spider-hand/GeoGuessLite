@@ -22,6 +22,7 @@ from src.features.users.repository import UsersRepository
 from src.features.with_friends_games.models import (
     CreateWithFriendsGameGuessInput,
     JoinWithFriendsGameInput,
+    WithFriendsGameHistoryRecord,
     WithFriendsGameRecord,
 )
 from src.features.with_friends_games.queue import (
@@ -55,6 +56,42 @@ class WithFriendsGamesService:
 
     def _games_ref(self):
         return firebase_db.reference("withFriendsGames", app=get_firebase_app())
+
+    def list_games(
+        self, user_id: str, limit: int, sort_by: str, order_by: str
+    ) -> list[WithFriendsGameHistoryRecord]:
+        games = self.repository.list_completed_for_user(
+            user_id, limit, sort_by, order_by
+        )
+        history = []
+        for game in games:
+            players = game.result["players"]
+            host = next(
+                (player for player in players if player["userId"] == game.host_user_id),
+                players[0],
+            )
+            ranked_players = sorted(players, key=lambda player: -player["totalScore"])
+            player_index = next(
+                index
+                for index, player in enumerate(ranked_players)
+                if player["userId"] == user_id
+            )
+            current_player = ranked_players[player_index]
+            history.append(
+                WithFriendsGameHistoryRecord.model_validate(
+                    {
+                        "id": game.id,
+                        "hostUserId": host["userId"],
+                        "hostDisplayName": host["displayName"],
+                        "hostCountry": host.get("country"),
+                        "rank": player_index + 1,
+                        "playerCount": len(players),
+                        "totalScore": current_player["totalScore"],
+                        "completedAt": game.completed_at,
+                    }
+                )
+            )
+        return history
 
     def _game_ref(self, game_id: str):
         return self._games_ref().child(game_id)

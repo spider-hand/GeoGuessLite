@@ -25,6 +25,10 @@ paths:
     $ref: ./paths/api/v1/daily-challenge-games/index.yml
   /api/v1/daily-challenge-games/today:
     $ref: ./paths/api/v1/daily-challenge-games/today.yml
+  /api/v1/daily-challenge-games/leaderboard:
+    $ref: ./paths/api/v1/daily-challenge-games/leaderboard.yml
+  /api/v1/daily-challenge-games/{gameId}:
+    $ref: ./paths/api/v1/daily-challenge-games/game-by-id.yml
   /api/v1/daily-challenge-games/{gameId}/rounds/{roundNumber}/start:
     $ref: ./paths/api/v1/daily-challenge-games/round-start.yml
   /api/v1/daily-challenge-games/{gameId}/rounds/{roundNumber}/guesses:
@@ -90,3 +94,11 @@ components:
       $ref: ./components/schemas/start-daily-challenge-game-round-response.yml
     GetTodayDailyChallengeResponse:
       $ref: ./components/schemas/get-today-daily-challenge-response.yml
+    GetDailyChallengeGamesResponse:
+      $ref: ./components/schemas/get-daily-challenge-games-response.yml
+    GetDailyChallengeLeaderboardResponse:
+      $ref: ./components/schemas/get-daily-challenge-leaderboard-response.yml
+    GetDailyChallengeGameResponse:
+      $ref: ./components/schemas/get-daily-challenge-game-response.yml
+    GetWithFriendsGamesResponse:
+      $ref: ./components/schemas/get-with-friends-games-response.yml

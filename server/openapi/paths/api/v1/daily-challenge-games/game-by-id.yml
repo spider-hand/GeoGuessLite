@@ -1,0 +1,30 @@
+get:
+  operationId: getDailyChallengeGame
+  summary: Get an owned completed daily challenge game
+  security:
+    - BearerAuth: []
+  parameters:
+    - name: gameId
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    "200":
+      description: Completed daily challenge game
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/get-daily-challenge-game-response.yml
+    "401":
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "404":
+      description: Daily challenge game not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml

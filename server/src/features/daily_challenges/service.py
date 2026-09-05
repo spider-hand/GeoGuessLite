@@ -12,6 +12,9 @@ from src.features.single_player_games.service import SinglePlayerGamesService, p
 
 
 class DailyChallengesService:
+    LEADERBOARD_DAYS = 7
+    LEADERBOARD_LIMIT = 10
+
     def __init__(
         self,
         challenge_repository: DailyChallengesRepository | None = None,
@@ -44,6 +47,31 @@ class DailyChallengesService:
             return TodayDailyChallenge(date=challenge.date, status="available")
         game = self.game_service.get_game(user_id, record.id)
         return TodayDailyChallenge(date=challenge.date, status=game.status, game=game)
+
+    def list_games(self, user_id: str, limit: int, sort_by: str, order_by: str):
+        return self.challenge_repository.list_completed_for_user(
+            user_id, limit, sort_by, order_by
+        )
+
+    def get_game(self, user_id: str, game_id: str) -> SinglePlayerGame:
+        game = self.game_service.get_game(user_id, game_id)
+        if game.status != "completed":
+            raise ApiError(
+                HTTPStatus.NOT_FOUND,
+                "daily_challenge_game_not_found",
+                "Daily challenge game was not found.",
+            )
+        return game
+
+    def get_leaderboard(self, challenge_date):
+        today = self.clock().date()
+        if not today - timedelta(days=self.LEADERBOARD_DAYS - 1) <= challenge_date <= today:
+            raise ApiError(
+                HTTPStatus.BAD_REQUEST,
+                "invalid_challenge_date",
+                "date must be within the last seven UTC challenge dates.",
+            )
+        return self.challenge_repository.get_leaderboard(challenge_date, self.LEADERBOARD_LIMIT)
 
     def create_or_resume_today(self, user_id: str) -> tuple[SinglePlayerGame, bool]:
         challenge = self._today_challenge()

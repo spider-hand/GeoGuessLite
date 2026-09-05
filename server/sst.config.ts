@@ -290,6 +290,19 @@ export default $config({
     );
 
     api.route(
+      "GET /api/v1/with-friends-games",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/api/v1/with_friends_games/handler.get_with_friends_games",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
       "POST /api/v1/with-friends-games/join",
       {
         architecture: "arm64",
@@ -345,6 +358,45 @@ export default $config({
         runtime: "python3.14",
         handler:
           "src/api/v1/daily_challenge_games/handler.get_today_daily_challenge",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "GET /api/v1/daily-challenge-games",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/api/v1/daily_challenge_games/handler.get_daily_challenge_games",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "GET /api/v1/daily-challenge-games/leaderboard",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/api/v1/daily_challenge_games/handler.get_daily_challenge_leaderboard",
+        environment: { ENVIRONMENT: $app.stage },
+        permissions: [appSecretPermission],
+      },
+      { auth: { lambda: firebaseAuthorizer.id } },
+    );
+
+    api.route(
+      "GET /api/v1/daily-challenge-games/{gameId}",
+      {
+        architecture: "arm64",
+        runtime: "python3.14",
+        handler:
+          "src/api/v1/daily_challenge_games/handler.get_daily_challenge_game",
         environment: { ENVIRONMENT: $app.stage },
         permissions: [appSecretPermission],
       },

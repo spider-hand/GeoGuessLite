@@ -1,3 +1,4 @@
+.openapi-generator-ignore
 apis/DefaultApi.ts
 apis/HealthApi.ts
 apis/index.ts
@@ -31,6 +32,9 @@ models/CreateWithFriendsGameResponse.ts
 models/ErrorResponse.ts
 models/GetCurrentUser200Response.ts
 models/GetCurrentUserResponse.ts
+models/GetDailyChallengeGameResponse.ts
+models/GetDailyChallengeGames200ResponseInner.ts
+models/GetDailyChallengeLeaderboard200ResponseInner.ts
 models/GetHealth200Response.ts
 models/GetHealthResponse.ts
 models/GetSinglePlayerGameResponse.ts
@@ -42,8 +46,8 @@ models/GetTodayDailyChallenge200ResponseGame.ts
 models/GetTodayDailyChallenge200ResponseGameRoundsInner.ts
 models/GetTodayDailyChallenge200ResponseGameRoundsInnerResult.ts
 models/GetTodayDailyChallengeResponse.ts
-models/GetUser200Response.ts
 models/GetUserResponse.ts
+models/GetWithFriendsGames200ResponseInner.ts
 models/JoinWithFriendsGame200Response.ts
 models/JoinWithFriendsGameRequest.ts
 models/JoinWithFriendsGameResponse.ts

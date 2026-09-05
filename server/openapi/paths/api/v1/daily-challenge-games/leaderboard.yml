@@ -1,0 +1,31 @@
+get:
+  operationId: getDailyChallengeLeaderboard
+  summary: Get the leaderboard for a recent daily challenge
+  security:
+    - BearerAuth: []
+  parameters:
+    - name: date
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date
+  responses:
+    "200":
+      description: Daily challenge leaderboard
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/get-daily-challenge-leaderboard-response.yml
+    "400":
+      description: Invalid or unsupported challenge date
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
+    "401":
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/error-response.yml
