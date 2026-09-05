@@ -1,1 +1,2 @@
-$ref: ./get-user-response.yml
+allOf:
+  - $ref: ./get-user-response.yml

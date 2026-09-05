@@ -46,6 +46,7 @@ models/GetTodayDailyChallenge200ResponseGame.ts
 models/GetTodayDailyChallenge200ResponseGameRoundsInner.ts
 models/GetTodayDailyChallenge200ResponseGameRoundsInnerResult.ts
 models/GetTodayDailyChallengeResponse.ts
+models/GetUser200Response.ts
 models/GetUserResponse.ts
 models/GetWithFriendsGames200ResponseInner.ts
 models/JoinWithFriendsGame200Response.ts
