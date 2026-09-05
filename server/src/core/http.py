@@ -63,13 +63,16 @@ def parse_json_body(event: CustomApiGatewayEvent) -> dict[str, Any]:
         return {}
     if isinstance(event.body, str):
         try:
-            return json.loads(event.body)
+            body = json.loads(event.body)
         except json.JSONDecodeError as error:
             raise ApiError(
                 HTTPStatus.BAD_REQUEST,
                 "invalid_request_body",
                 "Request body must be valid JSON.",
             ) from error
+        if isinstance(body, dict):
+            return body
+        raise ApiError(HTTPStatus.BAD_REQUEST, "invalid_request_body", "Request body must be valid JSON.")
     if isinstance(event.body, dict):
         return event.body
     raise ApiError(HTTPStatus.BAD_REQUEST, "invalid_request_body", "Request body must be valid JSON.")

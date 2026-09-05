@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 import pytest
 
-from src.core.secret import get_app_secret_name, get_secrets
+from src.core.secret import get_app_secret_name, get_secret_json, get_secrets
 
 
 def setup_function():
@@ -59,3 +59,12 @@ def test_get_secrets_requires_mapillary_token(mock_get_secret_json):
 
     with pytest.raises(ValueError, match="non-empty 'mapillary_token' string"):
         get_secrets()
+
+
+@patch("src.core.secret.get_secret_string")
+@pytest.mark.parametrize("value", ["[]", "not json"])
+def test_get_secret_json_rejects_invalid_or_non_object_secret_values(mock_get_secret_string, value):
+    get_secret_json.cache_clear()
+    mock_get_secret_string.return_value = value
+    with pytest.raises(ValueError):
+        get_secret_json("secret")

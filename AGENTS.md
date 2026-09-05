@@ -99,6 +99,7 @@ Key paths are below.
 - Use `pytest.mark.parametrize` when multiple meaningful inputs exercise the same behavior or branch
 - Before adding a new test case, inspect existing tests and avoid adding another case when the same behavior is already protected
 - Do not test implementation details that can change without affecting observable behavior
+- Do not add unit tests for repositories, models, database, ORM, or framework behavior unless they contain meaningful application logic
 
 #### Validation
 
