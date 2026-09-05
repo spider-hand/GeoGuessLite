@@ -31,6 +31,7 @@ import type {
   GetSinglePlayerGames400Response,
   GetSinglePlayerGames401Response,
   GetTodayDailyChallenge200Response,
+  GetUser200Response,
   GetWithFriendsGames200ResponseInner,
   JoinWithFriendsGame200Response,
   JoinWithFriendsGameRequest,
@@ -74,6 +75,8 @@ import {
   GetSinglePlayerGames401ResponseToJSON,
   GetTodayDailyChallenge200ResponseFromJSON,
   GetTodayDailyChallenge200ResponseToJSON,
+  GetUser200ResponseFromJSON,
+  GetUser200ResponseToJSON,
   GetWithFriendsGames200ResponseInnerFromJSON,
   GetWithFriendsGames200ResponseInnerToJSON,
   JoinWithFriendsGame200ResponseFromJSON,
@@ -116,6 +119,12 @@ export interface GetDailyChallengeGameRequest {
   gameId: string
 }
 
+export interface GetDailyChallengeGamesRequest {
+  limit?: number
+  sortBy?: GetDailyChallengeGamesSortByEnum
+  orderBy?: GetDailyChallengeGamesOrderByEnum
+}
+
 export interface GetDailyChallengeLeaderboardRequest {
   date: Date
 }
@@ -132,6 +141,12 @@ export interface GetSinglePlayerGamesRequest {
 
 export interface GetUserRequest {
   userId: string
+}
+
+export interface GetWithFriendsGamesRequest {
+  limit?: number
+  sortBy?: GetWithFriendsGamesSortByEnum
+  orderBy?: GetWithFriendsGamesOrderByEnum
 }
 
 export interface JoinWithFriendsGameOperationRequest {
@@ -742,9 +757,22 @@ export class DefaultApi extends runtime.BaseAPI {
    * List the current user\'s recent completed daily challenges
    */
   async getDailyChallengeGamesRaw(
+    requestParameters: GetDailyChallengeGamesRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<runtime.ApiResponse<Array<GetDailyChallengeGames200ResponseInner>>> {
     const queryParameters: any = {}
+
+    if (requestParameters['limit'] != null) {
+      queryParameters['limit'] = requestParameters['limit']
+    }
+
+    if (requestParameters['sortBy'] != null) {
+      queryParameters['sort_by'] = requestParameters['sortBy']
+    }
+
+    if (requestParameters['orderBy'] != null) {
+      queryParameters['order_by'] = requestParameters['orderBy']
+    }
 
     const headerParameters: runtime.HTTPHeaders = {}
 
@@ -778,9 +806,10 @@ export class DefaultApi extends runtime.BaseAPI {
    * List the current user\'s recent completed daily challenges
    */
   async getDailyChallengeGames(
+    requestParameters: GetDailyChallengeGamesRequest = {},
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<Array<GetDailyChallengeGames200ResponseInner>> {
-    const response = await this.getDailyChallengeGamesRaw(initOverrides)
+    const response = await this.getDailyChallengeGamesRaw(requestParameters, initOverrides)
     return await response.value()
   }
 
@@ -1014,7 +1043,7 @@ export class DefaultApi extends runtime.BaseAPI {
   async getUserRaw(
     requestParameters: GetUserRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<UpdateUser200Response>> {
+  ): Promise<runtime.ApiResponse<GetUser200Response>> {
     if (requestParameters['userId'] == null) {
       throw new runtime.RequiredError(
         'userId',
@@ -1052,7 +1081,7 @@ export class DefaultApi extends runtime.BaseAPI {
     )
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      UpdateUser200ResponseFromJSON(jsonValue),
+      GetUser200ResponseFromJSON(jsonValue),
     )
   }
 
@@ -1062,7 +1091,7 @@ export class DefaultApi extends runtime.BaseAPI {
   async getUser(
     requestParameters: GetUserRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<UpdateUser200Response> {
+  ): Promise<GetUser200Response> {
     const response = await this.getUserRaw(requestParameters, initOverrides)
     return await response.value()
   }
@@ -1071,9 +1100,22 @@ export class DefaultApi extends runtime.BaseAPI {
    * List the current user\'s recent completed with-friends games
    */
   async getWithFriendsGamesRaw(
+    requestParameters: GetWithFriendsGamesRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<runtime.ApiResponse<Array<GetWithFriendsGames200ResponseInner>>> {
     const queryParameters: any = {}
+
+    if (requestParameters['limit'] != null) {
+      queryParameters['limit'] = requestParameters['limit']
+    }
+
+    if (requestParameters['sortBy'] != null) {
+      queryParameters['sort_by'] = requestParameters['sortBy']
+    }
+
+    if (requestParameters['orderBy'] != null) {
+      queryParameters['order_by'] = requestParameters['orderBy']
+    }
 
     const headerParameters: runtime.HTTPHeaders = {}
 
@@ -1107,9 +1149,10 @@ export class DefaultApi extends runtime.BaseAPI {
    * List the current user\'s recent completed with-friends games
    */
   async getWithFriendsGames(
+    requestParameters: GetWithFriendsGamesRequest = {},
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<Array<GetWithFriendsGames200ResponseInner>> {
-    const response = await this.getWithFriendsGamesRaw(initOverrides)
+    const response = await this.getWithFriendsGamesRaw(requestParameters, initOverrides)
     return await response.value()
   }
 
@@ -1429,6 +1472,24 @@ export class DefaultApi extends runtime.BaseAPI {
 /**
  * @export
  */
+export const GetDailyChallengeGamesSortByEnum = {
+  CreatedAt: 'created_at',
+  CompletedAt: 'completed_at',
+} as const
+export type GetDailyChallengeGamesSortByEnum =
+  (typeof GetDailyChallengeGamesSortByEnum)[keyof typeof GetDailyChallengeGamesSortByEnum]
+/**
+ * @export
+ */
+export const GetDailyChallengeGamesOrderByEnum = {
+  Asc: 'asc',
+  Desc: 'desc',
+} as const
+export type GetDailyChallengeGamesOrderByEnum =
+  (typeof GetDailyChallengeGamesOrderByEnum)[keyof typeof GetDailyChallengeGamesOrderByEnum]
+/**
+ * @export
+ */
 export const GetSinglePlayerGamesSortByEnum = {
   CreatedAt: 'created_at',
   CompletedAt: 'completed_at',
@@ -1444,3 +1505,21 @@ export const GetSinglePlayerGamesOrderByEnum = {
 } as const
 export type GetSinglePlayerGamesOrderByEnum =
   (typeof GetSinglePlayerGamesOrderByEnum)[keyof typeof GetSinglePlayerGamesOrderByEnum]
+/**
+ * @export
+ */
+export const GetWithFriendsGamesSortByEnum = {
+  CreatedAt: 'created_at',
+  CompletedAt: 'completed_at',
+} as const
+export type GetWithFriendsGamesSortByEnum =
+  (typeof GetWithFriendsGamesSortByEnum)[keyof typeof GetWithFriendsGamesSortByEnum]
+/**
+ * @export
+ */
+export const GetWithFriendsGamesOrderByEnum = {
+  Asc: 'asc',
+  Desc: 'desc',
+} as const
+export type GetWithFriendsGamesOrderByEnum =
+  (typeof GetWithFriendsGamesOrderByEnum)[keyof typeof GetWithFriendsGamesOrderByEnum]
