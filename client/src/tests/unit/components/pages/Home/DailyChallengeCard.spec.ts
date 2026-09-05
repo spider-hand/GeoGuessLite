@@ -7,7 +7,12 @@ import { createAppI18n } from '@/i18n'
 describe('DailyChallengeCard', () => {
   it('should render the default state properly', async () => {
     const screen = await render(DailyChallengeCard, {
-      props: { disabled: false, isStartingChallenge: false, status: 'available' },
+      props: {
+        disabled: false,
+        isLoadingUser: false,
+        isStartingChallenge: false,
+        status: 'available',
+      },
       global: { plugins: [createAppI18n()] },
     })
 
@@ -17,7 +22,12 @@ describe('DailyChallengeCard', () => {
 
   it('should emit the start action when available', async () => {
     const screen = await render(DailyChallengeCard, {
-      props: { disabled: false, isStartingChallenge: false, status: 'available' },
+      props: {
+        disabled: false,
+        isLoadingUser: false,
+        isStartingChallenge: false,
+        status: 'available',
+      },
       global: { plugins: [createAppI18n()] },
     })
 
@@ -35,7 +45,7 @@ describe('DailyChallengeCard', () => {
     'should show the correct action for the %s challenge status',
     async (status, label, disabled) => {
       const screen = await render(DailyChallengeCard, {
-        props: { disabled: false, isStartingChallenge: false, status },
+        props: { disabled: false, isLoadingUser: false, isStartingChallenge: false, status },
         global: { plugins: [createAppI18n()] },
       })
 
@@ -48,7 +58,7 @@ describe('DailyChallengeCard', () => {
     'should prevent starting a %s challenge',
     async (status) => {
       const screen = await render(DailyChallengeCard, {
-        props: { disabled: false, isStartingChallenge: false, status },
+        props: { disabled: false, isLoadingUser: false, isStartingChallenge: false, status },
         global: { plugins: [createAppI18n()] },
       })
 
@@ -59,12 +69,33 @@ describe('DailyChallengeCard', () => {
 
   it('should expose the start action as loading', async () => {
     const screen = await render(DailyChallengeCard, {
-      props: { disabled: false, isStartingChallenge: true, status: 'available' },
+      props: {
+        disabled: false,
+        isLoadingUser: false,
+        isStartingChallenge: true,
+        status: 'available',
+      },
       global: { plugins: [createAppI18n()] },
     })
 
     const button = screen.getByRole('button', { name: 'Start Game' })
     await expect.element(button).toBeDisabled()
     await expect.element(button).toHaveAttribute('aria-busy', 'true')
+  })
+
+  it('should expose the start action as loading while user information loads', async () => {
+    const screen = await render(DailyChallengeCard, {
+      props: {
+        disabled: true,
+        isLoadingUser: true,
+        isStartingChallenge: false,
+        status: 'available',
+      },
+      global: { plugins: [createAppI18n()] },
+    })
+
+    await expect
+      .element(screen.getByRole('button', { name: 'Start Game' }))
+      .toHaveAttribute('aria-busy', 'true')
   })
 })

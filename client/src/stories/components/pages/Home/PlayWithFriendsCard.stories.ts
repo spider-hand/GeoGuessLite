@@ -9,6 +9,7 @@ const meta = {
   tags: ['autodocs'],
   args: {
     disabled: false,
+    isLoadingUser: false,
     isCreatingRoom: false,
     isEnteringRoom: false,
   },
@@ -23,6 +24,13 @@ export const Default: Story = {}
 export const Disabled: Story = {
   args: {
     disabled: true,
+  },
+}
+
+export const LoadingUser: Story = {
+  args: {
+    disabled: true,
+    isLoadingUser: true,
   },
 }
 
