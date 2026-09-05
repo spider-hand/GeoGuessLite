@@ -249,9 +249,11 @@
         "howToPlayDescriptionLine3": "Plus vous êtes proche, plus vous gagnez de points.",
         "githubLabel": "GitHub",
         "discordLabel": "Discord",
+        "geoChessLabel": "GeoChess",
         "languageLabel": "Langue",
         "githubRepositoryLink": "Lien du dépôt GitHub",
-        "discordServerLink": "Lien du serveur Discord"
+        "discordServerLink": "Lien du serveur Discord",
+        "geoChessLink": "Lien GeoChess"
       },
       "SignUpPromptModal": {
         "title": "Bienvenue sur GeoGuessLite",

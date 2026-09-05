@@ -71,6 +71,7 @@ it('should navigate home from the brand', async () => {
 it.each([
   ['GitHub repository link', 'https://github.com/spider-hand/GeoGuessLite'],
   ['Discord server link', 'https://discord.gg/H9RwrfgeDH'],
+  ['GeoChess link', 'https://geochess.org'],
 ] as const)('should open the configured %s community link', async (label, url) => {
   const screen = renderHeader()
 
@@ -128,6 +129,7 @@ it('should open the mobile menu and expose its user-visible sections', async () 
   await expect
     .element(screen.getByRole('button', { name: 'How to Play' }).last())
     .toBeInTheDocument()
+  await expect.element(screen.getByRole('button', { name: 'GeoChess' })).toBeInTheDocument()
   await expect.element(screen.getByRole('button', { name: 'Language' })).toBeInTheDocument()
 })
 

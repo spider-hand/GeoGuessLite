@@ -249,9 +249,11 @@
         "howToPlayDescriptionLine3": "近いほど多くのポイントを獲得できます。",
         "githubLabel": "GitHub",
         "discordLabel": "Discord",
+        "geoChessLabel": "GeoChess",
         "languageLabel": "言語",
         "githubRepositoryLink": "GitHub リポジトリへのリンク",
-        "discordServerLink": "Discord サーバーへのリンク"
+        "discordServerLink": "Discord サーバーへのリンク",
+        "geoChessLink": "GeoChess へのリンク"
       },
       "SignUpPromptModal": {
         "title": "GeoGuessLiteへようこそ",

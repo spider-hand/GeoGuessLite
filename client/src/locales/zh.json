@@ -249,9 +249,11 @@
         "howToPlayDescriptionLine3": "猜得越近，获得的分数越多。",
         "githubLabel": "GitHub",
         "discordLabel": "Discord",
+        "geoChessLabel": "GeoChess",
         "languageLabel": "语言",
         "githubRepositoryLink": "GitHub 仓库链接",
-        "discordServerLink": "Discord 服务器链接"
+        "discordServerLink": "Discord 服务器链接",
+        "geoChessLink": "GeoChess 链接"
       },
       "SignUpPromptModal": {
         "title": "欢迎来到 GeoGuessLite",
